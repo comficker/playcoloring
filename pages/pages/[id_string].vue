@@ -93,7 +93,7 @@
   <div class="mt-4 max-w-lg mx-auto space-y-4">
     <div class="space-y-2">
       <h2 class="uppercase text-xl font-bold">Variants</h2>
-      <div v-if="variant.results.length" class="grid grid-cols-3 gap-3">
+      <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>
       </div>
       <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 border text-sm">

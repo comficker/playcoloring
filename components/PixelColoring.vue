@@ -126,7 +126,7 @@
     <div class="flex md:flex-col gap-4 justify-between md:-mr-8">
       <div class="flex md:flex-col md:w-6">
         <div
-          v-for="(c, i) in colors" :key="c"
+          v-for="(c, i) in colors.slice(0, 6)" :key="c"
           class="cursor-pointer"
           :class="{'border-[#776e65]': c === options.color}"
           @click="onClickColor(c)"
@@ -134,6 +134,9 @@
           <div class="w-6 h-6 text-center text-white text-xs leading-6" :style="{backgroundColor: c}">
             <div class="invert" :style="{'color': c}">{{ i }}</div>
           </div>
+        </div>
+        <div class="cursor-pointer p-1 w-6 h-6 bg-white" ref="moreColor">
+          <div class="i-con-more w-4 h-4"/>
         </div>
         <div class="cursor-pointer p-1 w-6 h-6 bg-white" @click="onClickColor(null)">
           <div class="i-con-eraser w-4 h-4"/>
@@ -183,12 +186,14 @@
 </template>
 
 <script setup lang="ts">
+import { useTippy } from 'vue-tippy'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {cloneDeep} from "lodash"
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage} from "~/interface";
+import ColorPalette from "~/components/ColorPalette.vue"
 //STATE
 const route = useRoute()
 const CELL_LENGTH = ref({
@@ -258,6 +263,8 @@ const cellScaleSize = computed(() => {
 const saved = ref<SharedPage | null>(null)
 const saving = ref(false)
 const isMoving = computed(() => holdDetector.value.isHold || (holdDetector.value.isFoldHold && isPainting.value))
+
+const moreColor = ref()
 
 // HELPER
 const makeChunk = (array: any[], chunkSize = 4) => {
@@ -406,7 +413,7 @@ const draw = (layerId: string, fillColor = false) => {
           ctx.fillStyle = colors[layers.value[layerId].map_numbers[index]]
           ctx.fillRect(x, y, 1, 1);
         } else {
-          ctx.font = `0.5px sans-serif`
+          ctx.font = `0.4px Proto Mono`
           ctx.fillStyle = '#776e65'
           ctx.textBaseline = 'middle'
           ctx.textAlign = 'center'
@@ -549,6 +556,16 @@ watch(zoom, (newVal, oldVal) => {
     draw('background')
     draw('workspace', true)
   }, 100)
+})
+
+watch(colors, () => {
+  useTippy(moreColor, {
+    content: h(ColorPalette, {value: colors.value}),
+    arrow: true,
+    interactive: true,
+    hideOnClick: true,
+    trigger: 'click'
+  })
 })
 
 onBeforeRouteUpdate(n => {

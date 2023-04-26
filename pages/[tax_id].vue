@@ -11,7 +11,7 @@
           <input type="text" class="outline-none w-full" placeholder="Tags">
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>
       </div>
     </div>

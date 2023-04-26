@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   },
   css: [
     '~/assets/font.css',
+    'tippy.js/dist/tippy.css',
     '@unocss/reset/tailwind.css',
   ],
   colorMode: {

@@ -36,6 +36,7 @@
     "animated-unocss": "^0.0.4",
     "fabric": "^5.3.0",
     "lodash": "^4.17.21",
-    "vue-social-sharing": "^4.0.0-alpha4"
+    "vue-social-sharing": "^4.0.0-alpha4",
+    "vue-tippy": "v6"
   }
 }

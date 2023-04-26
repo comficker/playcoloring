@@ -53,6 +53,11 @@ const faqs = ref([
     aws: [
       "A coloring page is a black and white drawing, design or pattern that is printed or displayed on paper or digital formats. Individuals can use various coloring tools such as pencils, crayons, or markers to fill the outlined areas with different shades and colors, producing a completed image...."
     ]
+  },
+  {
+    opened: false,
+    title: "How to play coloring?",
+    aws: ["Use various coloring tools such as pencils, crayons, or markers to fill the outlined areas with different shades and colors, producing a completed image."]
   }
 ])
 </script>
@@ -71,15 +76,10 @@ const faqs = ref([
       <div class="flex justify-between">
         <div>
           <div>Download printable coloring or play online</div>
-          <div class="text-sm underline">How to play?</div>
         </div>
       </div>
     </div>
     <PixelColoring/>
-    <div class="divide-y mx-auto">
-      <p class="text-sm italic"><b>HOW TO PLAY</b>: Use various coloring tools such as pencils, crayons, or markers
-        to fill the outlined areas with different shades and colors, producing a completed image.</p>
-    </div>
   </div>
   <div class="space-y-4 max-w-lg mx-auto mt-4">
     <h2 class="uppercase text-xl font-bold">Browse Coloring Pages</h2>
@@ -87,7 +87,7 @@ const faqs = ref([
     <div v-if="responseTag.results.length" class="flex flex-wrap gap-2">
       <nuxt-link
         v-for="item in responseTag.results" :to="`/${item.id_string}`"
-        class="p-0.5 px-2 bg-orange-200 rounded cursor-pointer"
+        class="p-1 text-sm px-2 bg-orange-200 rounded cursor-pointer"
       >
         {{ item.name }}
       </nuxt-link>
