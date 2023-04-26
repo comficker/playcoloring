@@ -86,7 +86,7 @@ const faqs = ref([
     <h3 v-if="responseTag.results.length" class="font-bold text-xs uppercase">Coloring Pages by tag</h3>
     <div v-if="responseTag.results.length" class="flex flex-wrap gap-2">
       <nuxt-link
-        v-for="item in responseTag.results" :to="`/coloring-pages/${item.id_string}`"
+        v-for="item in responseTag.results" :to="`/${item.id_string}`"
         class="p-0.5 px-2 bg-orange-200 rounded cursor-pointer"
       >
         {{ item.name }}

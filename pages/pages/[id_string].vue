@@ -158,16 +158,17 @@ onMounted(() => {
 
 const meta = computed(() => {
   const defaultDesc = 'It\'s awesome!'
+  const url = `https://www.playcoloring.com/pages/${value.id_string}`
   if (value) {
     return {
-      url: `${config.public.domain}/pages/${value.id_string}`,
+      url: url,
       title: value.name || value.id_string,
       desc: value.desc || defaultDesc,
       imgSrc: `${config.public.apiBase}/coloring/files/${value.id_string}.png`
     }
   } else {
     return {
-      url: `${config.public.domain}/pages/${value.id_string}`,
+      url: url,
       title: 'Untitled',
       desc: defaultDesc,
       imgSrc: '/screenshot/default.png'
