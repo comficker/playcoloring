@@ -162,7 +162,7 @@ const meta = computed(() => {
   if (value) {
     return {
       url: url,
-      title: value.name || value.id_string,
+      title: `${value.name || value.id_string} ${value.width}x${value.height} Pixel Coloring`,
       desc: value.desc || defaultDesc,
       imgSrc: `${config.public.apiBase}/coloring/files/${value.id_string}.png`
     }
