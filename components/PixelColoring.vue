@@ -413,7 +413,7 @@ const draw = (layerId: string, fillColor = false) => {
           ctx.fillStyle = colors[layers.value[layerId].map_numbers[index]]
           ctx.fillRect(x, y, 1, 1);
         } else {
-          ctx.font = `0.4px Proto Mono`
+          ctx.font = `0.35px Proto Mono`
           ctx.fillStyle = '#776e65'
           ctx.textBaseline = 'middle'
           ctx.textAlign = 'center'
@@ -450,7 +450,8 @@ const loadFile = () => {
         for (let y = 0; y < img.height; y++) {
           const pixelData: any = ctx?.getImageData(x, y, 1, 1);
           const color = rgbToHex(pixelData.data[0], pixelData.data[1], pixelData.data[2])
-          if (color !== '#000000') {
+          console.log(pixelData.data[3], color);
+          if (!(color === '#000000' && pixelData.data[3] === 0)) {
             if (!layers.value[layerId].colors.includes(color)) {
               layers.value[layerId].colors.push(color)
             }
