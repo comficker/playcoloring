@@ -3,13 +3,8 @@
     <div class="space-y-2">
       <h1 class="uppercase text-xl font-bold">{{ meta.title }}</h1>
       <p class="text-sm">{{ meta.desc }}</p>
-      <div class="flex gap-4">
-        <div class="border flex gap-2 py-1 px-4 bg-white">
-          <input type="text" class="outline-none w-full" placeholder="Search">
-        </div>
-        <div class="border flex gap-2 py-1 px-4 bg-white">
-          <input type="text" class="outline-none w-full" placeholder="Tags">
-        </div>
+      <div v-if="false" class="border flex gap-2 py-1 px-4 bg-white">
+        <input type="text" class="outline-none w-full" placeholder="Search">
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>

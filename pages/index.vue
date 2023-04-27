@@ -20,7 +20,7 @@ useSeoMeta({
 const [{data: tag}, {data: page}] = await Promise.all([
   useFetch<ResponseTagSchema>(`${config.public.apiBase}/coloring/tags/`, {
     params: {
-      page_size: 100,
+      page_size: 10,
       type: 'tag'
     }
   }),

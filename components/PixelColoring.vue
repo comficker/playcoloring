@@ -186,10 +186,10 @@
 </template>
 
 <script setup lang="ts">
-import { useTippy } from 'vue-tippy'
+import {useTippy} from 'vue-tippy'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
-import {cloneDeep} from "lodash"
+import {cloneDeep, debounce} from "lodash"
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage} from "~/interface";
@@ -371,29 +371,39 @@ const fillColor = (e: PointerEvent) => {
   if (ctx) {
     const x = e.offsetX - e.offsetX % cellScaleSize.value
     const y = e.offsetY - e.offsetY % cellScaleSize.value
-    const key = `${x / Math.pow(2, zoom.value)}-${y / Math.pow(2, zoom.value)}`
-    const temp = layers.value['workspace'].map_numbers
-    const colors = layers.value['workspace'].colors
     if (options.value.color) {
-      if (!colors.includes(options.value.color)) {
-        colors.push(options.value.color)
-      }
-      temp[key] = colors.indexOf(options.value.color)
       ctx.fillStyle = options.value.color;
       ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
     } else {
       ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
-      delete temp[key]
     }
-    layers.value['workspace'].map_numbers = {}
-    layers.value['workspace'].map_numbers = temp
-    layers.value['workspace'].colors = []
-    layers.value['workspace'].colors = colors
-    console.log(layers.value['workspace'].colors);
   }
+  saveWorkspace()
 }
 
-const draw = (layerId: string, fillColor = false) => {
+const saveWorkspace = debounce(() => {
+  const ctx = getCtx('workspace')
+  const colors: string[] = []
+  const map_numbers: any = {}
+  for (let x = 0; x < CELL_LENGTH.value.w; x++) {
+    for (let y = 0; y < CELL_LENGTH.value.h; y++) {
+      const pixelData: any = ctx?.getImageData(x * cellScaleSize.value, y * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
+      const color = rgbToHex(pixelData.data[0], pixelData.data[1], pixelData.data[2])
+      if (!(color === '#000000' && pixelData.data[3] === 0)) {
+        if (!colors.includes(color)) {
+          colors.push(color)
+        }
+        map_numbers[`${x}-${y}`] = colors.indexOf(color)
+      }
+    }
+  }
+  layers.value.workspace = {
+    colors,
+    map_numbers
+  }
+}, 800)
+
+const draw = (layerId: string, isFill = false) => {
   const ctx = getCtx(layerId)
   if (!ctx) return;
   ctx.clearRect(
@@ -409,7 +419,7 @@ const draw = (layerId: string, fillColor = false) => {
     for (let y = 0; y < CELL_LENGTH.value.h; y++) {
       const index = `${x}-${y}`
       if (layers.value[layerId].map_numbers[index] >= 0) {
-        if (fillColor) {
+        if (isFill) {
           ctx.fillStyle = colors[layers.value[layerId].map_numbers[index]]
           ctx.fillRect(x, y, 1, 1);
         } else {
