@@ -189,11 +189,13 @@
 import {useTippy} from 'vue-tippy'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
-import {cloneDeep, debounce} from "lodash"
+import pkg from 'lodash'
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage} from "~/interface";
 import ColorPalette from "~/components/ColorPalette.vue"
+
+const {cloneDeep, debounce} = pkg
 //STATE
 const route = useRoute()
 const CELL_LENGTH = ref({
