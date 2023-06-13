@@ -1,195 +1,192 @@
 <template>
-  <div class="max-w-lg mx-auto flex md:flex-row flex-col gap-2">
-    <div class="flex-1 bg-white">
+  <div class="space-y-4">
+    <div
+      class="relative pt-full overflow-hidden"
+      :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
       <div
-        class="relative pt-full overflow-hidden"
-        :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
+        class="absolute inset-0 border-t border-l border-[#F0F0F0]"
+        :class="{'cursor-move': holdDetector.isHold || holdDetector.isFoldHold}"
+      >
         <div
-          class="absolute inset-0 border-t border-l border-[#F0F0F0]"
-          :class="{'cursor-move': holdDetector.isHold || holdDetector.isFoldHold}"
+          id="workload" class="absolute"
+          :style="{
+            width: `${PICTURE_SIZE.w}px`,
+            height: `${PICTURE_SIZE.h}px`
+          }"
         >
+          <canvas
+            id="background" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+          />
+          <canvas
+            id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+            class="absolute inset-0"
+          />
           <div
-            id="workload" class="absolute"
+            v-show="!(holdDetector.isHold || holdDetector.isFoldHold)"
+            id="cursor" class="absolute"
             :style="{
-              width: `${PICTURE_SIZE.w}px`,
-              height: `${PICTURE_SIZE.h}px`
+              backgroundColor: options.color,
+              width: `${cellScaleSize}px`,
+              height: `${cellScaleSize}px`
             }"
-          >
-            <canvas
-              id="background" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
-            >An alternative text describing what your canvas displays.
-            </canvas>
-            <canvas
-              id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
-              class="absolute inset-0"
-            >An alternative text describing what your canvas displays.
-            </canvas>
-            <div
-              v-show="!(holdDetector.isHold || holdDetector.isFoldHold)"
-              id="cursor" class="absolute"
-              :style="{
-                backgroundColor: options.color,
-                width: `${cellScaleSize}px`,
-                height: `${cellScaleSize}px`
-              }"
-            />
-            <div
-              class="absolute z-50 inset-0"
-              @mousedown="handleMouseDown"
-              @mouseup="handleMouseUp"
-              @mousemove="handleMouseHover"
-              @mouseover="handleMouseUp"
-            ></div>
-          </div>
-        </div>
-        <Transition
-          enter-active-class="animated animated-faster animate-fade-in-up"
-          leave-active-class="animated animated-faster animate-fade-out-down"
-        >
+          />
           <div
-            v-if="showModal"
-            class="absolute bottom-0 left-6 right-6 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
-          >
-            <div v-if="showModal === 'loadFile'" class="p-4">
-              <div class="w-full btn bg-white h-full border text-xs">
-                <input
-                  id="inputFile" type="file" class="w-full" placeholder="Load"
-                  @input="loadFile"
-                >
-              </div>
+            class="absolute z-50 inset-0"
+            @mousedown="handleMouseDown"
+            @mouseup="handleMouseUp"
+            @mousemove="handleMouseHover"
+            @mouseover="handleMouseUp"
+          ></div>
+        </div>
+      </div>
+      <Transition
+        enter-active-class="animated animated-faster animate-fade-in-up"
+        leave-active-class="animated animated-faster animate-fade-out-down"
+      >
+        <div
+          v-if="showModal"
+          class="absolute bottom-0 left-6 right-6 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+        >
+          <div v-if="showModal === 'loadFile'" class="p-4">
+            <div class="w-full btn bg-white h-full border text-xs">
+              <input
+                id="inputFile" type="file" class="w-full" placeholder="Load"
+                @input="loadFile"
+              >
             </div>
-            <div v-if="showModal === 'saving'" class="p-4">
-              <div v-if="!saved" class="">
-                <div class="flex justify-between items-center text-xs">
-                  <div class="uppercase font-bold">Share your work</div>
-                  <div v-if="!layers.background.id" class="flex items-center gap-2">
-                    <span>Only template</span>
-                    <button
-                      type="button"
-                      class="bg-gray-200 relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-                      role="switch" aria-checked="false"
-                      :class="{'bg-indigo-600': form.only_template}"
-                      @click="form.only_template = !form.only_template"
-                    >
-                      <span class="sr-only">Use setting</span>
-                      <span
-                        aria-hidden="true"
-                        class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
-                        :class="{
+          </div>
+          <div v-if="showModal === 'saving'" class="p-4">
+            <div v-if="!saved" class="">
+              <div class="flex justify-between items-center text-xs">
+                <div class="uppercase font-bold">Share your work</div>
+                <div v-if="!layers.background.id" class="flex items-center gap-2">
+                  <span>Only template</span>
+                  <button
+                    type="button"
+                    class="bg-gray-200 relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                    role="switch" aria-checked="false"
+                    :class="{'bg-indigo-600': form.only_template}"
+                    @click="form.only_template = !form.only_template"
+                  >
+                    <span class="sr-only">Use setting</span>
+                    <span
+                      aria-hidden="true"
+                      class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
+                      :class="{
                       'translate-x-4 bg-green-500': form.only_template
                     }"
-                      />
-                    </button>
-                  </div>
-                </div>
-                <div class="mt-2">
-                  <input v-model="form.name" type="text" class="w-full border px-3 py-1" placeholder="Title">
-                </div>
-                <div class="mt-2">
-                  <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm">
-                    <div
-                      class="p-0.5 px-3 rounded bg-gray-100 relative group"
-                      v-for="item in form.tags" :key="item"
-                    >
-                      <span>{{ item }}</span>
-                      <div
-                        class="opacity-0 group-hover:opacity-100 duration-300 absolute -top-1 -right-1 cursor-pointer p-0.5 rounded-full bg-red-500">
-                        <div class="i-con-close w-3 h-3 text-white"/>
-                      </div>
-                    </div>
-                    <input
-                      type="text" class="outline-none p-1" placeholder="#"
-                      @keyup.enter="onAddTag"
                     />
-                  </div>
-                </div>
-                <div class="mb-1 mt-2">
-                  <textarea v-model="form.desc" class="w-full border px-3 py-1" placeholder="Description"/>
-                </div>
-                <div>
-                  <div class="btn bg-green-500 text-white" @click="actionSave">
-                    <div class="i-con-download w-5 h-5"/>
-                    <span>Submit</span>
-                  </div>
+                  </button>
                 </div>
               </div>
-              <div v-else>
-                <p class="text-gray-500">Your work was saved, you can check it
-                  <nuxt-link class="underline" :to="`/pages/${saved.id_string}`">here</nuxt-link>
-                </p>
+              <div class="mt-2">
+                <input v-model="form.name" type="text" class="w-full border px-3 py-1" placeholder="Title">
+              </div>
+              <div class="mt-2">
+                <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm">
+                  <div
+                    class="p-0.5 px-3 rounded bg-gray-100 relative group"
+                    v-for="item in form.tags" :key="item"
+                  >
+                    <span>{{ item }}</span>
+                    <div
+                      class="opacity-0 group-hover:opacity-100 duration-300 absolute -top-1 -right-1 cursor-pointer p-0.5 rounded-full bg-red-500">
+                      <div class="i-con-close w-3 h-3 text-white"/>
+                    </div>
+                  </div>
+                  <input
+                    type="text" class="outline-none p-1" placeholder="#"
+                    @keyup.enter="onAddTag"
+                  />
+                </div>
+              </div>
+              <div class="mb-1 mt-2">
+                <textarea v-model="form.desc" class="w-full border px-3 py-1" placeholder="Description"/>
+              </div>
+              <div>
+                <div class="btn bg-green-500 text-white" @click="actionSave">
+                  <div class="i-con-download w-5 h-5"/>
+                  <span>Submit</span>
+                </div>
               </div>
             </div>
+            <div v-else>
+              <p class="text-gray-500">Your work was saved, you can check it
+                <nuxt-link class="underline" :to="`/pages/${saved.id_string}`">here</nuxt-link>
+              </p>
+            </div>
           </div>
-        </Transition>
-      </div>
+        </div>
+      </Transition>
     </div>
-    <div class="flex md:flex-col gap-4 justify-between md:-mr-8">
-      <div class="flex md:flex-col md:w-6">
+    <div class="flex gap-4 justify-between">
+      <div class="flex gap-2 font-semibold text-sm">
         <div
           v-for="(c, i) in colors.slice(0, 6)" :key="c"
-          class="cursor-pointer"
+          class="cursor-pointer border p-2 border-transparent"
           :class="{'border-[#776e65]': c === options.color}"
+          :style="{backgroundColor: c}"
           @click="onClickColor(c)"
         >
-          <div class="w-6 h-6 text-center text-white text-xs leading-6" :style="{backgroundColor: c}">
+          <div class="w-4 h-4">
             <div class="invert" :style="{'color': c}">{{ i }}</div>
           </div>
         </div>
-        <div class="cursor-pointer p-1 w-6 h-6 bg-white" ref="moreColor">
-          <div class="i-con-more w-4 h-4"/>
+        <div class="cursor-pointer border p-2 bg-white" ref="moreColor">
+          <div class="w-4 h-4 i-con-more"/>
         </div>
-        <div class="cursor-pointer p-1 w-6 h-6 bg-white" @click="onClickColor(null)">
-          <div class="i-con-eraser w-4 h-4"/>
+        <div class="cursor-pointer border p-2 bg-white" @click="onClickColor(null)">
+          <div class="w-4 h-4 i-con-eraser"/>
         </div>
       </div>
-      <div class="flex md:flex-col md:w-6 gap-1">
+      <div class="flex gap-2">
         <div
-          class="cursor-pointer p-1.5 w-6 h-6 border"
+          class="cursor-pointer border p-2"
           :class="{'bg-white': !holdDetector.isFoldHold}"
           @click="holdDetector.isFoldHold = !holdDetector.isFoldHold"
         >
-          <div class="i-con-move w-3 h-3"/>
+          <div class="i-con-move w-4 h-4"/>
         </div>
-        <div class="cursor-pointer p-1.5 w-6 h-6 bg-white border" @click="handleZoom(true)">
-          <div class="i-con-plus w-3 h-3"/>
+        <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(true)">
+          <div class="i-con-plus w-4 h-4"/>
         </div>
-        <div class="cursor-pointer p-1 w-6 h-6 bg-white border" @click="handleZoom(false)">
+        <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(false)">
           <div class="i-con-minus w-4 h-4"/>
         </div>
       </div>
     </div>
-  </div>
-  <div class="max-w-lg mx-auto flex gap-4 mt-4 justify-between">
-    <div class="flex flex-col md:flex-row gap-4 w-full">
-      <div class="btn bg-rose-700 text-white">
-        <div class="i-con-plus w-3 h-3"/>
-        <span>New</span>
-      </div>
-      <div class="md:block hidden">
-        <div class="btn bg-white border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
-          <span v-if="showModal === 'loadFile'">Done</span>
-          <span v-else>Load</span>
+    <div class="flex gap-4 justify-between text-sm font-semibold">
+      <div class="flex gap-2">
+        <div class="btn bg-rose-700 text-white">
+          <div class="i-con-plus w-3 h-3"/>
+          <span>New</span>
+        </div>
+        <div class="md:block hidden">
+          <div class="btn bg-white border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
+            <span v-if="showModal === 'loadFile'">Done</span>
+            <span v-else>Load</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="btn bg-white border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
-        <div class="i-con-save w-5 h-5"/>
-        <span>Save</span>
-      </div>
-      <div class="btn bg-green-500 text-white" @click="actionDownload">
-        <div class="i-con-download w-5 h-5"/>
-        <span>Download</span>
+      <div class="flex gap-2">
+        <div class="btn bg-white border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+          <div class="i-con-save w-5 h-5"/>
+          <span>Save</span>
+        </div>
+        <div class="btn bg-green-500 text-white" @click="actionDownload">
+          <div class="i-con-download w-5 h-5"/>
+          <span>Download</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import pkg from 'lodash'
 import {useTippy} from 'vue-tippy'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
-import pkg from 'lodash'
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage} from "~/interface";
@@ -202,7 +199,7 @@ const CELL_LENGTH = ref({
   w: 32,
   h: 32
 })
-const zoom = ref(4)
+const zoom = ref(5)
 const PICTURE_SIZE = computed(() => ({
   w: CELL_LENGTH.value.w * Math.pow(2, zoom.value),
   h: CELL_LENGTH.value.h * Math.pow(2, zoom.value)
@@ -240,7 +237,7 @@ const layers: any = ref({
   }
 })
 
-const options = ref({
+const options = ref<{ color: string | null }>({
   color: '#005E7A',
 })
 const isPainting = ref(false)
@@ -349,7 +346,7 @@ const handleZoom = (isPlus = true) => {
   translate.value.y = translate.value.y + translate.value.y % (Math.pow(2, zoom.value))
 }
 
-const onClickColor = (color: string) => {
+const onClickColor = (color: string | null) => {
   holdDetector.value.isFoldHold = false
   options.value.color = color
 }
@@ -425,7 +422,7 @@ const draw = (layerId: string, isFill = false) => {
           ctx.fillStyle = colors[layers.value[layerId].map_numbers[index]]
           ctx.fillRect(x, y, 1, 1);
         } else {
-          ctx.font = `0.35px Proto Mono`
+          ctx.font = `0.5px Inter var`
           ctx.fillStyle = '#776e65'
           ctx.textBaseline = 'middle'
           ctx.textAlign = 'center'

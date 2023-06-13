@@ -11,9 +11,6 @@
           <div class="w-6 h-6" :class="`i-con-${m.toLowerCase()}`"/>
         </div>
       </div>
-<!--      <div class="border-2 p-1 flex items-center flex-1">-->
-<!--        <input type="range" min="0" max="100" v-model="options.size" class="slider">-->
-<!--      </div>-->
     </div>
     <div class="flex-1">
       <div class="pt-full w-full relative">
@@ -134,36 +131,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 18px;
-  background: #d3d3d3;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-}
-
-.slider:hover {
-  opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 24px;
-  height: 24px;
-  background: #04AA6D;
-  cursor: pointer;
-  border-radius: 50px;
-}
-
-.slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  background: #04AA6D;
-  cursor: pointer;
-}
-</style>

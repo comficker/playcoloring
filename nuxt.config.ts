@@ -17,7 +17,8 @@ export default defineNuxtConfig({
     inlineSSRStyles: false,
   },
   css: [
-    '~/assets/font.css',
+    '~/assets/custom.css',
+    '~/assets/font/inter.css',
     'tippy.js/dist/tippy.css',
     '@unocss/reset/tailwind.css',
   ],
@@ -47,7 +48,6 @@ export default defineNuxtConfig({
       ],
       script: [
         { src: '/fabric.min.js' },
-        { src: 'https://feedback.fish/ff.js?pid=8ef1a83add0137', defer: true }
       ]
     },
   },

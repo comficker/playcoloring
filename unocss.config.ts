@@ -13,7 +13,7 @@ import { animatedUno } from 'animated-unocss'
 
 export default defineConfig({
   shortcuts: [
-    ['btn', 'font-bold px-3 py-1 cursor-pointer inline-flex items-center gap-2'],
+    ['btn', 'px-3 py-1.5 cursor-pointer inline-flex items-center gap-2'],
   ],
   presets: [
     presetUno(),
@@ -25,13 +25,6 @@ export default defineConfig({
           './assets/icons',
           svg => svg,
         ),
-      },
-    }),
-    presetTypography(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        sans: 'Open Sans:300,400,600,700',
       },
     }),
     animatedUno(),

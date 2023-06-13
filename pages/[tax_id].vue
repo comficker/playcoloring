@@ -1,11 +1,8 @@
 <template>
-  <div class="max-w-lg mx-auto space-y-4">
+  <div class="max-w-xl mx-auto space-y-4">
     <div class="space-y-2">
       <h1 class="uppercase text-xl font-bold">{{ meta.title }}</h1>
-      <p class="text-sm">{{ meta.desc }}</p>
-      <div v-if="false" class="border flex gap-2 py-1 px-4 bg-white">
-        <input type="text" class="outline-none w-full" placeholder="Search">
-      </div>
+      <p class="text-lg">{{ meta.desc }}</p>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>
       </div>
