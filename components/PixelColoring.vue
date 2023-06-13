@@ -1,5 +1,29 @@
 <template>
   <div class="space-y-4">
+    <div class="flex gap-4 justify-between text-sm font-semibold">
+      <div class="flex gap-2">
+        <div class="btn bg-rose-700 text-white">
+          <div class="i-con-plus w-3 h-3"/>
+          <span>New</span>
+        </div>
+        <div class="md:block hidden">
+          <div class="btn bg-white border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
+            <span v-if="showModal === 'loadFile'">Done</span>
+            <span v-else>Load</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <div class="btn bg-white border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+          <div class="i-con-save w-5 h-5"/>
+          <span>Save</span>
+        </div>
+        <div class="btn bg-green-500 text-white" @click="actionDownload">
+          <div class="i-con-download w-5 h-5"/>
+          <span>Download</span>
+        </div>
+      </div>
+    </div>
     <div
       class="relative pt-full overflow-hidden"
       :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
@@ -152,30 +176,6 @@
         </div>
         <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(false)">
           <div class="i-con-minus w-4 h-4"/>
-        </div>
-      </div>
-    </div>
-    <div class="flex gap-4 justify-between text-sm font-semibold">
-      <div class="flex gap-2">
-        <div class="btn bg-rose-700 text-white">
-          <div class="i-con-plus w-3 h-3"/>
-          <span>New</span>
-        </div>
-        <div class="md:block hidden">
-          <div class="btn bg-white border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
-            <span v-if="showModal === 'loadFile'">Done</span>
-            <span v-else>Load</span>
-          </div>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <div class="btn bg-white border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
-          <div class="i-con-save w-5 h-5"/>
-          <span>Save</span>
-        </div>
-        <div class="btn bg-green-500 text-white" @click="actionDownload">
-          <div class="i-con-download w-5 h-5"/>
-          <span>Download</span>
         </div>
       </div>
     </div>
