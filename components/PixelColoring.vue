@@ -69,7 +69,7 @@
       >
         <div
           v-if="showModal"
-          class="absolute bottom-0 left-3 right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+          class="absolute bottom-0 left-3 right-3 bg-white z-60 shadow-xl rounded-tl rounded-tr border"
         >
           <div v-if="showModal === 'loadFile'" class="p-4">
             <div class="w-full btn bg-white h-full border text-xs">
@@ -181,13 +181,11 @@
 
 <script setup lang="ts">
 import pkg from 'lodash'
-import {useTippy} from 'vue-tippy'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage} from "~/interface";
-import ColorPalette from "~/components/ColorPalette.vue"
 
 const {cloneDeep, debounce} = pkg
 //STATE
@@ -259,18 +257,6 @@ const cellScaleSize = computed(() => {
 const saved = ref<SharedPage | null>(null)
 const saving = ref(false)
 const isMoving = computed(() => holdDetector.value.isHold || (holdDetector.value.isFoldHold && isPainting.value))
-
-const moreColor = ref()
-
-// HELPER
-const makeChunk = (array: any[], chunkSize = 4) => {
-  const out = []
-  for (let i = 0; i < array.length; i += chunkSize) {
-    const chunk = array.slice(i, i + chunkSize);
-    out.push(chunk)
-  }
-  return out
-}
 
 const rgbToHex = (r: number, g: number, b: number) => {
   return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
@@ -563,16 +549,6 @@ watch(zoom, (newVal, oldVal) => {
     draw('background')
     draw('workspace', true)
   }, 100)
-})
-
-watch(colors, () => {
-  useTippy(moreColor, {
-    content: h(ColorPalette, {value: colors.value}),
-    arrow: true,
-    interactive: true,
-    hideOnClick: true,
-    trigger: 'click'
-  })
 })
 
 onBeforeRouteUpdate(n => {

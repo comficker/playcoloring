@@ -19,7 +19,6 @@ export default defineNuxtConfig({
   css: [
     '~/assets/custom.css',
     '~/assets/font/inter.css',
-    'tippy.js/dist/tippy.css',
     '@unocss/reset/tailwind.css',
   ],
   colorMode: {
@@ -45,9 +44,6 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: appDescription },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-      ],
-      script: [
-        { src: '/fabric.min.js' },
       ]
     },
   },
