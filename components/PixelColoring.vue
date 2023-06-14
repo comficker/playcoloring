@@ -143,10 +143,10 @@
         </div>
       </Transition>
     </div>
-    <div class="flex gap-4 justify-between">
-      <div class="flex gap-2 font-semibold text-sm">
+    <div class="flex gap-4 justify-between flex-wrap">
+      <div class="flex gap-2 font-semibold text-sm flex-wrap">
         <div
-          v-for="(c, i) in colors.slice(0, 6)" :key="c"
+          v-for="(c, i) in colors" :key="c"
           class="cursor-pointer border p-2 border-transparent"
           :class="{'border-[#776e65]': c === options.color}"
           :style="{backgroundColor: c}"
@@ -156,14 +156,11 @@
             <div class="invert" :style="{'color': c}">{{ i }}</div>
           </div>
         </div>
-        <div class="cursor-pointer border p-2 bg-white" ref="moreColor">
-          <div class="w-4 h-4 i-con-more"/>
-        </div>
         <div class="cursor-pointer border p-2 bg-white" @click="onClickColor(null)">
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-wrap">
         <div
           class="cursor-pointer border p-2"
           :class="{'bg-white': !holdDetector.isFoldHold}"
