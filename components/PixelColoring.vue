@@ -7,14 +7,14 @@
           <span>New</span>
         </div>
         <div class="md:block hidden">
-          <div class="btn bg-white border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
+          <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
             <span v-if="showModal === 'loadFile'">Done</span>
             <span v-else>Load</span>
           </div>
         </div>
       </div>
       <div class="flex gap-2">
-        <div class="btn bg-white border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+        <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-5 h-5"/>
           <span>Save</span>
         </div>
@@ -147,7 +147,7 @@
       <div class="flex gap-2 font-semibold text-sm flex-wrap">
         <div
           v-for="(c, i) in colors" :key="c"
-          class="cursor-pointer border p-2"
+          class="cursor-pointer border p-2 rounded-[2px]"
           :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
           :style="{backgroundColor: c}"
           @click="onClickColor(c)"
@@ -162,16 +162,16 @@
       </div>
       <div class="flex gap-2 flex-wrap">
         <div
-          class="cursor-pointer border p-2"
+          class="cursor-pointer border p-2 rounded-[2px]"
           :class="{'border-blue-500': !holdDetector.isFoldHold}"
           @click="holdDetector.isFoldHold = !holdDetector.isFoldHold"
         >
           <div class="i-con-move w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(true)">
+        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(true)">
           <div class="i-con-zoom-in w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(false)">
+        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(false)">
           <div class="i-con-zoom-out w-4 h-4"/>
         </div>
       </div>

@@ -13,7 +13,7 @@ import { animatedUno } from 'animated-unocss'
 
 export default defineConfig({
   shortcuts: [
-    ['btn', 'px-3 py-1.5 cursor-pointer inline-flex items-center gap-2'],
+    ['btn', 'px-3 py-1.5 cursor-pointer inline-flex items-center gap-2 rounded-[2px]'],
   ],
   presets: [
     presetUno(),

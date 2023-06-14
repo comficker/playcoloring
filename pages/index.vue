@@ -50,7 +50,7 @@ const faqs = ref([
       <h1>
         <nuxt-link class="flex items-center gap-1" to="/">
           <div class="w-10 h-10 i-con-palette fill-red-400"/>
-          <img class="h-7 w-auto" src="/logo-px.png" alt="">
+          <img class="h-12 w-auto" src="/logo.png" alt="">
         </nuxt-link>
       </h1>
       <div class="text-lg">Download printable coloring or play online</div>
