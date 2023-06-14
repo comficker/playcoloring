@@ -69,7 +69,7 @@
       >
         <div
           v-if="showModal"
-          class="absolute bottom-0 left-6 right-6 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+          class="absolute bottom-0 left-3 right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
         >
           <div v-if="showModal === 'loadFile'" class="p-4">
             <div class="w-full btn bg-white h-full border text-xs">
@@ -80,10 +80,10 @@
             </div>
           </div>
           <div v-if="showModal === 'saving'" class="p-4">
-            <div v-if="!saved" class="">
+            <div v-if="!saved" class="space-y-2">
               <div class="flex justify-between items-center text-xs">
                 <div class="uppercase font-bold">Share your work</div>
-                <div v-if="!layers.background.id" class="flex items-center gap-2">
+                <div v-if="!layers.background.id" class="flex items-center gap-2 font-semibold uppercase">
                   <span>Only template</span>
                   <button
                     type="button"
@@ -103,11 +103,11 @@
                   </button>
                 </div>
               </div>
-              <div class="mt-2">
-                <input v-model="form.name" type="text" class="w-full border px-3 py-1" placeholder="Title">
+              <div>
+                <input v-model="form.name" type="text" class="w-full border px-3 py-1 rounded" placeholder="Title">
               </div>
-              <div class="mt-2">
-                <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm">
+              <div>
+                <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm rounded">
                   <div
                     class="p-0.5 px-3 rounded bg-gray-100 relative group"
                     v-for="item in form.tags" :key="item"
@@ -124,11 +124,11 @@
                   />
                 </div>
               </div>
-              <div class="mb-1 mt-2">
-                <textarea v-model="form.desc" class="w-full border px-3 py-1" placeholder="Description"/>
+              <div>
+                <textarea v-model="form.desc" class="w-full border px-3 py-1 rounded" placeholder="Description"/>
               </div>
               <div>
-                <div class="btn bg-green-500 text-white" @click="actionSave">
+                <div class="btn bg-green-500 text-white font-semibold" @click="actionSave">
                   <div class="i-con-download w-5 h-5"/>
                   <span>Submit</span>
                 </div>
@@ -147,13 +147,13 @@
       <div class="flex gap-2 font-semibold text-sm flex-wrap">
         <div
           v-for="(c, i) in colors" :key="c"
-          class="cursor-pointer border p-2 border-transparent"
-          :class="{'border-[#776e65]': c === options.color}"
+          class="cursor-pointer border p-2"
+          :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
           :style="{backgroundColor: c}"
           @click="onClickColor(c)"
         >
-          <div class="w-4 h-4">
-            <div class="invert" :style="{'color': c}">{{ i }}</div>
+          <div class="w-4 h-4 text-white">
+            <div>{{ i }}</div>
           </div>
         </div>
         <div class="cursor-pointer border p-2 bg-white" @click="onClickColor(null)">
@@ -163,16 +163,16 @@
       <div class="flex gap-2 flex-wrap">
         <div
           class="cursor-pointer border p-2"
-          :class="{'bg-white': !holdDetector.isFoldHold}"
+          :class="{'border-blue-500': !holdDetector.isFoldHold}"
           @click="holdDetector.isFoldHold = !holdDetector.isFoldHold"
         >
           <div class="i-con-move w-4 h-4"/>
         </div>
         <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(true)">
-          <div class="i-con-plus w-4 h-4"/>
+          <div class="i-con-zoom-in w-4 h-4"/>
         </div>
         <div class="cursor-pointer border p-2 bg-white" @click="handleZoom(false)">
-          <div class="i-con-minus w-4 h-4"/>
+          <div class="i-con-zoom-out w-4 h-4"/>
         </div>
       </div>
     </div>

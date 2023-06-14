@@ -56,13 +56,13 @@ const faqs = ref([
       <div class="text-lg">Download printable coloring or play online</div>
     </div>
     <PixelColoring/>
-    <div class="space-y-2">
+    <div class="space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
-      <div v-for="(faq, i) in faqs" :key="i">
+      <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
         <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
           <span>{{ faq.title }}</span>
         </h3>
-        <div v-show="faq.opened" class="space-y-1">
+        <div v-show="faq.opened" class="space-y-2">
           <p v-for="aw in faq.aws">{{ aw }}</p>
         </div>
       </div>
