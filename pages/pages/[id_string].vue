@@ -1,20 +1,12 @@
 <template>
   <div v-if="value" class="max-w-lg mx-auto space-y-4">
-    <div class="space-y-2">
-      <h1 class="uppercase text-xl font-bold">{{ meta.title }}</h1>
-    </div>
-    <div class="flex gap-2 flex-col md:flex-row">
-      <div class="md:w-2/3 w-full">
-        <div class="pt-full relative">
-          <div class="absolute inset-0">
-            <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
-          </div>
-          <div class="absolute inset-0 bg-grid">
-            <canvas width="341" height="341" :id="`thumb_${value.id}`" class="w-full h-full"/>
-          </div>
-        </div>
+    <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
+    <p>{{ meta.desc }}</p>
+    <div class="flex gap-4 flex-col">
+      <div class="w-full">
+        <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
       </div>
-      <div class="flex-1 text-xs space-y-2">
+      <div class="grid md:grid-cols-2 gap-2">
         <div class="flex gap-2 items-center p-2 py-1 bg-white border border-[#F0F0F0]">
           <div class="w-5 h-5 i-con-palette"/>
           <div>
@@ -45,7 +37,6 @@
         </div>
       </div>
     </div>
-    <p class="text-sm">{{ meta.desc }}</p>
     <div v-if="value.taxonomies.length" class="font-bold text-sm flex gap-2 flex-wrap items-center">
       <div class="font-bold text-sm flex gap-2 flex-wrap items-center">
         <div class="w-5 h-5 i-con-tags"/>
@@ -92,7 +83,7 @@
   </div>
   <div class="mt-4 max-w-lg mx-auto space-y-4">
     <div class="space-y-2">
-      <h2 class="uppercase text-xl font-bold">Variants</h2>
+      <h2 class="uppercase text-xs font-bold">Variants</h2>
       <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>
       </div>
@@ -159,12 +150,16 @@ onMounted(() => {
 const meta = computed(() => {
   const defaultDesc = 'It\'s awesome!'
   const url = `https://www.playcoloring.com/pages/${value.id_string}`
+  let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
+  if (value.is_template) {
+    src = src + '?type=template'
+  }
   if (value) {
     return {
       url: url,
       title: `${value.name || value.id_string} ${value.width}x${value.height} Pixel Coloring`,
       desc: value.desc || defaultDesc,
-      imgSrc: `${config.public.apiBase}/coloring/files/${value.id_string}.png`
+      imgSrc: src
     }
   } else {
     return {

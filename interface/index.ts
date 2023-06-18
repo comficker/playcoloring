@@ -1,11 +1,11 @@
 export interface Links {
-    next: string
-    previous: any
+  next: string
+  previous: any
 }
 
 export interface Sizes {
-    thumb_24: string
-    thumb_256: string
+  thumb_24: string
+  thumb_256: string
 }
 
 export interface TagMetaSchema {
@@ -15,20 +15,25 @@ export interface TagMetaSchema {
 export interface PostMetaSchema {
 
 }
+
 export interface TagSchema {
-    id: number
-    updated: string
-    created: string
-    db_status: number
-    name: string
-    id_string: string
-    title: string
-    desc: string
-    meta: TagMetaSchema
-    type: string
-    path: string
+  id: number
+  updated: string
+  created: string
+  db_status: number
+  name: string
+  id_string: string
+  title: string
+  desc: string
+  meta: TagMetaSchema
+  type: string
+  path: string
 }
 
+export interface Step {
+  c: number,
+  k: string,
+}
 
 export interface SharedPage {
   id: number
@@ -37,35 +42,38 @@ export interface SharedPage {
   updated: string
   created: string
   db_status: number
+  is_template: boolean
   name: string
   id_string: string
   desc: any
   meta: any
   colors: any[]
-  map_numbers: any
+  map_numbers: {[key: string]: number}
+  steps: Step[]
+
   user: any
   template: number
   taxonomies: any[]
 }
 
 export interface ResponseTagSchema {
-    instance: any
-    properties: any[]
-    links: Links
-    count: number
-    page_size: number
-    num_pages: number
-    results: TagSchema[]
+  instance: any
+  properties: any[]
+  links: Links
+  count: number
+  page_size: number
+  num_pages: number
+  results: TagSchema[]
 }
 
 export interface ResponseSharedPage {
-    instance: any
-    properties: any[]
-    links: Links
-    count: number
-    page_size: number
-    num_pages: number
-    results: SharedPage[]
+  instance: any
+  properties: any[]
+  links: Links
+  count: number
+  page_size: number
+  num_pages: number
+  results: SharedPage[]
 }
 
 export interface User {
@@ -73,4 +81,13 @@ export interface User {
   first_name: string
   last_name: string
   username: string
+}
+
+export interface Workspace {
+  id: number
+  width: number
+  height: number
+  colors: string[]
+  map_numbers: {[key: string]: number}
+  steps: Step[]
 }

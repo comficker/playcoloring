@@ -46,15 +46,6 @@ const faqs = ref([
 
 <template>
   <div class="space-y-6 max-w-lg mx-auto">
-    <div class="space-y-2">
-      <h1>
-        <nuxt-link class="flex items-center gap-1" to="/">
-          <div class="w-10 h-10 i-con-palette fill-red-400"/>
-          <img class="h-12 w-auto" src="/logo.png" alt="">
-        </nuxt-link>
-      </h1>
-      <div class="text-lg">Download printable coloring or play online</div>
-    </div>
     <PixelColoring/>
     <div class="space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>

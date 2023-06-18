@@ -25,12 +25,9 @@
       </div>
     </div>
     <div
-      class="relative pt-full overflow-hidden"
+      class="relative pt-full"
       :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
-      <div
-        class="absolute inset-0 border-t border-l border-[#F0F0F0]"
-        :class="{'cursor-move': holdDetector.isHold || holdDetector.isFoldHold}"
-      >
+      <div id="wrapper">
         <div
           id="workload" class="absolute"
           :style="{
@@ -39,17 +36,13 @@
           }"
         >
           <canvas
-            id="background" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
-          />
-          <canvas
             id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
             class="absolute inset-0"
           />
           <div
-            v-show="!(holdDetector.isHold || holdDetector.isFoldHold)"
             id="cursor" class="absolute"
             :style="{
-              backgroundColor: options.color,
+              backgroundColor: options.color || '#FFF',
               width: `${cellScaleSize}px`,
               height: `${cellScaleSize}px`
             }"
@@ -79,95 +72,32 @@
               >
             </div>
           </div>
-          <div v-if="showModal === 'saving'" class="p-4">
-            <div v-if="!saved" class="space-y-2">
-              <div class="flex justify-between items-center text-xs">
-                <div class="uppercase font-bold">Share your work</div>
-                <div v-if="!layers.background.id" class="flex items-center gap-2 font-semibold uppercase">
-                  <span>Only template</span>
-                  <button
-                    type="button"
-                    class="bg-gray-200 relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-                    role="switch" aria-checked="false"
-                    :class="{'bg-indigo-600': form.only_template}"
-                    @click="form.only_template = !form.only_template"
-                  >
-                    <span class="sr-only">Use setting</span>
-                    <span
-                      aria-hidden="true"
-                      class="translate-x-0 pointer-events-none inline-block h-4 w-4 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
-                      :class="{
-                      'translate-x-4 bg-green-500': form.only_template
-                    }"
-                    />
-                  </button>
-                </div>
-              </div>
-              <div>
-                <input v-model="form.name" type="text" class="w-full border px-3 py-1 rounded" placeholder="Title">
-              </div>
-              <div>
-                <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm rounded">
-                  <div
-                    class="p-0.5 px-3 rounded bg-gray-100 relative group"
-                    v-for="item in form.tags" :key="item"
-                  >
-                    <span>{{ item }}</span>
-                    <div
-                      class="opacity-0 group-hover:opacity-100 duration-300 absolute -top-1 -right-1 cursor-pointer p-0.5 rounded-full bg-red-500">
-                      <div class="i-con-close w-3 h-3 text-white"/>
-                    </div>
-                  </div>
-                  <input
-                    type="text" class="outline-none p-1" placeholder="#"
-                    @keyup.enter="onAddTag"
-                  />
-                </div>
-              </div>
-              <div>
-                <textarea v-model="form.desc" class="w-full border px-3 py-1 rounded" placeholder="Description"/>
-              </div>
-              <div>
-                <div class="btn bg-green-500 text-white font-semibold" @click="actionSave">
-                  <div class="i-con-download w-5 h-5"/>
-                  <span>Submit</span>
-                </div>
-              </div>
-            </div>
-            <div v-else>
-              <p class="text-gray-500">Your work was saved, you can check it
-                <nuxt-link class="underline" :to="`/pages/${saved.id_string}`">here</nuxt-link>
-              </p>
-            </div>
-          </div>
+          <modal-save v-if="showModal === 'saving'" :workspace="workspace"/>
         </div>
       </Transition>
     </div>
     <div class="flex gap-4 justify-between flex-wrap">
       <div class="flex gap-2 font-semibold text-sm flex-wrap">
         <div
-          v-for="(c, i) in colors" :key="c"
+          v-for="(c, i) in workspace.colors" :key="c"
           class="cursor-pointer border p-2 rounded-[2px]"
           :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
           :style="{backgroundColor: c}"
           @click="onClickColor(c)"
         >
-          <div class="w-4 h-4 text-white">
+          <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
             <div>{{ i }}</div>
           </div>
         </div>
-        <div class="cursor-pointer border p-2 bg-white" @click="onClickColor(null)">
+        <div
+          class="cursor-pointer border p-2 bg-white"
+          :class="{'border-blue': !options.color}"
+          @click="onClickColor(null)"
+        >
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <div
-          class="cursor-pointer border p-2 rounded-[2px]"
-          :class="{'border-blue-500': !holdDetector.isFoldHold}"
-          @click="holdDetector.isFoldHold = !holdDetector.isFoldHold"
-        >
-          <div class="i-con-move w-4 h-4"/>
-        </div>
         <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(true)">
           <div class="i-con-zoom-in w-4 h-4"/>
         </div>
@@ -185,84 +115,67 @@ import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
-import {SharedPage} from "~/interface";
+import {SharedPage, Step, Workspace} from "~/interface";
+import ModalSave from "~/components/ModalSave.vue";
 
-const {cloneDeep, debounce} = pkg
-//STATE
+const {debounce, cloneDeep} = pkg
 const route = useRoute()
-const CELL_LENGTH = ref({
-  w: 32,
-  h: 32
-})
-const zoom = ref(5)
-const PICTURE_SIZE = computed(() => ({
-  w: CELL_LENGTH.value.w * Math.pow(2, zoom.value),
-  h: CELL_LENGTH.value.h * Math.pow(2, zoom.value)
-}))
-const colors = ref([
-  "#FFF2CC",
-  "#FFD966",
-  "#F4B183",
-  "#DFA67B",
-  "#245953",
-  "#408E91",
-  "#B46060",
-])
-const slugify = (text: string) =>
-  text
-    .toString()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
 
-const layers: any = ref({
-  background: {
-    id: 0,
-    colors: [],
-    map_numbers: {}
-  },
-  workspace: {
-    id: 0,
-    colors: [],
-    map_numbers: {}
-  }
+interface Options {
+  color: string | null,
+  pointer: string,
+  zoom: number
+}
+
+const workspace: Workspace = reactive<Workspace>({
+  id: 0,
+  width: 32,
+  height: 32,
+  colors: [
+    "#FFF2CC",
+    "#FFD966",
+    "#F4B183",
+    "#DFA67B",
+    "#245953",
+    "#408E91",
+    "#B46060",
+  ],
+  map_numbers: {},
+  steps: []
 })
 
-const options = ref<{ color: string | null }>({
-  color: '#005E7A',
-})
+const displaySize = ref(512)
 const isPainting = ref(false)
 const showModal: any = ref(null)
-const holdDetector = ref({
-  x: 0,
-  y: 0,
-  isHold: false,
-  isFoldHold: false,
-  isMoving: true
+
+const options = ref<Options>({
+  color: '#FFF2CC',
+  zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
+  pointer: '',
 })
-const translate = ref({x: 0, y: 0})
-const form = ref({
-  only_template: false,
-  tags: [],
-  name: null,
-  desc: null
-} as any)
-const cellScaleSize = computed(() => {
-  return Math.pow(2, zoom.value)
+
+const PICTURE_SIZE = computed(() => ({
+  w: workspace.width * Math.pow(2, options.value.zoom),
+  h: workspace.height * Math.pow(2, options.value.zoom)
+}))
+
+const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
+const result = computed(() => {
+  const out: {[key:string]: string} = {}
+  workspace.steps.forEach((step: Step) => {
+    if (step.c >= 0) {
+      out[step.k] = workspace.colors[step.c]
+    } else {
+      delete out[step.k]
+    }
+  })
+  return out
 })
-const saved = ref<SharedPage | null>(null)
-const saving = ref(false)
-const isMoving = computed(() => holdDetector.value.isHold || (holdDetector.value.isFoldHold && isPainting.value))
 
 const rgbToHex = (r: number, g: number, b: number) => {
   return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
 }
 
-// METHOD
 const getCtx = (id: string): CanvasRenderingContext2D | null => {
   const canvas = document.getElementById(id) as HTMLCanvasElement
   return canvas?.getContext('2d', {
@@ -271,81 +184,37 @@ const getCtx = (id: string): CanvasRenderingContext2D | null => {
 }
 
 const handleMouseDown = (e: PointerEvent) => {
-  holdDetector.value.x = e.offsetX
-  holdDetector.value.y = e.offsetY
-  holdDetector.value.isMoving = false
-  setTimeout(function () {
-    if (!holdDetector.value.isMoving) {
-      holdDetector.value.isHold = true
-    }
-  }, 1000);
   isPainting.value = true
-  if (!holdDetector.value.isFoldHold) {
-    fillColor(e)
-  }
+  fillColor(e)
 }
 
 const handleMouseUp = () => {
-  holdDetector.value.isMoving = true
-  holdDetector.value.isHold = false
   isPainting.value = false
 }
 
 const handleMouseHover = (e: PointerEvent) => {
   const cs = cellScaleSize.value
-  if (isMoving.value) {
-    const nX = e.offsetX - holdDetector.value.x
-    const nY = e.offsetY - holdDetector.value.y
-    const x = translate.value.x + Math.round(nX / cs) * cs
-    const y = translate.value.y + Math.round(nY / cs) * cs
-    holdDetector.value.x = holdDetector.value.x + Math.round(nX / cs) * cs
-    holdDetector.value.y = holdDetector.value.y + Math.round(nY / cs) * cs
-    translate.value.x = x
-    translate.value.y = y
-    draw('background')
-    draw('workspace', true)
-  } else {
-    holdDetector.value.isMoving = true
-    holdDetector.value.isHold = false
-    const cursor: HTMLElement | null = document.getElementById('cursor');
-    if (!isPainting.value) {
-      if (cursor) {
-        cursor.style.left = `${e.offsetX - 1 - e.offsetX % (cs)}px`
-        cursor.style.top = `${e.offsetY - 1 - e.offsetY % (cs)}px`
-      }
-    } else {
-      fillColor(e)
+  const cursor: HTMLElement | null = document.getElementById('cursor');
+  if (!isPainting.value) {
+    if (cursor) {
+      cursor.style.left = `${e.offsetX - e.offsetX % (cs)}px`
+      cursor.style.top = `${e.offsetY - e.offsetY % (cs)}px`
     }
+  } else {
+    fillColor(e)
   }
 }
 
 const handleZoom = (isPlus = true) => {
-  if (isPlus && zoom.value < 6) {
-    zoom.value++
-  } else if (!isPlus && zoom.value > 4) {
-    zoom.value--
+  if (isPlus && options.value.zoom < 6) {
+    options.value.zoom++
+  } else if (!isPlus && options.value.zoom > 4) {
+    options.value.zoom--
   }
-  translate.value.x = translate.value.x + translate.value.x % (Math.pow(2, zoom.value))
-  translate.value.y = translate.value.y + translate.value.y % (Math.pow(2, zoom.value))
 }
 
 const onClickColor = (color: string | null) => {
-  holdDetector.value.isFoldHold = false
   options.value.color = color
-}
-
-const onAddTag = (e: KeyboardEvent) => {
-  const target = e.target as HTMLTextAreaElement;
-  if (!target.value) return;
-  const r = form.value.tags.map((x: string) => slugify(x))
-  if (!r.includes(slugify(target.value))) {
-    form.value.tags.push(target.value)
-    target.value = ''
-  }
-}
-
-const onInput = (e: KeyboardEvent) => {
-  console.log(e);
 }
 
 const fillColor = (e: PointerEvent) => {
@@ -353,40 +222,41 @@ const fillColor = (e: PointerEvent) => {
   if (ctx) {
     const x = e.offsetX - e.offsetX % cellScaleSize.value
     const y = e.offsetY - e.offsetY % cellScaleSize.value
+    const key = `${x / cellScaleSize.value}_${y / cellScaleSize.value}`
+    if (options.value.pointer === key) {
+      return
+    }
+    options.value.pointer = key
     if (options.value.color) {
       ctx.fillStyle = options.value.color;
       ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
+      workspace.steps.push({
+        k: key,
+        c: workspace.colors.indexOf(options.value.color),
+      })
     } else {
       ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
-    }
-  }
-  saveWorkspace()
-}
-
-const saveWorkspace = debounce(() => {
-  const ctx = getCtx('workspace')
-  const colors: string[] = []
-  const map_numbers: any = {}
-  for (let x = 0; x < CELL_LENGTH.value.w; x++) {
-    for (let y = 0; y < CELL_LENGTH.value.h; y++) {
-      const pixelData: any = ctx?.getImageData(x * cellScaleSize.value, y * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
-      const color = rgbToHex(pixelData.data[0], pixelData.data[1], pixelData.data[2])
-      if (!(color === '#000000' && pixelData.data[3] === 0)) {
-        if (!colors.includes(color)) {
-          colors.push(color)
-        }
-        map_numbers[`${x}-${y}`] = colors.indexOf(color)
+      workspace.steps.push({
+        k: key,
+        c: -1
+      })
+      if (workspace.map_numbers.hasOwnProperty(key)) {
+        ctx.font = `${cellScaleSize.value / 2}px Inter var`
+        ctx.textBaseline = 'middle'
+        ctx.textAlign = 'center'
+        ctx.fillStyle = '#000'
+        ctx.fillText(
+          workspace.map_numbers[key].toString(),
+          x + cellScaleSize.value / 2,
+          y + cellScaleSize.value / 2
+        );
       }
     }
   }
-  layers.value.workspace = {
-    colors,
-    map_numbers
-  }
-}, 800)
+}
 
-const draw = (layerId: string, isFill = false) => {
-  const ctx = getCtx(layerId)
+const reDraw = () => {
+  const ctx = getCtx('workspace')
   if (!ctx) return;
   ctx.clearRect(
     0, 0,
@@ -394,67 +264,57 @@ const draw = (layerId: string, isFill = false) => {
     PICTURE_SIZE.value.h
   )
   ctx.save()
-  ctx.translate(translate.value.x, translate.value.y);
-  ctx.scale(Math.pow(2, zoom.value), Math.pow(2, zoom.value))
-  const colors: any = layers.value[layerId].colors
-  for (let x = 0; x < CELL_LENGTH.value.w; x++) {
-    for (let y = 0; y < CELL_LENGTH.value.h; y++) {
-      const index = `${x}-${y}`
-      if (layers.value[layerId].map_numbers[index] >= 0) {
-        if (isFill) {
-          ctx.fillStyle = colors[layers.value[layerId].map_numbers[index]]
-          ctx.fillRect(x, y, 1, 1);
-        } else {
-          ctx.font = `0.5px Inter var`
-          ctx.fillStyle = '#776e65'
-          ctx.textBaseline = 'middle'
-          ctx.textAlign = 'center'
-          ctx.fillText(
-            layers.value[layerId].map_numbers[index],
-            (x + 0.5),
-            (y + 0.5),
-            1
-          );
-        }
-      } else {
-        ctx.clearRect(x, y, 1, 1);
-      }
-    }
-  }
+  ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
+  ctx.font = `0.5px Inter var`
+  ctx.textBaseline = 'middle'
+  ctx.textAlign = 'center'
+  Object.keys(workspace.map_numbers).forEach((index: string) => {
+    const arr = index.split("_").map(x => Number.parseInt(x))
+    ctx.fillStyle = '#000'
+    ctx.fillText(
+      workspace.map_numbers[index].toString(),
+      (arr[0] + 0.5),
+      (arr[1] + 0.5),
+      1
+    );
+  })
+  Object.keys(result.value).forEach((k: string) => {
+    const arr = k.split("_").map(x => Number.parseInt(x))
+    ctx.fillStyle = result.value[k];
+    ctx.fillRect(arr[0], arr[1], 1, 1);
+  })
   ctx.restore()
 }
 
 const loadFile = () => {
-  const layerId = 'background'
   const fileElm: HTMLInputElement | null = document.getElementById("inputFile") as HTMLInputElement
-  const ctx = getCtx(layerId)
+  const ctx = getCtx('workspace')
   if (fileElm && ctx) {
     const img = new Image;
     img.onload = function () {
       ctx?.drawImage(img, 0, 0)
-      layers.value[layerId].colors = []
-      layers.value[layerId].map_numbers = {}
-      layers.value[layerId].id = 0
-      CELL_LENGTH.value.w = img.width
-      CELL_LENGTH.value.h = img.height
-      zoom.value = Math.log(512 / img.width) / Math.log(2);
+      workspace.colors = []
+      workspace.map_numbers = {}
+      workspace.steps = []
+      workspace.id = 0
+      workspace.width = img.width
+      workspace.height = img.height
       for (let x = 0; x < img.width; x++) {
         for (let y = 0; y < img.height; y++) {
           const pixelData: any = ctx?.getImageData(x, y, 1, 1);
           const color = rgbToHex(pixelData.data[0], pixelData.data[1], pixelData.data[2])
-          console.log(pixelData.data[3], color);
           if (!(color === '#000000' && pixelData.data[3] === 0)) {
-            if (!layers.value[layerId].colors.includes(color)) {
-              layers.value[layerId].colors.push(color)
+            if (!workspace.colors.includes(color)) {
+              workspace.colors.push(color)
             }
-            layers.value[layerId].map_numbers[`${x}-${y}`] = layers.value[layerId].colors.indexOf(color)
+            workspace.map_numbers[`${x}_${y}`] = workspace.colors.indexOf(color)
           }
         }
       }
-      colors.value = layers.value.background.colors
-      draw(layerId)
-      resetWorkspace()
+      options.value.zoom = Math.log(displaySize.value / img.width) / Math.log(2);
+      options.value.color = workspace.colors[0]
       showModal.value = null
+      reDraw()
     }
     const files = fileElm.files
     if (files && files[0]) {
@@ -468,71 +328,23 @@ const loadFile = () => {
 }
 
 const loadSharedPage = async (id: string) => {
-  const {data} = await useAuthFetch(`/coloring/shared-pages/${id}/`).then(async res => {
-    if (res.pending.value) {
-      await res.execute()
-    }
-    return res
-  })
+  const {data} = await useAuthFetch(`/coloring/shared-pages/${id}/`)
   if (!data.value) return
   const value = data.value as SharedPage
-  CELL_LENGTH.value.w = value.width
-  CELL_LENGTH.value.h = value.height
-  zoom.value = Math.log(512 / value.width) / Math.log(2);
-  layers.value.background = data.value as SharedPage
-  draw('background')
-  colors.value = layers.value.background.colors
+  workspace.width = value.width
+  workspace.height = value.height
+  options.value.zoom = Math.log(512 / value.width) / Math.log(2);
+  workspace.colors = value.colors
+  workspace.steps = value.steps
   document.body.scrollTop = document.documentElement.scrollTop = 0;
-  resetWorkspace()
-}
-
-const resetWorkspace = () => {
-  layers.value.workspace.colors = []
-  layers.value.workspace.map_numbers = {}
-  draw('workspace', true)
 }
 
 const toggleModal = (type: string | null) => {
-  saved.value = null
   showModal.value = type
 }
 
 const actionDownload = () => {
 }
-
-const actionSave = () => {
-  let template = cloneDeep(layers.value.background)
-  if (!template.colors.length) {
-    template = cloneDeep(layers.value.workspace)
-  }
-  const data = {
-    ...cloneDeep(form.value),
-    ...cloneDeep(layers.value.workspace),
-    width: CELL_LENGTH.value.w,
-    height: CELL_LENGTH.value.h
-  }
-  if (template.id) {
-    data.template = template.id
-  } else {
-    data.template_raw = template
-  }
-  saving.value = true
-  useAuthFetch('/coloring/shared-pages/', {
-    method: 'POST',
-    body: data
-  }).then(({data}) => {
-    saved.value = data.value as unknown as SharedPage
-  }).finally(() => {
-    saving.value = false
-  })
-}
-
-onMounted(() => {
-  const route = useRoute()
-  if (route.query.id) {
-    loadSharedPage(route.query.id.toString())
-  }
-})
 
 watch(isPainting, async (newValue) => {
   const workload = document.getElementById('workload')
@@ -544,11 +356,20 @@ watch(isPainting, async (newValue) => {
   }
 })
 
-watch(zoom, (newVal, oldVal) => {
-  setTimeout(() => {
-    draw('background')
-    draw('workspace', true)
-  }, 100)
+watch(() => options.value.zoom, () => {
+  const elm = document.getElementById("wrapper")
+  if (elm) {
+    elm.scrollTop = 0
+    elm.scrollLeft = 0
+  }
+  debounce(reDraw, 100)()
+})
+
+onMounted(() => {
+  const route = useRoute()
+  if (route.query.id) {
+    loadSharedPage(route.query.id.toString())
+  }
 })
 
 onBeforeRouteUpdate(n => {
@@ -560,20 +381,20 @@ onBeforeRouteUpdate(n => {
 
 <style>
 #workload {
-  @apply border-b border-r;
-
   background-size: var(--zoom-size);
   background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px),
   linear-gradient(to bottom, #F0F0F0 1px, transparent 1px);
-  background-position-x: -2px;
-  background-position-y: -2px;
-  border-color: #F0F0F0;
-  width: 100%;
-  height: 100%;
+  background-position-x: -0.5px;
+  background-position-y: -0.5px;
 }
 
-#workload canvas {
-  top: -1px;
-  left: -1px;
+#wrapper {
+  @apply absolute overflow-auto border;
+
+  inset: -1px;
+}
+
+#wrapper::-webkit-scrollbar{
+  display: none;
 }
 </style>

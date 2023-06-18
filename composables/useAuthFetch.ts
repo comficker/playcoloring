@@ -23,5 +23,10 @@ export function useAuthFetch<T>(
   headers["Content-Type"] = 'application/json'
   headers["Accept"] = 'application/json; indent=4'
   opts.headers = headers
-  return useFetch(request, {baseURL: config.public.apiBase, ...opts})
+  return useFetch(request, {baseURL: config.public.apiBase, ...opts}).then(async res => {
+    if (res.pending.value) {
+      await res.execute()
+    }
+    return res
+  })
 }
