@@ -62,7 +62,7 @@
       >
         <div
           v-if="showModal"
-          class="absolute bottom-[-1px] left-3 right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+          class="absolute bottom-0 left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
         >
           <div v-if="showModal === 'loadFile'" class="p-4">
             <div class="w-full btn bg-white h-full border text-xs">
@@ -274,8 +274,7 @@ const reDraw = () => {
     ctx.fillText(
       workspace.map_numbers[index].toString(),
       (arr[0] + 0.5),
-      (arr[1] + 0.5),
-      1
+      (arr[1] + 0.5)
     );
   })
   Object.keys(result.value).forEach((k: string) => {
@@ -337,6 +336,7 @@ const loadSharedPage = async (id: string) => {
   workspace.colors = value.colors
   workspace.map_numbers = value.map_numbers
   workspace.steps = value.steps
+  options.value.color = value.colors[0]
   reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;
 }
