@@ -25,7 +25,7 @@
       </div>
     </div>
     <div
-      class="relative pt-full"
+      class="relative pt-full overflow-hidden"
       :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
       <div id="wrapper">
         <div
@@ -62,7 +62,7 @@
       >
         <div
           v-if="showModal"
-          class="absolute bottom-0 left-3 right-3 bg-white z-60 shadow-xl rounded-tl rounded-tr border"
+          class="absolute bottom-[-1px] left-3 right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
         >
           <div v-if="showModal === 'loadFile'" class="p-4">
             <div class="w-full btn bg-white h-full border text-xs">
@@ -72,7 +72,7 @@
               >
             </div>
           </div>
-          <modal-save v-if="showModal === 'saving'" :workspace="workspace"/>
+          <modal-save v-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
         </div>
       </Transition>
     </div>
@@ -333,9 +333,11 @@ const loadSharedPage = async (id: string) => {
   const value = data.value as SharedPage
   workspace.width = value.width
   workspace.height = value.height
-  options.value.zoom = Math.log(512 / value.width) / Math.log(2);
+  options.value.zoom = Math.log(displaySize.value / value.width) / Math.log(2);
   workspace.colors = value.colors
+  workspace.map_numbers = value.map_numbers
   workspace.steps = value.steps
+  reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;
 }
 

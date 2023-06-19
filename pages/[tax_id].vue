@@ -1,9 +1,9 @@
 <template>
-  <div class="max-w-xl mx-auto space-y-4">
+  <div class="max-w-lg mx-auto space-y-4">
     <div class="space-y-2">
-      <h1 class="uppercase text-xl font-bold">{{ meta.title }}</h1>
+      <h1 class="text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">{{ meta.desc }}</p>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div class="grid grid-cols-2 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>
       </div>
     </div>
@@ -25,8 +25,8 @@ const [{data: r2}] = await Promise.all([
     params: {
       page_size: 12,
       status: 'public',
-      taxonomies__id_string: route.params.tax_id && route.params.tax_id !== 'pages' ? route.params.tax_id: undefined,
-      is_template: true
+      taxonomies__id_string: route.params.tax_id && !['shared', 'template'].includes(route.params.tax_id.toString()) ? route.params.tax_id: undefined,
+      is_template: route.params.tax_id !== 'shared'
     }
   }),
 ])
@@ -34,7 +34,7 @@ const [{data: r2}] = await Promise.all([
 const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const meta = computed(() => {
-  const defaultDesc = 'Our collection of coloring pages features a wide variety of themes, including animals, nature, and more.'
+  const defaultDesc = 'Our collection of coloring shared features a wide variety of themes, including animals, nature, and more.'
   if (variant.instance) {
     return {
       title: variant.instance.title,
@@ -43,7 +43,7 @@ const meta = computed(() => {
     }
   } else {
     return {
-      title: 'Newest coloring pages',
+      title: `Newest ${route.params.tax_id} shared`,
       desc: defaultDesc,
       imgSrc: '/screenshot/default.png'
     }

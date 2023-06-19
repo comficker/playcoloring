@@ -6,39 +6,39 @@
       <div class="w-full">
         <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
       </div>
-      <div class="grid md:grid-cols-2 gap-2">
-        <div class="flex gap-2 items-center p-2 py-1 bg-white border border-[#F0F0F0]">
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
           <div class="w-5 h-5 i-con-palette"/>
-          <div>
-            <div class="text-gray-500">Colors</div>
+          <div class="leading-none">
+            <div class="hidden md:block text-sm text-gray-500">Colors</div>
             <div class="font-bold text-sm">{{value?.colors?.length}}</div>
           </div>
         </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white border border-[#F0F0F0]">
+        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
           <div class="w-5 h-5 i-con-ruler"/>
-          <div>
-            <div class="text-gray-500">Size</div>
+          <div class="leading-none">
+            <div class="hidden md:block text-sm text-gray-500">Size</div>
             <div class="font-bold text-sm">{{Object.keys(value.map_numbers).length}}</div>
           </div>
         </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white border border-[#F0F0F0]">
+        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
           <div class="w-5 h-5 i-con-user"/>
-          <div>
-            <div class="text-gray-500">Creator</div>
+          <div class="leading-none">
+            <div class="hidden md:block text-sm text-gray-500">Creator</div>
             <div class="font-bold text-sm">Anomymous</div>
           </div>
         </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white border border-[#F0F0F0]">
+        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
           <div class="w-5 h-5 i-con-sign"/>
-          <div>
-            <div class="text-gray-500">Owner</div>
+          <div class="leading-none">
+            <div class="hidden md:block text-sm text-gray-500">Owner</div>
             <div class="font-bold text-sm">Anomymous</div>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="value.taxonomies.length" class="font-bold text-sm flex gap-2 flex-wrap items-center">
-      <div class="font-bold text-sm flex gap-2 flex-wrap items-center">
+    <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+      <div class="text-sm flex gap-2 flex-wrap items-center">
         <div class="w-5 h-5 i-con-tags"/>
       </div>
       <nuxt-link
@@ -51,13 +51,13 @@
     </div>
     <div class="flex gap-2 justify-between">
       <div class="flex gap-2">
-        <div class="bg-white border cursor-pointer p-2 border-[#F0F0F0] justify-center" @click="print">
+        <div class="bg-white border rounded cursor-pointer p-3 border-[#F0F0F0] justify-center" @click="print">
           <div class="w-4 h-4 i-con-print"/>
         </div>
-        <a :href="meta.imgSrc" download target="_blank" class="bg-white border cursor-pointer p-2 border-[#F0F0F0] justify-center">
+        <a :href="meta.imgSrc" download target="_blank" class="bg-white border rounded cursor-pointer p-3 border-[#F0F0F0] justify-center">
           <div class="w-4 h-4 i-con-download"/>
         </a>
-        <nuxt-link :to="`/?id=${value.id_string}`" class="bg-white border cursor-pointer p-2 border-[#F0F0F0] justify-center">
+        <nuxt-link :to="`/?id=${value.id_string}`" class="bg-white border rounded cursor-pointer p-3 border-[#F0F0F0] justify-center">
           <div class="w-4 h-4 i-con-gamepad"/>
         </nuxt-link>
       </div>
@@ -73,7 +73,7 @@
             :quote="meta.desc"
             :hashtags="value.taxonomies.map(x => x.title).join(',')"
           >
-            <div class="bg-white border cursor-pointer p-2 border-[#F0F0F0] justify-center">
+            <div class="bg-white border rounded cursor-pointer p-3 border-[#F0F0F0] justify-center">
               <div class="w-4 h-4" :class="`i-con-${item}`"/>
             </div>
           </ShareNetwork>

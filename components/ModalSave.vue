@@ -6,7 +6,7 @@ import pkg from "lodash";
 
 const {cloneDeep, debounce} = pkg
 const {workspace} = defineProps<{ workspace: Workspace }>()
-
+const emits = defineEmits(['hide'])
 function slugify(text: string) {
   return text
     .toString()
@@ -46,7 +46,7 @@ const actionSave = async () => {
     delete data.steps
   }
   saving.value = true
-  const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {
+  const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-shared/', {
     method: 'POST',
     body: data
   })
@@ -60,6 +60,7 @@ const actionSave = async () => {
     <div v-if="!saved" class="space-y-3">
       <div class="flex justify-between items-center text-xs">
         <div class="text-2xl font-bold">Share your work</div>
+        <div class="i-con-minimize w-5 h-5 cursor-pointer" @click="emits('hide')"/>
       </div>
       <div class="flex items-center gap-2">
         <button

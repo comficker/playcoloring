@@ -34,22 +34,6 @@ export default defineConfig({
     transformerVariantGroup(),
   ],
   theme: {
-    colors: {
-      black: '#171717',
-      grey: {
-        0: '#C1C1D4',
-        normal: '#C1C1D4',
-        light: '#F2F2FA',
-      },
-      purple: {
-        0: '#3E3091',
-        digital: '#4F1CFF',
-        light: '#B49EFF',
-      },
-      green: {
-        0: '#4DCB92',
-      },
-    },
     fontSize: {
       '2xs': '.5rem',
     },

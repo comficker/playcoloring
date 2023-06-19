@@ -5,7 +5,7 @@
         <img :src="src" :alt="item.name" class="group-hover:blur-sm duration-300 w-full h-full"/>
         <div
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
-          <nuxt-link :to="`/pages/${item.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
+          <nuxt-link :to="`/shared/${item.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
             <div class="w-4 h-4 i-con-expand"/>
           </nuxt-link>
           <nuxt-link :to="`/?id=${item.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">

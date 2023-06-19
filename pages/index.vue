@@ -4,7 +4,7 @@ import {useFetch, useSeoMeta, useRuntimeConfig} from "nuxt/app";
 import {ResponseTagSchema, ResponseSharedPage} from "~/interface";
 import ColoringCard from "~/components/ColoringCard.vue";
 import PixelColoring from "~/components/PixelColoring.vue";
-
+const router = useRouter()
 const config = useRuntimeConfig()
 const title = "Online Coloring Page"
 const desc = 'A coloring page is a black and white drawing, design or pattern that is printed or displayed on paper or digital formats.'
@@ -47,6 +47,13 @@ const faqs = ref([
 <template>
   <div class="space-y-6 max-w-lg mx-auto">
     <PixelColoring/>
+    <div class="border p-4 flex justify-between items-center cursor-pointer" @click="router.replace('/template')">
+      <div>
+        <nuxt-link to="/template" class="text-3xl font-bold">Template</nuxt-link>
+        <p>You might want to try</p>
+      </div>
+      <div class="i-con-right w-6 h-6"/>
+    </div>
     <div class="space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
       <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
