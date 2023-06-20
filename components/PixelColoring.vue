@@ -49,6 +49,9 @@
           />
           <div
             class="absolute z-50 inset-0"
+            @touchstart="handleMouseDown"
+            @touchmove="handleMouseHover"
+            @touchend="handleMouseUp"
             @mousedown="handleMouseDown"
             @mouseup="handleMouseUp"
             @mousemove="handleMouseHover"
@@ -241,7 +244,7 @@ const fillColor = (e: PointerEvent) => {
         c: -1
       })
       if (workspace.map_numbers.hasOwnProperty(key)) {
-        ctx.font = `${cellScaleSize.value / 2}px Inter var`
+        ctx.font = `${cellScaleSize.value / 2}px Inter, Arial, sans-serif`
         ctx.textBaseline = 'middle'
         ctx.textAlign = 'center'
         ctx.fillStyle = '#000'
@@ -264,7 +267,7 @@ const reDraw = () => {
     PICTURE_SIZE.value.h
   )
   // ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
-  ctx.font = `${cellScaleSize.value / 2}px Inter var`
+  ctx.font = `${cellScaleSize.value / 2}px Inter, Arial, sans-serif`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#000'
@@ -279,7 +282,7 @@ const reDraw = () => {
   Object.keys(result.value).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
     ctx.fillStyle = result.value[k];
-    ctx.fillRect(arr[0], arr[1], 1, 1);
+    ctx.fillRect(arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
   })
 }
 
@@ -365,10 +368,19 @@ watch(() => options.value.zoom, () => {
   debounce(reDraw, 100)()
 })
 
+watch(displaySize, () => {
+  options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
+  reDraw()
+})
+
 onMounted(() => {
   const route = useRoute()
   if (route.query.id) {
     loadSharedPage(route.query.id.toString())
+  }
+  const wrapper = document.getElementById('wrapper')
+  if (wrapper) {
+    displaySize.value = wrapper.offsetWidth - 2
   }
 })
 
