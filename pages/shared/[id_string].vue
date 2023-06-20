@@ -1,7 +1,9 @@
 <template>
   <div v-if="value" class="max-w-xl mx-auto space-y-4">
-    <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
-    <p>{{ meta.desc }}</p>
+    <div>
+      <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
+      <p>{{ meta.desc }}</p>
+    </div>
     <div class="flex gap-4 flex-col">
       <div class="w-full">
         <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
@@ -81,7 +83,7 @@
       </div>
     </div>
   </div>
-  <div class="mt-4 max-w-lg mx-auto space-y-4">
+  <div class="mt-4 max-w-xl mx-auto space-y-4">
     <div class="space-y-2">
       <h2 class="uppercase text-xs font-bold">Variants</h2>
       <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">

@@ -62,8 +62,8 @@
             </div>
           </div>
           <Transition
-            enter-active-class="animated animated-faster animate-fade-in-up"
-            leave-active-class="animated animated-faster animate-fade-out-down"
+            enter-active-class="animated animated-faster animate-slide-in-up"
+            leave-active-class="animated animated-faster animate-slide-out-down"
           >
             <div
               v-if="showModal"
@@ -341,6 +341,9 @@ const loadSharedPage = async (id: string) => {
   workspace.colors = value.colors
   workspace.map_numbers = value.map_numbers
   workspace.steps = value.steps
+  if (value.is_template) {
+    workspace.template = value.id
+  }
   options.value.color = value.colors[0]
   reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;

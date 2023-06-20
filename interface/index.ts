@@ -52,7 +52,7 @@ export interface SharedPage {
   steps: Step[]
 
   user: any
-  template: number
+  template?: number
   taxonomies: any[]
 }
 
@@ -90,4 +90,5 @@ export interface Workspace {
   colors: string[]
   map_numbers: {[key: string]: number}
   steps: Step[]
+  template?: number
 }

@@ -56,11 +56,11 @@ const actionSave = async () => {
 </script>
 
 <template>
-  <div class="p-4 py-2">
+  <div class="p-4">
     <div v-if="!saved" class="space-y-2">
       <div class="flex justify-between items-center text-xs">
         <div class="text-2xl font-bold">Share your work</div>
-        <div class="i-con-minimize w-5 h-5 cursor-pointer" @click="emits('hide')"/>
+        <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
       </div>
       <div class="flex items-center gap-2">
         <button
@@ -104,10 +104,13 @@ const actionSave = async () => {
       <div>
         <textarea v-model="form.desc" class="w-full border px-3 py-1 rounded" placeholder="Description"/>
       </div>
-      <div>
-        <div class="btn bg-green-500 text-white font-semibold" @click="actionSave">
+      <div class="flex gap-4">
+        <div class="btn bg-green-500 text-white font-semibold text-sm" @click="actionSave">
           <div class="i-con-download w-5 h-5"/>
-          <span>Submit</span>
+          <span>Share</span>
+        </div>
+        <div class="btn border font-semibold text-sm" @click="actionSave">
+          <span>Save</span>
         </div>
       </div>
     </div>
