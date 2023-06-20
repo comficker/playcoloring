@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-lg mx-auto space-y-4">
     <div class="space-y-2">
-      <h1 class="text-5xl font-bold">{{ meta.title }}</h1>
+      <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">{{ meta.desc }}</p>
       <div class="grid grid-cols-2 gap-3">
         <coloring-card v-for="item in variant.results" :value="item"/>

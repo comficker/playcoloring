@@ -394,17 +394,10 @@ onBeforeRouteUpdate(n => {
 <style>
 #workload {
   background-size: var(--zoom-size);
-  background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px),
-  linear-gradient(to bottom, #F0F0F0 1px, transparent 1px);
-  background-position-x: -0.5px;
-  background-position-y: -0.5px;
-}
-
-@media only screen and (max-width: 600px) {
-  #workload {
-    background-position-x: -1px;
-    background-position-y: -1px;
-  }
+  background-image: linear-gradient(to right, #F0F0F0 2px, transparent 2px),
+  linear-gradient(to bottom, #F0F0F0 2px, transparent 2px);
+  background-position-x: -1px;
+  background-position-y: -1px;
 }
 
 #wrapper {
