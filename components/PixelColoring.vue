@@ -400,6 +400,13 @@ onBeforeRouteUpdate(n => {
   background-position-y: -0.5px;
 }
 
+@media only screen and (max-width: 600px) {
+  #workload {
+    background-position-x: -1px;
+    background-position-y: -1px;
+  }
+}
+
 #wrapper {
   @apply absolute overflow-auto border;
 
