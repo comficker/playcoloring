@@ -4,7 +4,7 @@ const is_home = computed(() => route.name === "index")
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto w-full px-4 md:px-0">
+  <div class="max-w-xl mx-auto w-full px-4 md:px-0">
     <h1>
       <nuxt-link class="flex items-center gap-1" to="/">
         <div class="i-con-palette fill-red-400" :class="{'h-10': is_home, 'h-5': !is_home}"/>

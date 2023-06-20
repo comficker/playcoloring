@@ -24,60 +24,64 @@
         </div>
       </div>
     </div>
-    <div
-      class="relative pt-full overflow-hidden"
-      :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
-      <div id="wrapper">
+    <div class="-mx-4 md:mx-0">
+      <div class="w-96 md:w-auto mx-auto">
         <div
-          id="workload" class="absolute"
-          :style="{
+          class="relative pt-full overflow-hidden border border-box"
+          :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
+          <div id="wrapper">
+            <div
+              id="workload" class="absolute"
+              :style="{
             width: `${PICTURE_SIZE.w}px`,
             height: `${PICTURE_SIZE.h}px`
           }"
-        >
-          <canvas
-            id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
-            class="absolute inset-0"
-          />
-          <div
-            id="cursor" class="absolute"
-            :style="{
+            >
+              <canvas
+                id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+                class="absolute inset-0"
+              />
+              <div
+                id="cursor" class="absolute"
+                :style="{
               backgroundColor: options.color || '#FFF',
               width: `${cellScaleSize}px`,
               height: `${cellScaleSize}px`
             }"
-          />
-          <div
-            class="absolute z-50 inset-0"
-            @touchstart="handleMouseDown"
-            @touchmove="handleMouseHover"
-            @touchend="handleMouseUp"
-            @mousedown="handleMouseDown"
-            @mouseup="handleMouseUp"
-            @mousemove="handleMouseHover"
-            @mouseover="handleMouseUp"
-          ></div>
-        </div>
-      </div>
-      <Transition
-        enter-active-class="animated animated-faster animate-fade-in-up"
-        leave-active-class="animated animated-faster animate-fade-out-down"
-      >
-        <div
-          v-if="showModal"
-          class="absolute bottom-0 left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
-        >
-          <div v-if="showModal === 'loadFile'" class="p-4">
-            <div class="w-full btn bg-white h-full border text-xs">
-              <input
-                id="inputFile" type="file" class="w-full" placeholder="Load"
-                @input="loadFile"
-              >
+              />
+              <div
+                class="absolute z-50 inset-0"
+                @touchstart="handleMouseDown"
+                @touchmove="handleMouseHover"
+                @touchend="handleMouseUp"
+                @mousedown="handleMouseDown"
+                @mouseup="handleMouseUp"
+                @mousemove="handleMouseHover"
+                @mouseover="handleMouseUp"
+              ></div>
             </div>
           </div>
-          <modal-save v-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
+          <Transition
+            enter-active-class="animated animated-faster animate-fade-in-up"
+            leave-active-class="animated animated-faster animate-fade-out-down"
+          >
+            <div
+              v-if="showModal"
+              class="absolute bottom-0 left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+            >
+              <div v-if="showModal === 'loadFile'" class="p-4">
+                <div class="w-full btn bg-white h-full border text-xs">
+                  <input
+                    id="inputFile" type="file" class="w-full" placeholder="Load"
+                    @input="loadFile"
+                  >
+                </div>
+              </div>
+              <modal-save v-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
+            </div>
+          </Transition>
         </div>
-      </Transition>
+      </div>
     </div>
     <div class="flex gap-4 justify-between flex-wrap">
       <div class="flex gap-2 font-semibold text-sm flex-wrap">
@@ -147,7 +151,7 @@ const workspace: Workspace = reactive<Workspace>({
   steps: []
 })
 
-const displaySize = ref(512)
+const displaySize = ref(576)
 const isPainting = ref(false)
 const showModal: any = ref(null)
 
@@ -380,7 +384,7 @@ onMounted(() => {
   }
   const wrapper = document.getElementById('wrapper')
   if (wrapper) {
-    displaySize.value = wrapper.offsetWidth - 2
+    displaySize.value = wrapper.offsetWidth
   }
 })
 
@@ -401,12 +405,16 @@ onBeforeRouteUpdate(n => {
 }
 
 #wrapper {
-  @apply absolute overflow-auto border;
+  @apply absolute overflow-auto;
 
   inset: -1px;
 }
 
 #wrapper::-webkit-scrollbar{
   display: none;
+}
+
+.pt-full {
+  padding-top: calc(100% - 2px);
 }
 </style>

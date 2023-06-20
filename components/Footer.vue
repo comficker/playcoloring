@@ -12,7 +12,7 @@ export default defineComponent({
 
 <template>
   <div class="bg-gray-100 mt-4 p-4 border-t">
-    <div class="w-full max-w-lg mx-auto">
+    <div class="w-full max-w-xl mx-auto">
       <p>Copyright © 2023 playcoloring.com.</p>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-lg mx-auto space-y-4">
+  <div class="max-w-xl mx-auto space-y-4">
     <div class="space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">{{ meta.desc }}</p>

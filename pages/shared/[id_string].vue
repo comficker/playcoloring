@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value" class="max-w-lg mx-auto space-y-4">
+  <div v-if="value" class="max-w-xl mx-auto space-y-4">
     <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
     <p>{{ meta.desc }}</p>
     <div class="flex gap-4 flex-col">

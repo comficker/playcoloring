@@ -45,7 +45,7 @@ const faqs = ref([
 </script>
 
 <template>
-  <div class="space-y-6 max-w-lg mx-auto">
+  <div class="space-y-6 max-w-xl mx-auto">
     <PixelColoring/>
     <div class="border p-4 flex justify-between items-center cursor-pointer" @click="router.replace('/template')">
       <div>
