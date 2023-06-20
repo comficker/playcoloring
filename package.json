@@ -37,6 +37,7 @@
     "fabric": "^5.3.0",
     "lodash": "^4.17.21",
     "vue-social-sharing": "^4.0.0-alpha4",
-    "vue-tippy": "v6"
+    "vue-tippy": "v6",
+    "vue3-touch-events": "^4.1.3"
   }
 }
