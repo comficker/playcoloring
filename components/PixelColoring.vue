@@ -263,18 +263,17 @@ const reDraw = () => {
     PICTURE_SIZE.value.w,
     PICTURE_SIZE.value.h
   )
-  ctx.save()
-  ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
-  ctx.font = `0.5px Inter var`
+  // ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
+  ctx.font = `${cellScaleSize.value / 2}px Inter var`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
+  ctx.fillStyle = '#000'
   Object.keys(workspace.map_numbers).forEach((index: string) => {
     const arr = index.split("_").map(x => Number.parseInt(x))
-    ctx.fillStyle = '#000'
     ctx.fillText(
       workspace.map_numbers[index].toString(),
-      (arr[0] + 0.5),
-      (arr[1] + 0.5)
+      +arr[0] * cellScaleSize.value + cellScaleSize.value / 2,
+      +arr[1] * cellScaleSize.value + cellScaleSize.value / 2
     );
   })
   Object.keys(result.value).forEach((k: string) => {
@@ -282,7 +281,6 @@ const reDraw = () => {
     ctx.fillStyle = result.value[k];
     ctx.fillRect(arr[0], arr[1], 1, 1);
   })
-  ctx.restore()
 }
 
 const loadFile = () => {

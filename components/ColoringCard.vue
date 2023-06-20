@@ -5,9 +5,12 @@
         <img :src="src" :alt="item.name" class="group-hover:blur-sm duration-300 w-full h-full"/>
         <div
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
-          <nuxt-link :to="`/shared/${item.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
+          <div
+            class="cursor-pointer p-2 rounded bg-yellow-300"
+            @click="useRouter().replace(`/shared/${item.id_string}`)"
+          >
             <div class="w-4 h-4 i-con-expand"/>
-          </nuxt-link>
+          </div>
           <nuxt-link :to="`/?id=${item.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
             <div class="w-4 h-4 i-con-palette"/>
           </nuxt-link>
@@ -15,7 +18,7 @@
       </div>
     </div>
     <nuxt-link
-      :to="`/pages/${item.id_string}`"
+      :to="`/shared/${item.id_string}`"
       class="block py-1 p-3 text-xs bg-gray-100 uppercase">{{ item.name || item.id_string }}
     </nuxt-link>
   </div>
