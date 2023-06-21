@@ -4,52 +4,50 @@
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
       <p>{{ meta.desc }}</p>
     </div>
-    <div class="flex gap-4 flex-col">
-      <div class="w-full">
-        <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
-      </div>
-      <div class="grid md:grid-cols-2 gap-3">
-        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
-          <div class="w-5 h-5 i-con-palette"/>
-          <div class="leading-none">
-            <div class="hidden md:block text-sm text-gray-500">Colors</div>
-            <div class="font-bold text-sm">{{value?.colors?.length}}</div>
-          </div>
-        </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
-          <div class="w-5 h-5 i-con-ruler"/>
-          <div class="leading-none">
-            <div class="hidden md:block text-sm text-gray-500">Size</div>
-            <div class="font-bold text-sm">{{Object.keys(value.map_numbers).length}}</div>
-          </div>
-        </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
-          <div class="w-5 h-5 i-con-user"/>
-          <div class="leading-none">
-            <div class="hidden md:block text-sm text-gray-500">Creator</div>
-            <div class="font-bold text-sm">Anomymous</div>
-          </div>
-        </div>
-        <div class="flex gap-2 items-center p-2 py-1 bg-white md:border justify-between md:justify-start">
-          <div class="w-5 h-5 i-con-sign"/>
-          <div class="leading-none">
-            <div class="hidden md:block text-sm text-gray-500">Owner</div>
-            <div class="font-bold text-sm">Anomymous</div>
-          </div>
-        </div>
-      </div>
+    <div class="w-full">
+      <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
     </div>
     <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
       <div class="text-sm flex gap-2 flex-wrap items-center">
         <div class="w-5 h-5 i-con-tags"/>
       </div>
       <nuxt-link
-        class="p-0.5 px-2 rounded bg-gray-200 relative group"
+        class="p-0.5 px-2 rounded bg-green-400 text-white relative group"
         v-for="item in value.taxonomies" :key="item.id"
         :to="`/${item.id_string}`"
       >
         <span>{{ item.title }}</span>
       </nuxt-link>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+        <div class="w-8 h-8 i-con-palette"/>
+        <div>
+          <div class="text-sm text-gray-500">Colors</div>
+          <div class="font-bold">{{value?.colors?.length}}</div>
+        </div>
+      </div>
+      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+        <div class="w-8 h-8 i-con-ruler"/>
+        <div>
+          <div class="text-sm text-gray-500">Size</div>
+          <div class="font-bold">{{Object.keys(value.map_numbers).length}}</div>
+        </div>
+      </div>
+      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+        <div class="w-8 h-8 i-con-user"/>
+        <div>
+          <div class="text-sm text-gray-500">Creator</div>
+          <div class="font-bold">Anomymous</div>
+        </div>
+      </div>
+      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+        <div class="w-8 h-8 i-con-sign"/>
+        <div>
+          <div class="text-sm text-gray-500">Owner</div>
+          <div class="font-bold">Anomymous</div>
+        </div>
+      </div>
     </div>
     <div class="flex gap-2 justify-between">
       <div class="flex gap-2">
