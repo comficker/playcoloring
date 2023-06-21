@@ -14,7 +14,7 @@ const {crumbs} = defineProps<{crumbs: IBreadcrumb[]}>()
     <template v-for="(crumb, i) in crumbs" :key="crumb.to">
       <nuxt-link class="flex p-1.5 gap-1 items-center bg-gray-100 rounded px-3" :to="crumb.to">
         <div class="w-5 h-5" :class="crumb.icon"/>
-        <span>{{crumb.name}}</span>
+        <span class="hidden md:block">{{crumb.name}}</span>
       </nuxt-link>
       <div v-if="i < crumbs.length - 1" class="w-5 h-5 i-con-right"/>
     </template>

@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <div class="flex gap-4 justify-between text-sm font-semibold">
       <div class="flex gap-2">
-        <div class="btn bg-rose-700 text-white">
+        <div class="btn bg-rose-700 text-white" @click="reset">
           <div class="i-con-plus w-3 h-3"/>
           <span>New</span>
         </div>
@@ -33,9 +33,9 @@
             <div
               id="workload" class="absolute"
               :style="{
-            width: `${PICTURE_SIZE.w}px`,
-            height: `${PICTURE_SIZE.h}px`
-          }"
+                width: `${PICTURE_SIZE.w}px`,
+                height: `${PICTURE_SIZE.h}px`
+              }"
             >
               <canvas
                 id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
@@ -342,7 +342,7 @@ const loadSharedPage = async (id: string) => {
   workspace.map_numbers = value.map_numbers
   workspace.steps = value.steps
   if (value.is_template) {
-    workspace.template = value.id
+    workspace.template = workspace.template || value.id
   }
   options.value.color = value.colors[0]
   reDraw()
@@ -354,6 +354,12 @@ const toggleModal = (type: string | null) => {
 }
 
 const actionDownload = () => {
+}
+
+const reset = () => {
+  workspace.map_numbers = {}
+  workspace.steps = []
+  reDraw()
 }
 
 watch(isPainting, async (newValue) => {

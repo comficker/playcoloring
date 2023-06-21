@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="max-w-3xl mx-auto mt-4">
-    <div class="grid grid-cols-3 gap-3">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
       <coloring-card v-for="item in variant.results" :value="item"/>
     </div>
   </div>
@@ -54,7 +54,7 @@ const meta = computed(() => {
     }
   } else {
     return {
-      title: `Newest ${route.params.tax_id} shared`,
+      title: `Newest ${route.params.tax_id}`,
       desc: defaultDesc,
       imgSrc: '/screenshot/default.png'
     }
