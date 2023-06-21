@@ -1,5 +1,6 @@
 <template>
   <div v-if="value" class="max-w-xl mx-auto space-y-4">
+    <breadcrumb :crumbs="crumbs"/>
     <div>
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
       <p>{{ meta.desc }}</p>
@@ -72,6 +73,7 @@
             :description="meta.desc"
             :quote="meta.desc"
             :hashtags="value.taxonomies.map(x => x.title).join(',')"
+            :media="meta.imgSrc"
           >
             <div class="bg-white border rounded cursor-pointer p-3 border-[#F0F0F0] justify-center">
               <div class="w-4 h-4" :class="`i-con-${item}`"/>
@@ -96,11 +98,12 @@
 
 <script setup lang="ts">
 import {useHead, useRoute, useRuntimeConfig, useSeoMeta} from "#app";
-import {ResponseSharedPage, SharedPage} from "~/interface";
+import {IBreadcrumb, ResponseSharedPage, SharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onMounted} from "@vue/runtime-core";
 import ColoringCard from "~/components/ColoringCard.vue";
 import {computed} from "vue";
+import Breadcrumb from "~/components/Breadcrumb.vue";
 
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -148,7 +151,7 @@ onMounted(() => {
 })
 
 const meta = computed(() => {
-  const defaultDesc = 'It\'s awesome!'
+  const defaultDesc = ''
   const url = `https://www.playcoloring.com/pages/${value.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
   if (value.is_template) {
@@ -157,7 +160,7 @@ const meta = computed(() => {
   if (value) {
     return {
       url: url,
-      title: `${value.name || value.id_string} ${value.width}x${value.height} Pixel Coloring`,
+      title: `${value.name || value.id_string}`,
       desc: value.desc || defaultDesc,
       imgSrc: src
     }
@@ -171,12 +174,22 @@ const meta = computed(() => {
   }
 })
 
+const crumbs = computed<IBreadcrumb[]>(() => [{
+  name: value.is_template ? 'Template' : 'Gallery',
+  to: value.is_template ? '/template' : '/shared',
+  icon: value.is_template ? 'i-con-template' : 'i-con-shared',
+},{
+  name: meta.value.title,
+  to: (value.is_template ? '/template/' : '/shared/') + value.id_string,
+  icon: 'i-con-picture',
+}])
+
 const print = () => {
 
 }
 
 useHead({
-  title: meta.value.title,
+  title: meta.value.title +  ` | ${value.width}x${value.height} | Pixel Coloring`,
   meta: [
     {
       name: "description",

@@ -92,3 +92,9 @@ export interface Workspace {
   steps: Step[]
   template?: number
 }
+
+export interface IBreadcrumb {
+  name: string
+  icon: string
+  to: string
+}

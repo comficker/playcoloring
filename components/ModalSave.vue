@@ -46,7 +46,7 @@ const actionSave = async () => {
     delete data.steps
   }
   saving.value = true
-  const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {
+  const {data: res} = await useAuthFetch<SharedPage>('/coloring/[tax_id]-pages/', {
     method: 'POST',
     body: data
   })

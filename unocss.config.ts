@@ -46,6 +46,9 @@ export default defineConfig({
     'i-con-twitter',
     'i-con-pinterest',
     'i-con-telegram',
-    'i-con-discord'
+    'i-con-discord',
+    'i-con-template',
+    'i-con-picture',
+    'i-con-shared'
   ],
 })
