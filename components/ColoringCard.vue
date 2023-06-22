@@ -12,7 +12,7 @@
             <div class="w-4 h-4 i-con-expand"/>
           </div>
           <nuxt-link :to="`/?id=${value.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
-            <div class="w-4 h-4 i-con-palette"/>
+            <div class="w-4 h-4 i-con-color"/>
           </nuxt-link>
         </div>
       </div>
