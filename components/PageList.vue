@@ -29,11 +29,11 @@ function capitalize(word: string) {
 const config = useRuntimeConfig()
 const route = useRoute()
 const params = computed(() => {
-  let taxonomies__id_string, width, height, color, user, is_template
+  let taxonomies__id_string, width, height, color, user, is_template = true
   if (!['shared', 'template', 'color', 'size', 'author'].includes(route.params.tax_id.toString())) {
     taxonomies__id_string = route.params.tax_id
-  } else if (route.params.tax_id.toString() === 'template') {
-    is_template = true
+  } else if (route.params.tax_id.toString() === 'shared') {
+    is_template = false
   }
   if (route.params.id_string) {
     if (route.params.tax_id.toString() === 'size') {
