@@ -17,10 +17,23 @@
         </div>
       </div>
     </div>
-    <nuxt-link
-      :to="to"
-      class="block py-1 p-3 text-xs bg-gray-100 uppercase">{{ value.name || value.id_string }}
-    </nuxt-link>
+    <div class="space-y-2 py-2 p-3 bg-gray-100 text-xs">
+      <div class="flex gap-1 items-center">
+        <div class="i-con-picture w-4 h-4"></div>
+        <nuxt-link
+          :to="to"
+          class="font-semibold hover:underline uppercase">{{ value.name || value.id_string }}
+        </nuxt-link>
+      </div>
+      <div class="flex gap-1 items-center">
+        <div class="i-con-user w-4 h-4"></div>
+        <nuxt-link
+          :to="`/author/anonymous`"
+          class="font-semibold hover:underline">
+          <span>Anonymous</span>
+        </nuxt-link>
+      </div>
+    </div>
   </div>
 </template>
 

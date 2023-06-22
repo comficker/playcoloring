@@ -69,13 +69,11 @@
               v-if="showModal"
               class="absolute bottom-0 left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
             >
-              <div v-if="showModal === 'loadFile'" class="p-4">
-                <div class="w-full btn bg-white h-full border text-xs">
-                  <input
-                    id="inputFile" type="file" class="w-full" placeholder="Load"
-                    @input="loadFile"
-                  >
-                </div>
+              <div v-if="showModal === 'loadFile'" class="p-4 cursor-pointer">
+                <input
+                  id="inputFile" type="file" class="w-full" placeholder="Load"
+                  @input="loadFile"
+                >
               </div>
               <modal-save v-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
             </div>
@@ -340,7 +338,7 @@ const loadSharedPage = async (id: string) => {
   options.value.zoom = Math.log(displaySize.value / value.width) / Math.log(2);
   workspace.colors = value.colors
   workspace.map_numbers = value.map_numbers
-  workspace.steps = value.steps
+  workspace.steps = []
   if (value.is_template) {
     workspace.template = workspace.template || value.id
   }

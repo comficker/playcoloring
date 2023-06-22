@@ -49,6 +49,8 @@ export default defineConfig({
     'i-con-discord',
     'i-con-template',
     'i-con-picture',
-    'i-con-shared'
+    'i-con-shared',
+    'i-con-color',
+    'i-con-hash'
   ],
 })

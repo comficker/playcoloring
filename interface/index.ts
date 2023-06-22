@@ -95,6 +95,6 @@ export interface Workspace {
 
 export interface IBreadcrumb {
   name: string
-  icon: string
+  icon?: string | null
   to: string
 }
