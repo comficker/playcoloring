@@ -20,9 +20,9 @@
         <span>{{ item.title }}</span>
       </nuxt-link>
     </div>
-    <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+    <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
       <div class="text-sm flex gap-2 flex-wrap items-center">
-        <div class="w-5 h-5 i-con-palette"/>
+        <div class="w-5 h-5 i-con-color"/>
       </div>
       <nuxt-link
         class="w-6 h-6 border"
@@ -35,10 +35,10 @@
     </div>
     <div class="grid md:grid-cols-2 gap-3">
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
-        <div class="w-8 h-8 i-con-color"/>
+        <div class="w-8 h-8 i-con-ruler"/>
         <div class="block">
-          <div class="text-sm text-gray-500">Colors</div>
-          <div class="font-bold">{{value?.colors?.length}}</div>
+          <div class="text-sm text-gray-500">Length</div>
+          <div class="font-bold">{{Object.keys(value.map_numbers).length}}</div>
         </div>
       </div>
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
@@ -46,12 +46,7 @@
         <div>
           <div class="text-sm text-gray-500">Size</div>
           <div class="flex gap-4">
-            <div class="flex gap-1">
-              <div class="text-gray-500">length</div>
-              <div class="font-bold">{{Object.keys(value.map_numbers).length}}</div>
-            </div>
             <nuxt-link :to="`/size/${value.width}x${value.height}`" class="flex gap-1 hover:underline">
-              <div class="text-gray-500">size</div>
               <div class="font-bold">{{value.width}}x{{value.height}}</div>
             </nuxt-link>
           </div>
