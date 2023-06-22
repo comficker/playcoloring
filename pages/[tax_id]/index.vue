@@ -22,7 +22,10 @@ import ColoringCard from "~/components/ColoringCard.vue";
 import {computed} from "vue";
 import {useSeoMeta} from "nuxt/app";
 import Breadcrumb from "~/components/Breadcrumb.vue";
-
+function capitalize(word: string) {
+  const lower = word.toLowerCase();
+  return word.charAt(0).toUpperCase() + lower.slice(1);
+}
 const config = useRuntimeConfig()
 const route = useRoute()
 const [{data: r2}] = await Promise.all([
@@ -54,7 +57,7 @@ const meta = computed(() => {
     }
   } else {
     return {
-      title: `Newest ${route.params.tax_id}`,
+      title: `${capitalize(route.params.tax_id.toString())}`,
       desc: defaultDesc,
       imgSrc: '/screenshot/default.png'
     }
@@ -62,7 +65,7 @@ const meta = computed(() => {
 })
 
 useHead({
-  title: meta.value.title,
+  title: meta.value.title + ' Coloring Pages',
   meta: [
     {
       name: "description",
@@ -72,7 +75,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: meta.value.title,
+  title: meta.value.title + ' Coloring Pages',
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',
