@@ -63,7 +63,7 @@ const {data: r2} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-page
 const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const crumbs = computed<IBreadcrumb[]>(() => {
-  let icon = `i-con-${route.params.tax_id}`
+  let icon = null
   let name = capitalize(route.params.tax_id.toString())
   if (route.params.tax_id === 'author') {
     icon = 'i-con-user'
@@ -71,6 +71,8 @@ const crumbs = computed<IBreadcrumb[]>(() => {
     icon = 'i-con-ruler'
   } else if (route.params.tax_id === 'pages') {
     name = "Coloring " + name
+    icon = 'i-con-color'
+  } else {
     icon = 'i-con-color'
   }
   const arr = [{
@@ -89,22 +91,24 @@ const crumbs = computed<IBreadcrumb[]>(() => {
 })
 
 const meta = computed(() => {
-  const defaultDesc = `Our collection of coloring pages features a wide variety of themes, including animals, nature, and more.`
+  let defaultDesc = ``
   if (variant.instance) {
     return {
-      title: variant.instance.title,
+      title: variant.instance.title + " Coloring Pages",
       desc: variant.instance.desc || defaultDesc,
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
     let title = `${capitalize(route.params.tax_id.toString())}`
     if (route.params.id_string) {
-      title = title + ' ' + (route.params.tax_id.toString() === 'color' ? '#' : '') + route.params.id_string.toString()
+      title = title + ' ' + (route.params.tax_id.toString() === 'color' ? '#' : '') + route.params.id_string.toString() + " "
     } else {
       if (route.params.tax_id === 'pages') {
-        title = "Coloring " + title
+        title = ""
+        defaultDesc = 'Our collection of coloring pages features a wide variety of themes, including animals, nature, and more.'
       }
     }
+    title = title + "Coloring Pages"
     return {
       title: title,
       desc: defaultDesc,
