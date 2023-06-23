@@ -169,7 +169,7 @@ onMounted(() => {
 
 const meta = computed(() => {
   const defaultDesc = ''
-  const url = `https://www.playcoloring.com/pages/${value.id_string}`
+  const url = `https://www.playcoloring.com/${(value.is_template ? '/template/' : '/shared/')}/${value.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
   if (value.is_template) {
     src = src + '?type=template'
