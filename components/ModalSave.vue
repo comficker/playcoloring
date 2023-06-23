@@ -57,7 +57,7 @@ const actionSave = async () => {
 
 <template>
   <div class="p-4">
-    <div v-if="!saved" class="space-y-2">
+    <div v-if="!saved" class="space-y-3">
       <div class="flex justify-between items-center text-xs">
         <div class="text-2xl font-bold">Share your work</div>
         <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>

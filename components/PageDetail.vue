@@ -8,15 +8,18 @@
     <div class="w-full">
       <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
     </div>
-    <div class="flex flex-col md:flex-row gap-2 justify-between">
-      <div class="flex gap-2">
+    <div class="flex flex-col md:flex-row gap-4 justify-between">
+      <div class="flex-1 flex gap-2">
         <div class="btn border" @click="print">
           <div class="w-4 h-4 i-con-print"/>
         </div>
         <a :href="meta.imgSrc" download target="_blank" class="btn border">
           <div class="w-4 h-4 i-con-download"/>
         </a>
-        <nuxt-link :to="`/?id=${value.id_string}`" class="btn border uppercase font-semibold text-sm">
+        <nuxt-link
+          :to="`/?id=${value.id_string}`"
+          class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
+        >
           <div class="w-4 h-4 i-con-gamepad"/>
           <span>Play</span>
         </nuxt-link>

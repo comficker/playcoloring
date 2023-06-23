@@ -18,7 +18,7 @@
           <div class="i-con-save w-5 h-5"/>
           <span>Save</span>
         </div>
-        <div class="btn bg-green-500 text-white" @click="actionDownload">
+        <div v-if="false" class="btn bg-green-500 text-white" @click="actionDownload">
           <div class="i-con-download w-5 h-5"/>
           <span>Download</span>
         </div>
@@ -61,23 +61,46 @@
               ></div>
             </div>
           </div>
-          <Transition
-            enter-active-class="animated animated-faster animate-slide-in-up"
-            leave-active-class="animated animated-faster animate-slide-out-down"
-          >
-            <div
-              v-if="showModal"
-              class="absolute bottom-0 left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+          <client-only>
+            <Transition
+              enter-active-class="animated animated-faster animate-slide-in-up"
+              leave-active-class="animated animated-faster animate-slide-out-down"
             >
-              <div v-if="showModal === 'loadFile'" class="p-4 cursor-pointer">
-                <input
-                  id="inputFile" type="file" class="w-full" placeholder="Load"
-                  @input="loadFile"
-                >
+              <div
+                v-if="!!showModal"
+                class="fixed md:absolute bottom-[-1px] left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+              >
+                <div v-if="showModal === 'loadFile'" class="p-4 cursor-pointer">
+                  <input
+                    id="inputFile" type="file" class="w-full" placeholder="Load"
+                    @input="loadFile"
+                  >
+                </div>
+                <modal-save v-else-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
+                <div v-else-if="showModal === 'ruler'" class="p-4 space-y-3">
+                  <div class="flex justify-between items-center text-xs">
+                    <div class="text-2xl font-bold">Resize</div>
+                    <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="showModal = null"/>
+                  </div>
+                  <div class="flex gap-4 text-xs font-bold">
+                    <div
+                      v-for="s in [8, 16, 24, 32]" :key="s"
+                      class="border w-12 h-12 p-1 hover:border-blue-500 cursor-pointer duration-200"
+                      :class="{'border-blue-500': newSize === s}"
+                      @click="newSize = s"
+                    >
+                      <span>{{s}}px</span>
+                    </div>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="btn bg-green-500 text-white font-semibold text-sm" @click="reSize()">
+                      <span>Resize</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <modal-save v-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
-            </div>
-          </Transition>
+            </Transition>
+          </client-only>
         </div>
       </div>
     </div>
@@ -103,6 +126,16 @@
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
+        <div
+          class="cursor-pointer border p-2 rounded-[2px] bg-white"
+          :class="{'border-blue': showModal === 'ruler'}"
+          @click="showModal = showModal === 'ruler' ? null : 'ruler'"
+        >
+          <div class="i-con-ruler w-4 h-4"/>
+        </div>
+        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
+          <div class="i-con-compare w-4 h-4"/>
+        </div>
         <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(true)">
           <div class="i-con-zoom-in w-4 h-4"/>
         </div>
@@ -123,7 +156,7 @@ import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
 
-const {debounce, cloneDeep} = pkg
+const {debounce} = pkg
 const route = useRoute()
 
 interface Options {
@@ -134,8 +167,8 @@ interface Options {
 
 const workspace: Workspace = reactive<Workspace>({
   id: 0,
-  width: 32,
-  height: 32,
+  width: 16,
+  height: 16,
   colors: [
     "#FFF2CC",
     "#FFD966",
@@ -148,11 +181,12 @@ const workspace: Workspace = reactive<Workspace>({
   map_numbers: {},
   steps: []
 })
+const newSize = ref(16)
 
 const displaySize = ref(576)
 const isPainting = ref(false)
-const showModal: any = ref(null)
-
+const showModal = ref<null | string>(null)
+const isDouble = ref(false)
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
@@ -246,7 +280,7 @@ const fillColor = (e: PointerEvent) => {
         c: -1
       })
       if (workspace.map_numbers.hasOwnProperty(key)) {
-        ctx.font = `${cellScaleSize.value / 2}px Inter, Arial, sans-serif`
+        ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
         ctx.textBaseline = 'middle'
         ctx.textAlign = 'center'
         ctx.fillStyle = '#000'
@@ -269,7 +303,7 @@ const reDraw = () => {
     PICTURE_SIZE.value.h
   )
   // ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
-  ctx.font = `${cellScaleSize.value / 2}px Inter, Arial, sans-serif`
+  ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#000'
@@ -358,6 +392,13 @@ const reset = () => {
   workspace.map_numbers = {}
   workspace.steps = []
   reDraw()
+}
+
+const reSize = () => {
+  workspace.width = newSize.value
+  workspace.height = newSize.value
+  options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
+  reset()
 }
 
 watch(isPainting, async (newValue) => {
