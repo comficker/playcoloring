@@ -30,7 +30,7 @@ const config = useRuntimeConfig()
 const route = useRoute()
 const params = computed(() => {
   let taxonomies__id_string, width, height, color, user, is_template = true
-  if (!['shared', 'template', 'color', 'size', 'author'].includes(route.params.tax_id.toString())) {
+  if (!['shared', 'pages', 'color', 'size', 'author'].includes(route.params.tax_id.toString())) {
     taxonomies__id_string = route.params.tax_id
   } else if (route.params.tax_id.toString() === 'shared') {
     is_template = false
@@ -64,13 +64,17 @@ const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const crumbs = computed<IBreadcrumb[]>(() => {
   let icon = `i-con-${route.params.tax_id}`
+  let name = capitalize(route.params.tax_id.toString())
   if (route.params.tax_id === 'author') {
     icon = 'i-con-user'
   } else if (route.params.tax_id === 'size') {
     icon = 'i-con-ruler'
+  } else if (route.params.tax_id === 'pages') {
+    name = "Coloring " + name
+    icon = 'i-con-color'
   }
   const arr = [{
-    name: capitalize(route.params.tax_id.toString()),
+    name,
     to: `/${route.params.tax_id}`,
     icon: icon
   }]
@@ -96,6 +100,10 @@ const meta = computed(() => {
     let title = `${capitalize(route.params.tax_id.toString())}`
     if (route.params.id_string) {
       title = title + ' ' + (route.params.tax_id.toString() === 'color' ? '#' : '') + route.params.id_string.toString()
+    } else {
+      if (route.params.tax_id === 'pages') {
+        title = "Coloring " + title
+      }
     }
     return {
       title: title,

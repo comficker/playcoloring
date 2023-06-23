@@ -8,6 +8,38 @@
     <div class="w-full">
       <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
     </div>
+    <div class="flex flex-col md:flex-row gap-2 justify-between">
+      <div class="flex gap-2">
+        <div class="btn border" @click="print">
+          <div class="w-4 h-4 i-con-print"/>
+        </div>
+        <a :href="meta.imgSrc" download target="_blank" class="btn border">
+          <div class="w-4 h-4 i-con-download"/>
+        </a>
+        <nuxt-link :to="`/?id=${value.id_string}`" class="btn border uppercase font-semibold text-sm">
+          <div class="w-4 h-4 i-con-gamepad"/>
+          <span>Play</span>
+        </nuxt-link>
+      </div>
+      <div class="flex gap-2">
+        <client-only>
+          <ShareNetwork
+            v-for="item in networks"
+            :key="item"
+            :network="item"
+            :url="meta.url"
+            :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
+            :description="meta.desc"
+            :quote="meta.desc"
+            :hashtags="value.taxonomies.map(x => x.title).join(',')"
+            :media="meta.imgSrc"
+            class="btn border"
+          >
+            <div class="w-4 h-4" :class="`i-con-${item}`"/>
+          </ShareNetwork>
+        </client-only>
+      </div>
+    </div>
     <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
       <div class="text-sm flex gap-2 flex-wrap items-center">
         <div class="w-5 h-5 i-con-tags"/>
@@ -65,38 +97,6 @@
           <div class="text-sm text-gray-500">Owner</div>
           <div class="font-bold">__</div>
         </div>
-      </div>
-    </div>
-    <div class="flex flex-col md:flex-row gap-2 justify-between">
-      <div class="flex gap-2">
-        <div class="btn border" @click="print">
-          <div class="w-4 h-4 i-con-print"/>
-        </div>
-        <a :href="meta.imgSrc" download target="_blank" class="btn border">
-          <div class="w-4 h-4 i-con-download"/>
-        </a>
-        <nuxt-link :to="`/?id=${value.id_string}`" class="btn border uppercase font-semibold text-sm">
-          <div class="w-4 h-4 i-con-gamepad"/>
-          <span>Play</span>
-        </nuxt-link>
-      </div>
-      <div class="flex gap-2">
-        <client-only>
-          <ShareNetwork
-            v-for="item in networks"
-            :key="item"
-            :network="item"
-            :url="meta.url"
-            :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
-            :description="meta.desc"
-            :quote="meta.desc"
-            :hashtags="value.taxonomies.map(x => x.title).join(',')"
-            :media="meta.imgSrc"
-            class="btn border"
-          >
-            <div class="w-4 h-4" :class="`i-con-${item}`"/>
-          </ShareNetwork>
-        </client-only>
       </div>
     </div>
   </div>
@@ -169,7 +169,7 @@ onMounted(() => {
 
 const meta = computed(() => {
   const defaultDesc = ''
-  const url = `https://www.playcoloring.com/${(value.is_template ? 'template' : 'shared')}/${value.id_string}`
+  const url = `https://www.playcoloring.com/${(value.is_template ? 'pages' : 'shared')}/${value.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
   if (value.is_template) {
     src = src + '?type=template'
@@ -192,12 +192,12 @@ const meta = computed(() => {
 })
 
 const crumbs = computed<IBreadcrumb[]>(() => [{
-  name: value.is_template ? 'Template' : 'Gallery',
-  to: value.is_template ? '/template' : '/shared',
+  name: value.is_template ? 'Coloring Pages' : 'Gallery',
+  to: value.is_template ? '/pages' : '/shared',
   icon: value.is_template ? 'i-con-template' : 'i-con-shared',
 },{
   name: meta.value.title,
-  to: (value.is_template ? '/template/' : '/shared/') + value.id_string,
+  to: (value.is_template ? '/pages/' : '/shared/') + value.id_string,
   icon: 'i-con-picture',
 }])
 

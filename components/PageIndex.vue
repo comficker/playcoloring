@@ -47,10 +47,10 @@ const faqs = ref([
 <template>
   <div class="space-y-6 max-w-xl mx-auto">
     <PixelColoring/>
-    <div class="space-y-2">
-      <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/template')">
+    <div class="grid gap-2 md:grid-cols-2">
+      <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
         <div>
-          <nuxt-link to="/template" class="text-2xl font-bold group-hover:underline">Template</nuxt-link>
+          <nuxt-link to="/pages" class="text-2xl font-bold group-hover:underline">Coloring Pages</nuxt-link>
           <p>You might want to try</p>
         </div>
         <div class="i-con-right w-6 h-6"/>

@@ -7,6 +7,6 @@
 const route = useRoute()
 
 const isDetail = computed(() => {
-  return route.params.tax_id && route.params.id_string && ['template', 'shared'].includes(route.params.tax_id.toString())
+  return route.params.tax_id && route.params.id_string && ['pages', 'shared'].includes(route.params.tax_id.toString())
 })
 </script>

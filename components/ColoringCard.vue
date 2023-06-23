@@ -48,6 +48,6 @@ const config = useRuntimeConfig()
 
 const src = computed(() => `${config.public.apiBase}/coloring/files/${value.id_string}.png?type=thumbnail`)
 const to = computed(() => {
-  return `/${value.is_template ? 'template': 'shared'}/${value.id_string}`
+  return `/${value.is_template ? 'pages': 'shared'}/${value.id_string}`
 })
 </script>
