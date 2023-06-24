@@ -50,6 +50,7 @@
             }"
               />
               <div
+                id="controller"
                 class="absolute z-50 inset-0"
                 @touchstart="handleMouseDown"
                 @touchmove="handleMouseHover"
@@ -187,6 +188,7 @@ const displaySize = ref(576)
 const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
+
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
@@ -256,40 +258,48 @@ const onClickColor = (color: string | null) => {
   options.value.color = color
 }
 
+const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  const key = `${x / cellScaleSize.value}_${y / cellScaleSize.value}`
+  if (options.value.pointer === key) {
+    return
+  }
+  options.value.pointer = key
+  if (options.value.color) {
+    ctx.fillStyle = options.value.color;
+    ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
+    workspace.steps.push({
+      k: key,
+      c: workspace.colors.indexOf(options.value.color),
+    })
+  } else {
+    ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
+    workspace.steps.push({
+      k: key,
+      c: -1
+    })
+    if (workspace.map_numbers.hasOwnProperty(key)) {
+      ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#000'
+      ctx.fillText(
+        workspace.map_numbers[key].toString(),
+        x + cellScaleSize.value / 2,
+        y + cellScaleSize.value / 2
+      );
+    }
+  }
+}
+
 const fillColor = (e: PointerEvent) => {
   const ctx = getCtx('workspace')
   if (ctx) {
-    const x = e.offsetX - e.offsetX % cellScaleSize.value
-    const y = e.offsetY - e.offsetY % cellScaleSize.value
-    const key = `${x / cellScaleSize.value}_${y / cellScaleSize.value}`
-    if (options.value.pointer === key) {
-      return
-    }
-    options.value.pointer = key
-    if (options.value.color) {
-      ctx.fillStyle = options.value.color;
-      ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
-      workspace.steps.push({
-        k: key,
-        c: workspace.colors.indexOf(options.value.color),
-      })
-    } else {
-      ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
-      workspace.steps.push({
-        k: key,
-        c: -1
-      })
-      if (workspace.map_numbers.hasOwnProperty(key)) {
-        ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
-        ctx.textBaseline = 'middle'
-        ctx.textAlign = 'center'
-        ctx.fillStyle = '#000'
-        ctx.fillText(
-          workspace.map_numbers[key].toString(),
-          x + cellScaleSize.value / 2,
-          y + cellScaleSize.value / 2
-        );
-      }
+    const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
+    const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
+    filCanvas(ctx, x, y)
+    if (isDouble.value) {
+      const x2 = Math.round((workspace.width - 1 - x / cellScaleSize.value) * cellScaleSize.value)
+      filCanvas(ctx, x2, y)
     }
   }
 }
@@ -448,6 +458,14 @@ onBeforeRouteUpdate(n => {
   background-size: var(--zoom-size);
   background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px),
   linear-gradient(to bottom, #F0F0F0 1px, transparent 1px);
+  background-position-x: -0.5px;
+  background-position-y: -0.5px;
+}
+
+#controller {
+  background-size: 50% 50%;
+  background-image: linear-gradient(to right, #DDDDDD 1px, transparent 1px),
+  linear-gradient(to bottom, #DDDDDD 1px, transparent 1px);
   background-position-x: -0.5px;
   background-position-y: -0.5px;
 }
