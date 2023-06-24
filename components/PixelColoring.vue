@@ -107,17 +107,42 @@
     </div>
     <div class="flex gap-4 justify-between flex-wrap">
       <div class="flex gap-2 font-semibold text-sm flex-wrap">
-        <div
-          v-for="(c, i) in workspace.colors" :key="c"
-          class="cursor-pointer border p-2 rounded-[2px]"
-          :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
-          :style="{backgroundColor: c}"
-          @click="onClickColor(c)"
-        >
-          <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
-            <div>{{ i }}</div>
-          </div>
+        <div class="cursor-pointer border p-2" @click="openPalette">
+          <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
         </div>
+        <div
+          v-if="isCustomPalette"
+          class="cursor-pointer border p-2 flex gap-2 items-center font-semibold leading-none"
+          @click="changePalette"
+        >
+          <span>Palette</span>
+          <div class="w-4 h-4 i-con-down"/>
+        </div>
+        <div
+          v-if="isCustomPalette"
+          class="cursor-pointer border p-2 flex gap-2 items-center font-semibold leading-none text-green-500 fill-green-500"
+          @click="changePalette"
+        >
+          <span>OK</span>
+          <div class="w-4 h-4 i-con-ok"/>
+        </div>
+        <template v-for="(c, i) in workspace.colors">
+          <div v-if="isCustomPalette" key="i" class="border box-content w-8 h-8">
+            <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
+          </div>
+          <div
+            v-else
+            :key="c"
+            class="cursor-pointer border p-2 rounded-[2px] box-border"
+            :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
+            :style="{backgroundColor: c}"
+            @click="onClickColor(c)"
+          >
+            <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
+              <div>{{ i }}</div>
+            </div>
+          </div>
+        </template>
         <div
           class="cursor-pointer border p-2 bg-white"
           :class="{'border-blue': !options.color}"
@@ -182,12 +207,14 @@ const workspace: Workspace = reactive<Workspace>({
   map_numbers: {},
   steps: []
 })
-const newSize = ref(16)
 
+const palettes = ref<string[][]>([])
+const newSize = ref(16)
 const displaySize = ref(576)
 const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
+const isCustomPalette = ref(false)
 
 const options = ref<Options>({
   color: '#FFF2CC',
@@ -409,6 +436,23 @@ const reSize = () => {
   workspace.height = newSize.value
   options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
   reset()
+}
+
+const openPalette = () => {
+  if (!isCustomPalette.value) {
+    isCustomPalette.value = true
+    palettes.value.push([...workspace.colors])
+  } else {
+    const last = palettes.value.pop()
+    workspace.colors = last ? [...last] : []
+    isCustomPalette.value = false
+  }
+}
+
+const changePalette = () => {
+  options.value.color = workspace.colors[0] || null
+  isCustomPalette.value = false
+  reDraw()
 }
 
 watch(isPainting, async (newValue) => {
