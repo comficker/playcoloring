@@ -286,7 +286,7 @@ const onClickColor = (color: string | null) => {
 }
 
 const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
-  const key = `${x / cellScaleSize.value}_${y / cellScaleSize.value}`
+  const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
   if (options.value.pointer === key) {
     return
   }
