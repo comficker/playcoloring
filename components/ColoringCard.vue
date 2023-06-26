@@ -28,7 +28,7 @@
       <div class="flex gap-1 items-center">
         <div class="i-con-user w-4 h-4"></div>
         <nuxt-link
-          :to="`/author/anonymous`"
+          :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`"
           class="font-semibold hover:underline">
           <span>Anonymous</span>
         </nuxt-link>

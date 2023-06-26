@@ -91,7 +91,7 @@
         <div class="w-8 h-8 i-con-user"/>
         <div>
           <div class="text-sm text-gray-500">Creator</div>
-          <nuxt-link to="/author/anonymous" class="font-bold hover:underline">Anonymous</nuxt-link>
+          <nuxt-link :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`" class="font-bold hover:underline">Anonymous</nuxt-link>
         </div>
       </div>
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">

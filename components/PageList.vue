@@ -65,15 +65,22 @@ const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const crumbs = computed<IBreadcrumb[]>(() => {
   let icon
-  let name = capitalize(route.params.tax_id.toString())
-  if (route.params.tax_id === 'author') {
+  const tax_id = route.params.tax_id.toString()
+  let name
+  if (tax_id.startsWith('author')) {
+    name = "Author"
     icon = 'i-con-user'
-  } else if (route.params.tax_id === 'size') {
+  } else if (tax_id.startsWith('size')) {
+    name = "Size"
     icon = 'i-con-ruler'
-  } else if (route.params.tax_id === 'pages') {
-    name = "Coloring " + name
+  } else if (tax_id.startsWith('color')) {
+    name = "Color"
     icon = 'i-con-color'
-  } else {
+  } else if (route.params.tax_id === 'pages') {
+    name = "Coloring Pages"
+    icon = 'i-con-color'
+  } else if (route.params.tax_id === 'arts') {
+    name = "Pixel Arts"
     icon = 'i-con-color'
   }
   const arr = [{
@@ -82,8 +89,9 @@ const crumbs = computed<IBreadcrumb[]>(() => {
     icon: icon
   }]
   if (route.params.id_string) {
+    const temp = route.params.id_string.toString().split("-")
     arr.push({
-      name: (route.params.tax_id.toString() === 'color' ? '#' : '') + route.params.id_string.toString(),
+      name: variant.instance?.name || `${capitalize(temp[0])}: ${temp[1]}`,
       to: `/${route.params.tax_id}/${route.params.id_string}`,
       icon: null
     })
