@@ -116,7 +116,7 @@ const actionSave = async () => {
     </div>
     <div v-else>
       <p class="text-gray-500">Your work was saved, you can check it
-        <nuxt-link class="underline" :to="`/shared/${saved.id_string}`">here</nuxt-link>
+        <nuxt-link class="underline" :to="`/post/${saved.id_string}`">here</nuxt-link>
       </p>
     </div>
   </div>
