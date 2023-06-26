@@ -103,7 +103,8 @@ const meta = computed(() => {
     let title = route.params.tax_id === 'arts' ? 'Pixel Arts': 'Coloring Pages';
     const id_string = route.params.id_string ? route.params.id_string.toString() : ''
     if (id_string) {
-      title = `${capitalize(id_string.replace("-", " "))}: ${title}`
+      const arr = id_string.split("-")
+      title = `${capitalize(arr[0])} ${id_string.startsWith("color-") ? "#": ""}${arr[1].toUpperCase()}: ${title}`
     }
     return {
       title: title,

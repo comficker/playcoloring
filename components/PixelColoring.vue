@@ -127,7 +127,7 @@
           <div class="w-4 h-4 i-con-ok"/>
         </div>
         <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" key="i" class="border rounded-full md:rounded box-content w-8 h-8">
+          <div v-if="isCustomPalette" key="i" class="border rounded-full md:roundeds box-content w-8 h-8">
             <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
           </div>
           <div

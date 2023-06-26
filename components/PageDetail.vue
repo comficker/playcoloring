@@ -62,7 +62,7 @@
       <nuxt-link
         class="w-6 h-6 border"
         v-for="item in value.colors" :key="item"
-        :to="`/${space}/color-${item.replace('#', '')}`"
+        :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
         :style="{background: item}"
       >
         <span class="hidden">{{ item }}</span>
