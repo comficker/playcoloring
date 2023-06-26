@@ -58,7 +58,7 @@ const faqs = ref([
       <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/arts')">
         <div>
           <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Arts</nuxt-link>
-          <p>Get free pixel art!</p>
+          <p>Pixel arts by community!</p>
         </div>
         <div class="i-con-right w-6 h-6"/>
       </div>

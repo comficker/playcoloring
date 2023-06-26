@@ -69,7 +69,7 @@
             >
               <div
                 v-if="!!showModal"
-                class="fixed md:absolute bottom-[-1px] left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-xl rounded-tr-xl border"
+                class="fixed md:absolute bottom-[-1px] left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-lg rounded-tr-lg border"
               >
                 <div v-if="showModal === 'loadFile'" class="p-4 cursor-pointer">
                   <input
@@ -127,7 +127,7 @@
           <div class="w-4 h-4 i-con-ok"/>
         </div>
         <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" key="i" class="border rounded-full md:roundeds box-content w-8 h-8">
+          <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8">
             <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
           </div>
           <div

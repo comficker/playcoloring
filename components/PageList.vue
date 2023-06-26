@@ -40,7 +40,7 @@ const params = computed(() => {
       width = arr[0]
       height = arr[1]
     } else if (id_string.startsWith("color-")) {
-      color = test[1]
+      color = test[1].toLowerCase()
     } else if (id_string.startsWith("creator-")) {
       user = test[1]
     } else {
@@ -112,7 +112,11 @@ const meta = computed(() => {
     const id_string = route.params.id_string ? route.params.id_string.toString() : ''
     if (id_string) {
       const arr = id_string.split("-")
-      title = `${capitalize(arr[0])} ${id_string.startsWith("color-") ? "#": ""}${arr[1].toUpperCase()}: ${title}`
+      if (id_string.startsWith("color-")) {
+        title = `#${arr[1].toUpperCase()}: ` + title
+      } else {
+        title = arr[1] + ": " + title
+      }
     }
     return {
       title: title,
