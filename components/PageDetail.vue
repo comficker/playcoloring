@@ -1,12 +1,12 @@
 <template>
-  <div v-if="value" class="max-w-xl mx-auto space-y-4">
+  <div v-if="value" class="max-w-xl mx-auto space-y-6">
     <breadcrumb :crumbs="crumbs"/>
     <div>
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
       <p>{{ meta.desc }}</p>
     </div>
     <div class="w-full">
-      <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full h-full">
+      <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full md:max-w-sm mx-auto h-full">
     </div>
     <div class="flex flex-col md:flex-row gap-4 justify-between">
       <div class="flex-1 flex gap-2">
