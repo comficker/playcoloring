@@ -1,7 +1,7 @@
 <template>
   <div class="border-emerald-100 border divide-y divide-emerald-100">
     <div class="pt-full relative bg-white">
-      <div class="absolute inset-4 p-3 group">
+      <div class="absolute inset-4 group">
         <img :src="src" :alt="value.name" class="group-hover:blur-sm duration-300 w-full h-full"/>
         <div
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
