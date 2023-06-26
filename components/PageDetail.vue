@@ -50,7 +50,7 @@
       <nuxt-link
         class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
         v-for="item in value.taxonomies" :key="item.id"
-        :to="`/${item.id_string}`"
+        :to="`/${space}/${item.id_string}`"
       >
         <span>{{ item.title }}</span>
       </nuxt-link>
@@ -62,7 +62,7 @@
       <nuxt-link
         class="w-6 h-6 border"
         v-for="item in value.colors" :key="item"
-        :to="`/color/${item.replace('#', '')}`"
+        :to="`/${space}/color-${item.replace('#', '')}`"
         :style="{background: item}"
       >
         <span class="hidden">{{ item }}</span>
@@ -81,7 +81,7 @@
         <div>
           <div class="text-sm text-gray-500">Size</div>
           <div class="flex gap-4">
-            <nuxt-link :to="`/size/${value.width}x${value.height}`" class="flex gap-1 hover:underline">
+            <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
               <div class="font-bold">{{value.width}}x{{value.height}}</div>
             </nuxt-link>
           </div>
@@ -172,7 +172,7 @@ onMounted(() => {
 
 const meta = computed(() => {
   const defaultDesc = ''
-  const url = `https://www.playcoloring.com/${(value.is_template ? 'pages' : 'shared')}/${value.id_string}`
+  const url = `https://www.playcoloring.com/${(value.is_template ? 'pages' : 'arts')}/${value.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
   if (value.is_template) {
     src = src + '?type=template'
@@ -195,14 +195,19 @@ const meta = computed(() => {
 })
 
 const crumbs = computed<IBreadcrumb[]>(() => [{
-  name: value.is_template ? 'Coloring Pages' : 'Gallery',
-  to: value.is_template ? '/pages' : '/shared',
+  name: value.is_template ? 'Coloring Pages' : 'Arts',
+  to: value.is_template ? '/pages' : '/arts',
   icon: value.is_template ? 'i-con-template' : 'i-con-shared',
 },{
   name: meta.value.title,
   to: (value.is_template ? '/pages/' : '/shared/') + value.id_string,
   icon: 'i-con-picture',
 }])
+
+
+const space = computed(() => {
+  return value.is_template ? 'pages' : 'arts'
+})
 
 const print = () => {
 

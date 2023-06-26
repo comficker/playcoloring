@@ -11,7 +11,7 @@ const is_home = computed(() => route.name === "index")
         <img class="w-auto" src="/logo.png" alt="" :class="{'h-12': is_home, 'h-6': !is_home}">
       </nuxt-link>
     </h1>
-    <div v-if="is_home" class="text-lg">Download printable coloring or play online</div>
+    <div v-if="is_home" class="text-lg">Online pixel coloring editor</div>
   </div>
 </template>
 

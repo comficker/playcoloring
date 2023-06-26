@@ -14,12 +14,13 @@
 </template>
 
 <script setup lang="ts">
+import {computed} from "vue";
 import {IBreadcrumb} from "~/interface";
 import {useHead, useRoute, useRuntimeConfig} from "#app";
 import {ResponseSharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import ColoringCard from "~/components/ColoringCard.vue";
-import {computed} from "vue";
+
 import {useSeoMeta} from "nuxt/app";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 function capitalize(word: string) {
@@ -29,21 +30,21 @@ function capitalize(word: string) {
 const config = useRuntimeConfig()
 const route = useRoute()
 const params = computed(() => {
-  let taxonomies__id_string, width, height, color, user, is_template = true
-  if (!['shared', 'pages', 'color', 'size', 'author'].includes(route.params.tax_id.toString())) {
-    taxonomies__id_string = route.params.tax_id
-  } else if (route.params.tax_id.toString() === 'shared') {
-    is_template = false
-  }
-  if (route.params.id_string) {
-    if (route.params.tax_id.toString() === 'size') {
-      const arr = route.params.id_string.toString().split('x')
+  let taxonomies__id_string, width, height, color, user
+  const is_template = route.params.tax_id.toString() === 'pages'
+  const id_string = route.params.id_string ? route.params.id_string.toString() : ''
+  if (id_string) {
+    const test = id_string.split("-")
+    if (id_string.startsWith("size-")) {
+      const arr = test[1].split('x')
       width = arr[0]
       height = arr[1]
-    } else if (route.params.tax_id.toString() === 'color') {
-      color = route.params.id_string.toString()
-    } else if (route.params.tax_id === 'author' && route.params.id_string.toString() !== 'anonymous') {
-      user = route.params.id_string.toString()
+    } else if (id_string.startsWith("color-")) {
+      color = test[1]
+    } else if (id_string.startsWith("creator-")) {
+      user = test[1]
+    } else {
+      taxonomies__id_string = route.params.id_string
     }
   }
 
@@ -63,7 +64,7 @@ const {data: r2} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-page
 const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const crumbs = computed<IBreadcrumb[]>(() => {
-  let icon = null
+  let icon
   let name = capitalize(route.params.tax_id.toString())
   if (route.params.tax_id === 'author') {
     icon = 'i-con-user'
@@ -94,21 +95,16 @@ const meta = computed(() => {
   let defaultDesc = ``
   if (variant.instance) {
     return {
-      title: variant.instance.title + " Coloring Pages",
+      title: variant.instance.title + (variant.instance.is_template ? " Coloring Pages": " Pixel Arts"),
       desc: variant.instance.desc || defaultDesc,
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
-    let title = `${capitalize(route.params.tax_id.toString())}`
-    if (route.params.id_string) {
-      title = title + ' ' + (route.params.tax_id.toString() === 'color' ? '#' : '') + route.params.id_string.toString() + " "
-    } else {
-      if (route.params.tax_id === 'pages') {
-        title = ""
-        defaultDesc = 'Our collection of coloring pages features a wide variety of themes, including animals, nature, and more.'
-      }
+    let title = route.params.tax_id === 'arts' ? 'Pixel Arts': 'Coloring Pages';
+    const id_string = route.params.id_string ? route.params.id_string.toString() : ''
+    if (id_string) {
+      title = `${capitalize(id_string.replace("-", " "))}: ${title}`
     }
-    title = title + "Coloring Pages"
     return {
       title: title,
       desc: defaultDesc,
