@@ -174,9 +174,6 @@ const meta = computed(() => {
   const defaultDesc = ''
   const url = `https://www.playcoloring.com/${(value.is_template ? 'pages' : 'arts')}/${value.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${value.id_string}.png`
-  if (value.is_template) {
-    src = src + '?type=template'
-  }
   if (value) {
     return {
       url: url,
