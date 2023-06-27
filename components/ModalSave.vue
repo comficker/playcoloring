@@ -29,10 +29,10 @@ const form = ref({
 } as any)
 
 const result = computed(() => {
-  const out: {[key:string]: string} = {}
+  const out: {[key:string]: number} = {}
   workspace.steps.forEach((step: Step) => {
     if (step.c >= 0) {
-      out[step.k] = workspace.colors[step.c]
+      out[step.k] = step.c
     } else {
       delete out[step.k]
     }
