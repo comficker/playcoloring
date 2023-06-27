@@ -103,7 +103,7 @@ const meta = computed(() => {
   let defaultDesc = ``
   if (variant.instance) {
     return {
-      title: variant.instance.title + (variant.instance.is_template ? " Coloring Pages": " Pixel Arts"),
+      title: variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages": " Pixel Arts"),
       desc: variant.instance.desc || defaultDesc,
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
