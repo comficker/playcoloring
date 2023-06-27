@@ -6,6 +6,9 @@
           <div class="i-con-plus w-3 h-3"/>
           <span>New</span>
         </div>
+        <div class="btn bg-gray-50 border" @click="loadSharedPage('random')">
+          <span>Random Template</span>
+        </div>
         <div class="md:block hidden">
           <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
             <span v-if="showModal === 'loadFile'">Done</span>
@@ -223,16 +226,16 @@ const options = ref<Options>({
 })
 
 const PICTURE_SIZE = computed(() => ({
-  w: workspace.width * Math.pow(2, options.value.zoom),
-  h: workspace.height * Math.pow(2, options.value.zoom)
+  w: Math.round(workspace.width * Math.pow(2, options.value.zoom)),
+  h: Math.round(workspace.height * Math.pow(2, options.value.zoom))
 }))
 
-const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
+const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
 const result = computed(() => {
-  const out: {[key:string]: string} = {}
+  const out: {[key:string]: number} = {}
   workspace.steps.forEach((step: Step) => {
     if (step.c >= 0) {
-      out[step.k] = workspace.colors[step.c]
+      out[step.k] = step.c
     } else {
       delete out[step.k]
     }
@@ -292,6 +295,8 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
   }
   options.value.pointer = key
   if (options.value.color) {
+    if (result.value[key] === workspace.colors.indexOf(options.value.color))
+      return;
     ctx.fillStyle = options.value.color;
     ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
     workspace.steps.push({
@@ -299,6 +304,9 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
       c: workspace.colors.indexOf(options.value.color),
     })
   } else {
+    if (typeof result.value[key] === 'undefined')
+      return;
+
     ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
     workspace.steps.push({
       k: key,
@@ -354,7 +362,7 @@ const reDraw = () => {
   })
   Object.keys(result.value).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
-    ctx.fillStyle = result.value[k];
+    ctx.fillStyle = workspace.colors[result.value[k]];
     ctx.fillRect(arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
   })
 }
@@ -436,6 +444,7 @@ const reSize = () => {
   workspace.height = newSize.value
   options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
   reset()
+  showModal.value = null
 }
 
 const openPalette = () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {SharedPage, Workspace} from "~/interface";
+import {computed, ref} from "vue";
+import {SharedPage, Step, Workspace} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import pkg from "lodash";
 
@@ -28,6 +28,18 @@ const form = ref({
   desc: null
 } as any)
 
+const result = computed(() => {
+  const out: {[key:string]: string} = {}
+  workspace.steps.forEach((step: Step) => {
+    if (step.c >= 0) {
+      out[step.k] = workspace.colors[step.c]
+    } else {
+      delete out[step.k]
+    }
+  })
+  return out
+})
+
 const onAddTag = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   if (!target.value) return;
@@ -41,9 +53,7 @@ const actionSave = async () => {
   const data = {
     ...cloneDeep(form.value),
     ...cloneDeep(workspace),
-  }
-  if (form.value.as_template) {
-    delete data.steps
+    map_numbers: result.value
   }
   saving.value = true
   const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {
