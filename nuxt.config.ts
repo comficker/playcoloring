@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       viewport: 'width=device-width,initial-scale=1',
-      titleTemplate: '%s - Pixel Coloring - Coloring by Number - playcoloring.com',
+      titleTemplate: '%s - playcoloring.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },

@@ -214,7 +214,7 @@ const print = () => {
 }
 
 useHead({
-  title: meta.value.title +  ` | ${value.width}x${value.height} | Pixel Coloring`,
+  title: meta.value.title +  ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number': 'Pixel Arts'}`,
   meta: [
     {
       name: "description",
@@ -224,7 +224,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: meta.value.title,
+  title: meta.value.title +  ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number': 'Pixel Arts'}`,
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',

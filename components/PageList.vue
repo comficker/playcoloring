@@ -127,7 +127,7 @@ const meta = computed(() => {
 })
 
 useHead({
-  title: meta.value.title + ' | Coloring Pages',
+  title: meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages'),
   meta: [
     {
       name: "description",
@@ -137,7 +137,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: meta.value.title + ' | Coloring Pages',
+  title: meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages'),
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',
