@@ -1,13 +1,13 @@
 <template>
-  <div class="max-w-xl mx-auto space-y-4">
+  <div class="max-w-xl mx-auto space-y-6">
     <breadcrumb :crumbs="crumbs"/>
     <div class="space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">{{ meta.desc }}</p>
     </div>
   </div>
-  <div class="max-w-3xl mx-auto mt-4">
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+  <div class="max-w-4xl mx-auto mt-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
       <coloring-card v-for="item in variant.results" :value="item"/>
     </div>
   </div>
