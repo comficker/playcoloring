@@ -1,5 +1,5 @@
 <template>
-  <div class="border-emerald-100 border divide-y divide-emerald-100">
+  <div class="border-emerald-100 border divide-y divide-emerald-100 rounded-lg overflow-hidden">
     <div class="pt-full relative bg-white">
       <div class="absolute inset-4 group">
         <img :src="src" :alt="value.name" class="group-hover:blur-sm duration-300 w-full h-full"/>
@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="space-y-2 py-2 p-3 bg-gray-100 text-xs">
+    <div class="space-y-2 py-2 p-3 bg-gray-50 text-xs">
       <div class="flex gap-1 items-center">
         <div class="i-con-picture w-4 h-4"></div>
         <nuxt-link
