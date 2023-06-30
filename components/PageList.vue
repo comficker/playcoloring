@@ -113,9 +113,9 @@ const meta = computed(() => {
     if (id_string) {
       const arr = id_string.split("-")
       if (id_string.startsWith("color-")) {
-        title = `#${arr[1].toUpperCase()}: ` + title
+        title = `#${arr[1].toUpperCase()} ` + title
       } else {
-        title = arr[1] + ": " + title
+        title = arr[1] + " " + title
       }
     }
     return {
@@ -126,8 +126,15 @@ const meta = computed(() => {
   }
 })
 
+const set_title = computed(() => {
+  if (route.params.id_string) {
+    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages')
+  }
+  return meta.value.title
+})
+
 useHead({
-  title: meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages'),
+  title: set_title.value,
   meta: [
     {
       name: "description",
@@ -137,7 +144,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages'),
+  title: set_title.value,
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',

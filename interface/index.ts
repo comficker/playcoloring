@@ -90,7 +90,7 @@ export interface Workspace {
   colors: string[]
   map_numbers: {[key: string]: number}
   steps: Step[]
-  template?: number
+  template?: number | undefined
 }
 
 export interface IBreadcrumb {

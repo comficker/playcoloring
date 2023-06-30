@@ -53,7 +53,7 @@ const actionSave = async () => {
   const data = {
     ...cloneDeep(form.value),
     ...cloneDeep(workspace),
-    map_numbers: result.value
+    map_numbers: workspace.map_numbers || result.value
   }
   saving.value = true
   const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {

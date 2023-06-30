@@ -6,8 +6,18 @@
           <div class="i-con-plus w-3 h-3"/>
           <span>New</span>
         </div>
-        <div class="btn bg-gray-50 border" @click="loadSharedPage('random')">
-          <span>Random Template</span>
+        <div class="relative">
+          <div
+            class="btn bg-gray-50 border"
+            @click="loadSharedPage('random')"
+          >
+            <span>Random Template</span>
+          </div>
+          <div
+            v-if="fetchingPercent < 101"
+            class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded"
+            :style="{width: `${fetchingPercent}%`}"
+          />
         </div>
         <div class="md:block hidden">
           <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
@@ -74,11 +84,17 @@
                 v-if="!!showModal"
                 class="fixed md:absolute bottom-[-1px] left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-lg rounded-tr-lg border"
               >
-                <div v-if="showModal === 'loadFile'" class="p-4 cursor-pointer">
+                <div v-if="showModal === 'loadFile'" class="p-4 space-y-3 cursor-pointer">
+                  <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
+                    <p>You can load your pixel art by click to select file!</p>
+                  </div>
                   <input
                     id="inputFile" type="file" class="w-full" placeholder="Load"
                     @input="loadFile"
                   >
+                  <div v-if="loadErrs.length" class="p-4 bg-yellow-100 py-2 text-sm border rounded-[2px]">
+                    <div v-for="e in loadErrs" :key="e">{{e}}</div>
+                  </div>
                 </div>
                 <modal-save v-else-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
                 <div v-else-if="showModal === 'ruler'" class="p-4 space-y-3">
@@ -218,12 +234,13 @@ const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
 const isCustomPalette = ref(false)
-
+const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
   pointer: '',
 })
+const loadErrs = ref<string[]>([])
 
 const PICTURE_SIZE = computed(() => ({
   w: Math.round(workspace.width * Math.pow(2, options.value.zoom)),
@@ -368,11 +385,16 @@ const reDraw = () => {
 }
 
 const loadFile = () => {
+  loadErrs.value = []
   const fileElm: HTMLInputElement | null = document.getElementById("inputFile") as HTMLInputElement
   const ctx = getCtx('workspace')
   if (fileElm && ctx) {
     const img = new Image;
     img.onload = function () {
+      if (img.width > 32 || img.height > 32) {
+        loadErrs.value.push('Your pixel art must less than or equal 32x32 pixels')
+        return
+      }
       ctx?.drawImage(img, 0, 0)
       workspace.colors = []
       workspace.map_numbers = {}
@@ -380,6 +402,7 @@ const loadFile = () => {
       workspace.id = 0
       workspace.width = img.width
       workspace.height = img.height
+      workspace.template = undefined
       for (let x = 0; x < img.width; x++) {
         for (let y = 0; y < img.height; y++) {
           const pixelData: any = ctx?.getImageData(x, y, 1, 1);
@@ -397,6 +420,9 @@ const loadFile = () => {
       showModal.value = null
       reDraw()
     }
+    img.onerror = function () {
+      loadErrs.value.push('Sorry, I can\'t load your image!')
+    }
     const files = fileElm.files
     if (files && files[0]) {
       const reader = new FileReader
@@ -409,6 +435,14 @@ const loadFile = () => {
 }
 
 const loadSharedPage = async (id: string) => {
+  showModal.value = null
+  if (fetchingPercent.value < 101) return
+  fetchingPercent.value = 0
+  let timeLeft = 50
+  const itv = setInterval(() => {
+    fetchingPercent.value = fetchingPercent.value + timeLeft / 2
+    timeLeft = timeLeft / 2
+  }, 100)
   const {data} = await useAuthFetch(`/coloring/shared-pages/${id}/`)
   if (!data.value) return
   const value = data.value as SharedPage
@@ -420,10 +454,17 @@ const loadSharedPage = async (id: string) => {
   workspace.steps = []
   if (value.is_template) {
     workspace.template = workspace.template || value.id
+  } else {
+    workspace.template = undefined
   }
   options.value.color = value.colors[0]
   reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;
+  clearInterval(itv)
+  fetchingPercent.value = 100
+  setTimeout(() => {
+    fetchingPercent.value = 101
+  }, 300)
 }
 
 const toggleModal = (type: string | null) => {
