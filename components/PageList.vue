@@ -93,18 +93,22 @@ const crumbs = computed<IBreadcrumb[]>(() => {
     arr.push({
       name: variant.instance?.name || `${capitalize(temp[0])}: ${temp[1]}`,
       to: `/${route.params.tax_id}/${route.params.id_string}`,
-      icon: null
+      icon: undefined
     })
   }
   return arr
 })
 
 const meta = computed(() => {
-  let defaultDesc = ``
+  let defaultDesc = `Free {name} that you can play online or print out and color.`
+  if (route.params.tax_id !== 'pages') {
+    defaultDesc = `Free download {name} made by many Pixel Artists`
+  }
   if (variant.instance) {
+    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number": " Pixel Arts")
     return {
-      title: variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages": " Pixel Arts"),
-      desc: variant.instance.desc || defaultDesc,
+      title: title,
+      desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase),
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
@@ -120,7 +124,7 @@ const meta = computed(() => {
     }
     return {
       title: title,
-      desc: defaultDesc,
+      desc: defaultDesc.replace("{name}", title),
       imgSrc: '/screenshot/default.png'
     }
   }

@@ -7,7 +7,7 @@ import PixelColoring from "~/components/PixelColoring.vue";
 const router = useRouter()
 const config = useRuntimeConfig()
 const title = "Online Pixel Coloring | Pixel Editor"
-const desc = 'Pixel Coloring editor is an online coloring platform designed for artists of all ages and skill levels. .'
+const desc = 'Pixel Coloring editor is an online coloring platform designed for artists of all ages and skill levels. Our Pixel Editor is the perfect tool for bringing your imagination to life.'
 useSeoMeta({
   title: title,
   description: desc,
