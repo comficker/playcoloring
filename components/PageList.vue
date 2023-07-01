@@ -108,7 +108,7 @@ const meta = computed(() => {
     const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number": " Pixel Arts")
     return {
       title: title,
-      desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase),
+      desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
