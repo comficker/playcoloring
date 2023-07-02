@@ -125,7 +125,7 @@
       </div>
     </div>
     <div class="flex gap-4 justify-between flex-wrap">
-      <div class="flex gap-2 font-semibold text-sm flex-wrap">
+      <div class="md:w-1/2 flex gap-2 font-semibold text-sm flex-wrap">
         <div class="cursor-pointer border p-2" @click="openPalette">
           <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
         </div>
@@ -170,7 +170,10 @@
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
       </div>
-      <div class="flex gap-2 flex-wrap">
+      <div class="flex gap-2 flex-wrap items-start">
+        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" :class="{'border-blue': isMoving}" @click="isMoving = !isMoving">
+          <div class="i-con-move w-4 h-4"/>
+        </div>
         <div
           class="cursor-pointer border p-2 rounded-[2px] bg-white"
           :class="{'border-blue': showModal === 'ruler'}"
@@ -220,8 +223,6 @@ const workspace: Workspace = reactive<Workspace>({
     "#F4B183",
     "#DFA67B",
     "#245953",
-    "#408E91",
-    "#B46060",
   ],
   map_numbers: {},
   steps: []
@@ -234,6 +235,7 @@ const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
 const isCustomPalette = ref(false)
+const isMoving = ref(false)
 const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',

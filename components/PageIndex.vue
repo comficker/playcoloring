@@ -6,8 +6,8 @@ import ColoringCard from "~/components/ColoringCard.vue";
 import PixelColoring from "~/components/PixelColoring.vue";
 const router = useRouter()
 const config = useRuntimeConfig()
-const title = "Online Pixel Coloring | Pixel Editor"
-const desc = 'Pixel Coloring editor is an online coloring platform designed for artists of all ages and skill levels. Our Pixel Editor is the perfect tool for bringing your imagination to life.'
+const title = "Play Coloring - Online Coloring by Number - Pixel Editor"
+const desc = 'Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.'
 useSeoMeta({
   title: title,
   description: desc,
@@ -20,16 +20,16 @@ useSeoMeta({
 const faqs = ref([
   {
     opened: true,
-    title: "What is coloring?",
-    aws: ["Coloring is an activity that involves filling in outlined designs or patterns with colors to create a finished image. This simple yet enjoyable activity is not only for kids, but it has become increasingly popular with adults as well."],
-  },
-  {
-    opened: true,
-    title: "Why you love coloring?",
+    title: "Why we love coloring?",
     aws: [
       "It is often used as a relaxation tool and a form of art therapy, allowing individuals to unwind and express themselves creatively. Coloring has been found to have calming effects, reducing anxiety, and increasing focus and mindfulness.",
       "Additionally, it can develop hand-eye coordination and fine motor skills in children, while building a sense of accomplishment and confidence through the completion of a colorful piece of art. Whether it's with pencils, markers, or digital tools, coloring is a fun and therapeutic activity that can be enjoyed by people of all ages."
     ]
+  },
+  {
+    opened: true,
+    title: "What is coloring?",
+    aws: ["Coloring is an activity that involves filling in outlined designs or patterns with colors to create a finished image. This simple yet enjoyable activity is not only for kids, but it has become increasingly popular with adults as well."],
   },
   {
     opened: true,
@@ -52,13 +52,16 @@ const faqs = ref([
       </div>
       <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/arts')">
         <div>
-          <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Arts</nuxt-link>
-          <p>Pixel arts by community!</p>
+          <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Art</nuxt-link>
+          <p>Pixel art by community!</p>
         </div>
         <div class="i-con-right w-6 h-6"/>
       </div>
     </div>
     <div class="space-y-4">
+      <h2 class="text-5xl font-bold">Hello world!</h2>
+      <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
+        <a href="/about" target="_blank" class="underline">About us!</a></p>
       <h2 class="text-5xl font-bold">FAQ</h2>
       <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
         <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
