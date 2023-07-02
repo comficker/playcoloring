@@ -80,7 +80,7 @@ const crumbs = computed<IBreadcrumb[]>(() => {
     name = "Coloring Pages"
     icon = 'i-con-color'
   } else if (route.params.tax_id === 'arts') {
-    name = "Pixel Arts"
+    name = "Pixel Art"
     icon = 'i-con-color'
   }
   const arr = [{
@@ -105,14 +105,14 @@ const meta = computed(() => {
     defaultDesc = `Free download {name} made by many Pixel Artists`
   }
   if (variant.instance) {
-    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number": " Pixel Arts")
+    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number": " Pixel Art")
     return {
       title: title,
       desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
-    let title = route.params.tax_id === 'arts' ? 'Pixel Arts': 'Coloring Pages';
+    let title = route.params.tax_id === 'arts' ? 'Pixel Art': 'Coloring Pages';
     const id_string = route.params.id_string ? route.params.id_string.toString() : ''
     if (id_string) {
       const arr = id_string.split("-")
@@ -132,7 +132,7 @@ const meta = computed(() => {
 
 const set_title = computed(() => {
   if (route.params.id_string) {
-    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Arts': ' - Coloring Pages')
+    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Art': ' - Coloring Pages')
   }
   return meta.value.title
 })
