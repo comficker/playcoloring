@@ -1,39 +1,55 @@
 <template>
   <div class="space-y-4">
-    <div class="flex gap-4 justify-between text-sm font-semibold">
-      <div class="flex gap-2">
-        <div class="btn bg-rose-700 text-white" @click="reset">
-          <div class="i-con-plus w-3 h-3"/>
-          <span>New</span>
+    <div class="flex flex-col md:flex-row gap-4 justify-between text-sm font-semibold">
+      <div class="flex gap-2 items-center">
+        <div v-if="isEditor" class="cursor-pointer flex gap-2 items-center p-2.5 px-5 rounded-[2px] bg-rose-700 text-white" @click="reset">
+          <div class="i-con-plus w-4 h-4"/>
+          <span class="leading-tight">New</span>
         </div>
-        <div class="relative">
-          <div
-            class="btn bg-gray-50 border"
-            @click="loadSharedPage('random')"
-          >
-            <span>Random Template</span>
+        <div v-else class="relative">
+          <div class="cursor-pointer p-2.5 px-5 rounded-[2px] bg-rose-700 text-white leading-tight" @click="loadSharedPage('random')">
+            <span>Random picture</span>
           </div>
           <div
             v-if="fetchingPercent < 101"
-            class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded"
+            class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div class="md:block hidden">
-          <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'loadFile' ? null : 'loadFile')">
-            <span v-if="showModal === 'loadFile'">Done</span>
-            <span v-else>Load</span>
-          </div>
+        <div v-if="isEditor" class="cursor-pointer flex gap-2 items-center p-2.5 px-5 rounded-[2px] border" @click="toggleModal(!!showModal ? null : 'load')">
+          <span class="leading-tight">Load</span>
+        </div>
+        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-gray-50" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+          <div class="i-con-save w-4 h-4"/>
+        </div>
+        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-gray-50" @click="actionDownload">
+          <div class="i-con-download w-4 h-4"/>
         </div>
       </div>
-      <div class="flex gap-2">
-        <div class="btn bg-gray-50 border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
-          <div class="i-con-save w-5 h-5"/>
-          <span>Save</span>
+      <div class="flex gap-2 items-center">
+        <div
+          v-if="isEditor"
+          class="cursor-pointer border p-2.5 rounded-[2px] bg-white"
+          :class="{'border-blue': isMoving}"
+          @click="isMoving = !isMoving"
+        >
+          <div class="i-con-move w-4 h-4"/>
         </div>
-        <div v-if="false" class="btn bg-green-500 text-white" @click="actionDownload">
-          <div class="i-con-download w-5 h-5"/>
-          <span>Download</span>
+        <div
+          class="cursor-pointer border p-2.5 rounded-[2px] bg-white"
+          :class="{'border-blue': showModal === 'ruler'}"
+          @click="showModal = showModal === 'ruler' ? null : 'ruler'"
+        >
+          <div class="i-con-ruler w-4 h-4"/>
+        </div>
+        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
+          <div class="i-con-compare w-4 h-4"/>
+        </div>
+        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" @click="handleZoom(true)">
+          <div class="i-con-zoom-in w-4 h-4"/>
+        </div>
+        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" @click="handleZoom(false)">
+          <div class="i-con-zoom-out w-4 h-4"/>
         </div>
       </div>
     </div>
@@ -42,7 +58,7 @@
         <div
           class="relative pt-full overflow-hidden border border-box"
           :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
-          <div id="wrapper">
+          <div id="wrapper" :class="{'grayscale': !!showModal}">
             <div
               id="workload" class="absolute"
               :style="{
@@ -57,14 +73,14 @@
               <div
                 id="cursor" class="absolute"
                 :style="{
-              backgroundColor: options.color || '#FFF',
-              width: `${cellScaleSize}px`,
-              height: `${cellScaleSize}px`
-            }"
+                  backgroundColor: options.color || '#FFF',
+                  width: `${cellScaleSize}px`,
+                  height: `${cellScaleSize}px`
+                }"
               />
               <div
                 id="controller"
-                class="absolute z-50 inset-0"
+                class="absolute inset-0"
                 @touchstart="handleMouseDown"
                 @touchmove="handleMouseHover"
                 @touchend="handleMouseUp"
@@ -77,14 +93,20 @@
           </div>
           <client-only>
             <Transition
+              enter-active-class="animated animated-faster animate-fade-in"
+              leave-active-class="animated animated-faster animate-fade-out"
+            >
+              <div v-if="!!showModal" class="absolute inset-0 bg-black/50" @click="showModal = null"/>
+            </Transition>
+            <Transition
               enter-active-class="animated animated-faster animate-slide-in-up"
               leave-active-class="animated animated-faster animate-slide-out-down"
             >
               <div
                 v-if="!!showModal"
-                class="fixed md:absolute bottom-[-1px] left-0 right-0 md:left-3 md:right-3 bg-white z-60 shadow-xl rounded-tl-lg rounded-tr-lg border"
+                class="fixed md:absolute bottom-[-1px] left-[-1px] right-[-1px] bg-white z-60 shadow-xl rounded-tl-2xl rounded-tr-2xl border"
               >
-                <div v-if="showModal === 'loadFile'" class="p-4 space-y-3 cursor-pointer">
+                <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>
                   </div>
@@ -124,72 +146,49 @@
         </div>
       </div>
     </div>
-    <div class="flex gap-4 justify-between flex-wrap">
-      <div class="md:w-1/2 flex gap-2 font-semibold text-sm flex-wrap">
-        <div class="cursor-pointer border p-2" @click="openPalette">
-          <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
-        </div>
-        <div
-          v-if="isCustomPalette"
-          class="cursor-pointer border p-2 flex gap-2 items-center font-semibold leading-none"
-          @click="changePalette"
-        >
-          <span>Palette</span>
-          <div class="w-4 h-4 i-con-down"/>
-        </div>
-        <div
-          v-if="isCustomPalette"
-          class="cursor-pointer border p-2 flex gap-2 items-center font-semibold leading-none text-green-500 fill-green-500"
-          @click="changePalette"
-        >
-          <span>OK</span>
-          <div class="w-4 h-4 i-con-ok"/>
-        </div>
-        <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8">
-            <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
-          </div>
-          <div
-            v-else
-            :key="c"
-            class="cursor-pointer border p-2 rounded-[2px] box-border"
-            :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
-            :style="{backgroundColor: c}"
-            @click="onClickColor(c)"
-          >
-            <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
-              <div>{{ i }}</div>
-            </div>
-          </div>
-        </template>
-        <div
-          class="cursor-pointer border p-2 bg-white"
-          :class="{'border-blue': !options.color}"
-          @click="onClickColor(null)"
-        >
-          <div class="w-4 h-4 i-con-eraser"/>
-        </div>
+    <div class="flex gap-2 font-semibold text-sm flex-wrap">
+      <div v-if="isEditor" class="cursor-pointer border p-2.5" @click="openPalette">
+        <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
       </div>
-      <div class="flex gap-2 flex-wrap items-start">
-        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" :class="{'border-blue': isMoving}" @click="isMoving = !isMoving">
-          <div class="i-con-move w-4 h-4"/>
+      <div
+        v-if="isCustomPalette"
+        class="cursor-pointer border p-2.5 flex gap-2 items-center font-semibold leading-none"
+        @click="changePalette"
+      >
+        <span>Palette</span>
+        <div class="w-4 h-4 i-con-down"/>
+      </div>
+      <div
+        v-if="isCustomPalette"
+        class="cursor-pointer border p-2.5 flex gap-2 items-center font-semibold leading-none text-green-500 fill-green-500"
+        @click="changePalette"
+      >
+        <span>OK</span>
+        <div class="w-4 h-4 i-con-ok"/>
+      </div>
+      <template v-for="(c, i) in workspace.colors">
+        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8">
+          <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
         </div>
         <div
-          class="cursor-pointer border p-2 rounded-[2px] bg-white"
-          :class="{'border-blue': showModal === 'ruler'}"
-          @click="showModal = showModal === 'ruler' ? null : 'ruler'"
+          v-else
+          :key="c"
+          class="cursor-pointer border p-2.5 rounded-[2px] box-border"
+          :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
+          :style="{backgroundColor: c}"
+          @click="onClickColor(c)"
         >
-          <div class="i-con-ruler w-4 h-4"/>
+          <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
+            <div>{{ i }}</div>
+          </div>
         </div>
-        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
-          <div class="i-con-compare w-4 h-4"/>
-        </div>
-        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(true)">
-          <div class="i-con-zoom-in w-4 h-4"/>
-        </div>
-        <div class="cursor-pointer border p-2 rounded-[2px] bg-white" @click="handleZoom(false)">
-          <div class="i-con-zoom-out w-4 h-4"/>
-        </div>
+      </template>
+      <div
+        class="cursor-pointer border p-2.5 bg-white"
+        :class="{'border-blue': !options.color}"
+        @click="onClickColor(null)"
+      >
+        <div class="w-4 h-4 i-con-eraser"/>
       </div>
     </div>
   </div>
@@ -212,6 +211,8 @@ interface Options {
   pointer: string,
   zoom: number
 }
+
+const {isEditor} = defineProps<{isEditor: boolean}>()
 
 const workspace: Workspace = reactive<Workspace>({
   id: 0,
@@ -393,8 +394,8 @@ const loadFile = () => {
   if (fileElm && ctx) {
     const img = new Image;
     img.onload = function () {
-      if (img.width > 32 || img.height > 32) {
-        loadErrs.value.push('Your pixel art must less than or equal 32x32 pixels')
+      if (img.width > 64 || img.height > 64) {
+        loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
         return
       }
       ctx?.drawImage(img, 0, 0)
@@ -533,8 +534,8 @@ watch(displaySize, () => {
 
 onMounted(() => {
   const route = useRoute()
-  if (route.query.id) {
-    loadSharedPage(route.query.id.toString())
+  if (route.query.id || !isEditor) {
+    loadSharedPage(route.query?.id?.toString() || 'random')
   }
   const wrapper = document.getElementById('wrapper')
   if (wrapper) {

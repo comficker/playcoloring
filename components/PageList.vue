@@ -3,7 +3,12 @@
     <breadcrumb :crumbs="crumbs"/>
     <div class="space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
-      <p class="text-lg">{{ meta.desc }}</p>
+      <p class="text-lg">
+        {{ meta.desc }}
+        <template v-if="route.params.tax_id === 'arts'">
+          using <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
+        </template>
+      </p>
     </div>
   </div>
   <div class="max-w-4xl mx-auto mt-6">

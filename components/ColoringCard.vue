@@ -22,7 +22,7 @@
         <div class="i-con-picture w-4 h-4"></div>
         <nuxt-link
           :to="to"
-          class="font-semibold hover:underline uppercase">{{ value.name || value.id_string }}
+          class="font-semibold hover:underline uppercase whitespace-nowrap truncate">{{ value.name || value.id_string }}
         </nuxt-link>
       </div>
       <div class="flex gap-1 items-center">

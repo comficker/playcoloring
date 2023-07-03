@@ -41,7 +41,7 @@ const faqs = ref([
 
 <template>
   <div class="space-y-6 max-w-xl mx-auto">
-    <PixelColoring/>
+    <PixelColoring :is-editor="false"/>
     <div class="grid gap-2 md:grid-cols-2">
       <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
         <div>
@@ -59,7 +59,7 @@ const faqs = ref([
       </div>
     </div>
     <div class="space-y-4">
-      <h2 class="text-5xl font-bold">Hello world!</h2>
+      <h2 class="text-5xl font-bold">Hi!</h2>
       <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
         <a href="/about" target="_blank" class="underline">About us!</a></p>
       <h2 class="text-5xl font-bold">FAQ</h2>
