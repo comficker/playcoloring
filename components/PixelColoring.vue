@@ -1,14 +1,15 @@
 <template>
   <div class="space-y-4">
-    <div class="flex flex-col md:flex-row gap-4 justify-between text-sm font-semibold">
+    <div class="flex gap-4 justify-between text-sm font-semibold">
       <div class="flex gap-2 items-center">
-        <div v-if="isEditor" class="cursor-pointer flex gap-2 items-center p-2.5 px-5 rounded-[2px] bg-rose-700 text-white" @click="reset">
+        <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white" @click="reset">
           <div class="i-con-plus w-4 h-4"/>
-          <span class="leading-tight">New</span>
+          <span class="hidden md:block">New</span>
         </div>
         <div v-else class="relative">
-          <div class="cursor-pointer p-2.5 px-5 rounded-[2px] bg-rose-700 text-white leading-tight" @click="loadSharedPage('random')">
-            <span>Random picture</span>
+          <div class="btn md:px-5 bg-rose-700 text-white" @click="loadSharedPage('random')">
+            <div class="i-con-refresh w-4 h-4"/>
+            <span class="hidden md:block">Random picture</span>
           </div>
           <div
             v-if="fetchingPercent < 101"
@@ -16,39 +17,39 @@
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div v-if="isEditor" class="cursor-pointer flex gap-2 items-center p-2.5 px-5 rounded-[2px] border" @click="toggleModal(!!showModal ? null : 'load')">
+        <div v-if="isEditor" class="cursor-pointer hidden md:flex gap-2 items-center p-2.5 px-5 rounded-[2px] border" @click="toggleModal(!!showModal ? null : 'load')">
           <span class="leading-tight">Load</span>
         </div>
-        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-gray-50" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+        <div class="btn border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-gray-50" @click="actionDownload">
+        <div class="btn border" @click="actionDownload">
           <div class="i-con-download w-4 h-4"/>
         </div>
       </div>
       <div class="flex gap-2 items-center">
         <div
           v-if="isEditor"
-          class="cursor-pointer border p-2.5 rounded-[2px] bg-white"
+          class="btn border"
           :class="{'border-blue': isMoving}"
           @click="isMoving = !isMoving"
         >
           <div class="i-con-move w-4 h-4"/>
         </div>
         <div
-          class="cursor-pointer border p-2.5 rounded-[2px] bg-white"
+          class="btn border"
           :class="{'border-blue': showModal === 'ruler'}"
           @click="showModal = showModal === 'ruler' ? null : 'ruler'"
         >
           <div class="i-con-ruler w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
+        <div class="btn border" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
           <div class="i-con-compare w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" @click="handleZoom(true)">
+        <div class="btn border" @click="handleZoom(true)">
           <div class="i-con-zoom-in w-4 h-4"/>
         </div>
-        <div class="cursor-pointer border p-2.5 rounded-[2px] bg-white" @click="handleZoom(false)">
+        <div class="btn border" @click="handleZoom(false)">
           <div class="i-con-zoom-out w-4 h-4"/>
         </div>
       </div>
@@ -96,7 +97,7 @@
               enter-active-class="animated animated-faster animate-fade-in"
               leave-active-class="animated animated-faster animate-fade-out"
             >
-              <div v-if="!!showModal" class="absolute inset-0 bg-black/50" @click="showModal = null"/>
+              <div v-if="!!showModal" class="fixed md:absolute inset-0 bg-black/50" @click="showModal = null"/>
             </Transition>
             <Transition
               enter-active-class="animated animated-faster animate-slide-in-up"
@@ -147,12 +148,12 @@
       </div>
     </div>
     <div class="flex gap-2 font-semibold text-sm flex-wrap">
-      <div v-if="isEditor" class="cursor-pointer border p-2.5" @click="openPalette">
+      <div v-if="isEditor" class="btn border" @click="openPalette">
         <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
       </div>
       <div
         v-if="isCustomPalette"
-        class="cursor-pointer border p-2.5 flex gap-2 items-center font-semibold leading-none"
+        class="btn border"
         @click="changePalette"
       >
         <span>Palette</span>
@@ -160,15 +161,15 @@
       </div>
       <div
         v-if="isCustomPalette"
-        class="cursor-pointer border p-2.5 flex gap-2 items-center font-semibold leading-none text-green-500 fill-green-500"
+        class="btn border"
         @click="changePalette"
       >
         <span>OK</span>
         <div class="w-4 h-4 i-con-ok"/>
       </div>
       <template v-for="(c, i) in workspace.colors">
-        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8">
-          <input type="color" class="w-8 h-8" v-model="workspace.colors[i]">
+        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-9 h-9">
+          <input type="color" class="w-9 h-9" v-model="workspace.colors[i]">
         </div>
         <div
           v-else
@@ -184,7 +185,7 @@
         </div>
       </template>
       <div
-        class="cursor-pointer border p-2.5 bg-white"
+        class="btn border"
         :class="{'border-blue': !options.color}"
         @click="onClickColor(null)"
       >
