@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <div class="flex gap-4 justify-between text-sm font-semibold">
       <div class="flex gap-2 items-center">
-        <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white" @click="reset">
+        <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white h-full" @click="reset">
           <div class="i-con-plus w-4 h-4"/>
           <span class="hidden md:block">New</span>
         </div>
@@ -17,8 +17,8 @@
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div v-if="isEditor" class="cursor-pointer hidden md:flex gap-2 items-center p-2.5 px-5 rounded-[2px] border" @click="toggleModal(!!showModal ? null : 'load')">
-          <span class="leading-tight">Load</span>
+        <div v-if="isEditor" class="hidden md:flex btn p-2.5 px-5 border" @click="toggleModal(!!showModal ? null : 'load')">
+          <span>Load</span>
         </div>
         <div class="btn border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-4 h-4"/>
@@ -37,6 +37,7 @@
           <div class="i-con-move w-4 h-4"/>
         </div>
         <div
+          v-if="isEditor"
           class="btn border"
           :class="{'border-blue': showModal === 'ruler'}"
           @click="showModal = showModal === 'ruler' ? null : 'ruler'"
@@ -59,7 +60,7 @@
         <div
           class="relative pt-full overflow-hidden border border-box"
           :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
-          <div id="wrapper" :class="{'grayscale': !!showModal}">
+          <div id="wrapper" class="flex items-center justify-center" :class="{'grayscale': !!showModal}">
             <div
               id="workload" class="absolute"
               :style="{
@@ -168,13 +169,13 @@
         <div class="w-4 h-4 i-con-ok"/>
       </div>
       <template v-for="(c, i) in workspace.colors">
-        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-9 h-9">
-          <input type="color" class="w-9 h-9" v-model="workspace.colors[i]">
+        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8 md:w-9 md:h-9">
+          <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
         </div>
         <div
           v-else
           :key="c"
-          class="cursor-pointer border p-2.5 rounded-[2px] box-border"
+          class="cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
           :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
           :style="{backgroundColor: c}"
           @click="onClickColor(c)"

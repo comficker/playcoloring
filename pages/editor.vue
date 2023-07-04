@@ -16,7 +16,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="space-y-6 max-w-xl mx-auto">
+  <div class="space-y-4 max-w-xl mx-auto">
     <div>
       <h1 class="text-5xl font-bold">Pixel Editor</h1>
       <p>Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel art!</p>
