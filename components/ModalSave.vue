@@ -89,10 +89,10 @@ const actionSave = async () => {
         <span>Share as template</span>
       </div>
       <div>
-        <input v-model="form.name" type="text" class="w-full border px-3 py-1 rounded" placeholder="Title">
+        <input v-model="form.name" type="text" class="w-full border px-3 py-2 rounded" placeholder="Title">
       </div>
       <div>
-        <div class="flex gap-2 flex-wrap items-center border p-1 px-2 text-sm rounded">
+        <div class="flex gap-2 flex-wrap items-center border p-2 px-2 text-sm rounded">
           <div
             class="p-0.5 px-3 rounded bg-gray-100 relative group"
             v-for="(item, i) in form.tags" :key="item"
@@ -112,7 +112,7 @@ const actionSave = async () => {
         </div>
       </div>
       <div>
-        <textarea v-model="form.desc" class="w-full border px-3 py-1 rounded" placeholder="Description"/>
+        <textarea v-model="form.desc" class="w-full border px-3 py-2 rounded" placeholder="Description"/>
       </div>
       <div class="flex gap-4">
         <div class="btn bg-green-500 text-white font-semibold text-sm" @click="actionSave">

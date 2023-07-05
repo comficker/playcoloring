@@ -1,7 +1,11 @@
 <template>
-  <div class="space-y-4">
-    <div class="flex gap-4 justify-between text-sm font-semibold">
+  <div class="-mx-2 px-2 space-y-2 h-screen flex flex-col w-full py-2 border-b">
+    <div class="w-full mx-auto flex gap-2 font-semibold text-sm justify-between">
       <div class="flex gap-2 items-center">
+        <nuxt-link class="flex gap-1 mr-4" to="/">
+          <div class="i-con-pad fill-red-400 h-8 w-8"/>
+          <img class="w-auto h-8" src="/logo.png" alt="Play Coloring">
+        </nuxt-link>
         <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white h-full" @click="reset">
           <div class="i-con-plus w-4 h-4"/>
           <span class="hidden md:block">New</span>
@@ -17,20 +21,20 @@
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div v-if="isEditor" class="hidden md:flex btn p-2.5 px-5 border" @click="toggleModal(!!showModal ? null : 'load')">
+        <div v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5" @click="toggleModal(!!showModal ? null : 'load')">
           <span>Load</span>
         </div>
-        <div class="btn border" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+        <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-4 h-4"/>
         </div>
-        <div class="btn border" @click="actionDownload">
+        <div class="btn hover:shadow rounded" @click="actionDownload">
           <div class="i-con-download w-4 h-4"/>
         </div>
       </div>
       <div class="flex gap-2 items-center">
         <div
           v-if="isEditor"
-          class="btn border"
+          class="btn hover:shadow rounded"
           :class="{'border-blue': isMoving}"
           @click="isMoving = !isMoving"
         >
@@ -38,76 +42,79 @@
         </div>
         <div
           v-if="isEditor"
-          class="btn border"
+          class="btn hover:shadow rounded"
           :class="{'border-blue': showModal === 'ruler'}"
           @click="showModal = showModal === 'ruler' ? null : 'ruler'"
         >
           <div class="i-con-ruler w-4 h-4"/>
         </div>
-        <div class="btn border" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
+        <div class="btn hover:shadow rounded" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
           <div class="i-con-compare w-4 h-4"/>
         </div>
-        <div class="btn border" @click="handleZoom(true)">
+        <div class="btn hover:shadow rounded" @click="handleZoom(true)">
           <div class="i-con-zoom-in w-4 h-4"/>
         </div>
-        <div class="btn border" @click="handleZoom(false)">
+        <div class="btn hover:shadow rounded" @click="handleZoom(false)">
           <div class="i-con-zoom-out w-4 h-4"/>
         </div>
       </div>
     </div>
-    <div class="-mx-4 md:mx-0">
-      <div class="w-96 md:w-auto mx-auto">
-        <div
-          class="relative pt-full overflow-hidden border border-box"
-          :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`}">
-          <div id="wrapper" class="flex items-center justify-center" :class="{'grayscale': !!showModal}">
+    <div class="w-full flex-1 mx-auto overflow-hidden">
+      <div
+        class="relative h-full overflow-hidden border border-box"
+        :style="{
+            '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
+          }"
+      >
+        <div id="wrapper" :class="{'grayscale': !!showModal}" @scroll="onScroll">
+          <div
+            id="workload" class="absolute"
+            :style="{
+              width: `${PICTURE_SIZE.w}px`,
+              height: `${PICTURE_SIZE.h}px`
+            }"
+          >
+            <canvas
+              id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+              class="absolute inset-0"
+            />
             <div
-              id="workload" class="absolute"
+              id="cursor" class="absolute"
               :style="{
-                width: `${PICTURE_SIZE.w}px`,
-                height: `${PICTURE_SIZE.h}px`
-              }"
-            >
-              <canvas
-                id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
-                class="absolute inset-0"
-              />
-              <div
-                id="cursor" class="absolute"
-                :style="{
                   backgroundColor: options.color || '#FFF',
                   width: `${cellScaleSize}px`,
                   height: `${cellScaleSize}px`
                 }"
-              />
-              <div
-                id="controller"
-                class="absolute inset-0"
-                @touchstart="handleMouseDown"
-                @touchmove="handleMouseHover"
-                @touchend="handleMouseUp"
-                @mousedown="handleMouseDown"
-                @mouseup="handleMouseUp"
-                @mousemove="handleMouseHover"
-                @mouseover="handleMouseUp"
-              ></div>
-            </div>
+            />
+            <div
+              id="controller"
+              class="absolute inset-0"
+              @touchstart="handleMouseDown"
+              @touchmove="handleMouseHover"
+              @touchend="handleMouseUp"
+              @mousedown="handleMouseDown"
+              @mouseup="handleMouseUp"
+              @mousemove="handleMouseHover"
+              @mouseover="handleMouseUp"
+            ></div>
           </div>
-          <client-only>
-            <Transition
-              enter-active-class="animated animated-faster animate-fade-in"
-              leave-active-class="animated animated-faster animate-fade-out"
+        </div>
+        <client-only>
+          <Transition
+            enter-active-class="animated animated-faster animate-fade-in"
+            leave-active-class="animated animated-faster animate-fade-out"
+          >
+            <div v-if="!!showModal" class="fixed md:absolute inset-0 bg-black/50" @click="showModal = null"/>
+          </Transition>
+          <Transition
+            enter-active-class="animated animated-faster animate-slide-in-up"
+            leave-active-class="animated animated-faster animate-slide-out-down"
+          >
+            <div
+              v-if="!!showModal"
+              class="fixed md:absolute bottom-[-1px] left-[-1px] right-[-1px] z-60"
             >
-              <div v-if="!!showModal" class="fixed md:absolute inset-0 bg-black/50" @click="showModal = null"/>
-            </Transition>
-            <Transition
-              enter-active-class="animated animated-faster animate-slide-in-up"
-              leave-active-class="animated animated-faster animate-slide-out-down"
-            >
-              <div
-                v-if="!!showModal"
-                class="fixed md:absolute bottom-[-1px] left-[-1px] right-[-1px] bg-white z-60 shadow-xl rounded-tl-2xl rounded-tr-2xl border"
-              >
+              <div class="max-w-xl mx-auto bg-white shadow-xl rounded-tl-2xl rounded-tr-2xl border">
                 <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>
@@ -143,12 +150,12 @@
                   </div>
                 </div>
               </div>
-            </Transition>
-          </client-only>
-        </div>
+            </div>
+          </Transition>
+        </client-only>
       </div>
     </div>
-    <div class="flex gap-2 font-semibold text-sm flex-wrap">
+    <div class="w-full mx-auto flex gap-2 font-semibold text-sm flex-wrap">
       <div v-if="isEditor" class="btn border" @click="openPalette">
         <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
       </div>
@@ -243,7 +250,7 @@ const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
-  pointer: '',
+  pointer: ''
 })
 const loadErrs = ref<string[]>([])
 

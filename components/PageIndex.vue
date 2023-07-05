@@ -40,35 +40,41 @@ const faqs = ref([
 </script>
 
 <template>
-  <div class="space-y-6 max-w-xl mx-auto">
+  <div class="space-y-6">
     <PixelColoring :is-editor="false"/>
-    <div class="grid gap-2 md:grid-cols-2">
-      <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
-        <div>
-          <nuxt-link to="/pages" class="text-2xl font-bold group-hover:underline">Coloring Pages</nuxt-link>
-          <p>You might want to try!</p>
-        </div>
-        <div class="i-con-right w-6 h-6"/>
+    <div class="max-w-xl mx-auto space-y-4">
+      <div>
+        <h1 class="text-5xl font-bold">Play Coloring, Hi!</h1>
+        <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
+          <a href="/about" target="_blank" class="underline">About us!</a></p>
       </div>
-      <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/arts')">
-        <div>
-          <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Art</nuxt-link>
-          <p>Pixel art by community!</p>
+      <div class="grid gap-2 md:grid-cols-2">
+        <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
+          <div>
+            <nuxt-link to="/pages" class="text-2xl font-bold group-hover:underline">Coloring Pages</nuxt-link>
+            <p>You might want to try!</p>
+          </div>
+          <div class="i-con-right w-6 h-6"/>
         </div>
-        <div class="i-con-right w-6 h-6"/>
+        <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/arts')">
+          <div>
+            <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Art</nuxt-link>
+            <p>Pixel art by community!</p>
+          </div>
+          <div class="i-con-right w-6 h-6"/>
+        </div>
       </div>
     </div>
-    <div class="space-y-4">
-      <h2 class="text-5xl font-bold">Hi!</h2>
-      <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
-        <a href="/about" target="_blank" class="underline">About us!</a></p>
-      <h2 class="text-5xl font-bold">FAQ</h2>
-      <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
-        <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
-          <span>{{ faq.title }}</span>
-        </h3>
-        <div v-show="faq.opened" class="space-y-2">
-          <p v-for="aw in faq.aws">{{ aw }}</p>
+    <div class="max-w-xl mx-auto">
+      <div class="space-y-4">
+        <h2 class="text-5xl font-bold">FAQ</h2>
+        <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
+          <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
+            <span>{{ faq.title }}</span>
+          </h3>
+          <div v-show="faq.opened" class="space-y-2">
+            <p v-for="aw in faq.aws">{{ aw }}</p>
+          </div>
         </div>
       </div>
     </div>
