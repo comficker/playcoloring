@@ -1,5 +1,5 @@
 <template>
-  <div class="-mx-4 h-screen flex flex-col border-b divide-y">
+  <div class="hh1 -mx-4 h-screen flex flex-col border-b divide-y">
     <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm justify-between">
       <div class="flex gap-2 items-center">
         <nuxt-link class="flex gap-1 md:mr-4" to="/">
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="w-full flex-1 mx-auto overflow-hidden">
+    <div class="hh2 w-full flex-1 mx-auto overflow-hidden">
       <div
         class="relative h-full overflow-hidden"
         :style="{
@@ -74,7 +74,7 @@
           }"
         >
           <div
-            id="workload" class="absolute"
+            id="workload" class="relative"
             :style="{
               width: `${PICTURE_SIZE.w}px`,
               height: `${PICTURE_SIZE.h}px`
@@ -161,7 +161,7 @@
         </client-only>
       </div>
     </div>
-    <div class="w-full mx-auto px-4 font-semibold py-2 min-h-32 md:min-h-auto">
+    <div class="w-full mx-auto px-4 font-semibold py-2 top-0">
       <div class="flex gap-2 text-sm flex-wrap">
         <div v-if="isEditor" class="btn border" @click="openPalette">
           <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
@@ -598,7 +598,13 @@ onBeforeRouteUpdate(n => {
   display: none;
 }
 
-.pt-full {
-  padding-top: calc(100% - 2px);
+.hh1 {
+  min-height: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+}
+
+.hh2 {
+  height: -webkit-fill-available;
 }
 </style>
