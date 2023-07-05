@@ -161,7 +161,7 @@
         </client-only>
       </div>
     </div>
-    <div class="w-full mx-auto px-4 font-semibold py-2 min-h-24 md:min-h-auto">
+    <div class="w-full mx-auto px-4 font-semibold py-2 min-h-32 md:min-h-auto">
       <div class="flex gap-2 text-sm flex-wrap">
         <div v-if="isEditor" class="btn border" @click="openPalette">
           <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
