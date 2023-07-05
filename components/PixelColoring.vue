@@ -161,50 +161,52 @@
         </client-only>
       </div>
     </div>
-    <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm flex-wrap ">
-      <div v-if="isEditor" class="btn border" @click="openPalette">
-        <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
-      </div>
-      <div
-        v-if="isCustomPalette"
-        class="btn border"
-        @click="changePalette"
-      >
-        <span>Palette</span>
-        <div class="w-4 h-4 i-con-down"/>
-      </div>
-      <div
-        v-if="isCustomPalette"
-        class="btn border"
-        @click="changePalette"
-      >
-        <span>OK</span>
-        <div class="w-4 h-4 i-con-ok"/>
-      </div>
-      <div
-        class="btn border"
-        :class="{'border-blue': !options.color}"
-        @click="onClickColor(null)"
-      >
-        <div class="w-4 h-4 i-con-eraser"/>
-      </div>
-      <template v-for="(c, i) in workspace.colors">
-        <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8 md:w-9 md:h-9">
-          <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
+    <div class="w-full mx-auto px-4 font-semibold py-2 min-h-24 md:min-h-auto">
+      <div class="flex gap-2 text-sm flex-wrap">
+        <div v-if="isEditor" class="btn border" @click="openPalette">
+          <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
         </div>
         <div
-          v-else
-          :key="c"
-          class="cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
-          :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
-          :style="{backgroundColor: c}"
-          @click="onClickColor(c)"
+          v-if="isCustomPalette"
+          class="btn border"
+          @click="changePalette"
         >
-          <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
-            <div>{{ i }}</div>
-          </div>
+          <span>Palette</span>
+          <div class="w-4 h-4 i-con-down"/>
         </div>
-      </template>
+        <div
+          v-if="isCustomPalette"
+          class="btn border"
+          @click="changePalette"
+        >
+          <span>OK</span>
+          <div class="w-4 h-4 i-con-ok"/>
+        </div>
+        <div
+          class="btn border"
+          :class="{'border-blue': !options.color}"
+          @click="onClickColor(null)"
+        >
+          <div class="w-4 h-4 i-con-eraser"/>
+        </div>
+        <template v-for="(c, i) in workspace.colors">
+          <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8 md:w-9 md:h-9">
+            <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
+          </div>
+          <div
+            v-else
+            :key="c"
+            class="cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
+            :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
+            :style="{backgroundColor: c}"
+            @click="onClickColor(c)"
+          >
+            <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
+              <div>{{ i }}</div>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
