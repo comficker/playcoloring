@@ -66,7 +66,7 @@
           '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
         }"
       >
-        <div id="wrapper" :class="{'grayscale': !!showModal}" @scroll="onScroll">
+        <div id="wrapper" :class="{'grayscale': !!showModal}">
           <div
             id="workload" class="absolute"
             :style="{
@@ -259,7 +259,7 @@ const PICTURE_SIZE = computed(() => ({
   h: Math.round(workspace.height * Math.pow(2, options.value.zoom))
 }))
 
-const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
+const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
 const result = computed(() => {
   const out: {[key:string]: number} = {}
   workspace.steps.forEach((step: Step) => {
@@ -327,7 +327,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     if (result.value[key] === workspace.colors.indexOf(options.value.color))
       return;
     ctx.fillStyle = options.value.color;
-    ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
+    ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
     workspace.steps.push({
       k: key,
       c: workspace.colors.indexOf(options.value.color),
@@ -336,7 +336,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     if (typeof result.value[key] === 'undefined')
       return;
 
-    ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
+    ctx.clearRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
     workspace.steps.push({
       k: key,
       c: -1
@@ -542,13 +542,14 @@ watch(displaySize, () => {
 })
 
 onMounted(() => {
+  const wrapper = document.getElementById('wrapper')
+  if (wrapper) {
+    displaySize.value = wrapper.clientHeight
+  }
+
   const route = useRoute()
   if (route.query.id || !isEditor) {
     loadSharedPage(route.query?.id?.toString() || 'random')
-  }
-  const wrapper = document.getElementById('wrapper')
-  if (wrapper) {
-    displaySize.value = wrapper.offsetWidth
   }
 })
 
