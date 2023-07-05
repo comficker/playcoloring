@@ -1,5 +1,5 @@
 <template>
-  <div class="hh1 -mx-4 h-screen flex flex-col border-b divide-y">
+  <div class="hh1 -mx-4 h-screen flex flex-col border-b divide-y relative">
     <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm justify-between">
       <div class="flex gap-2 items-center">
         <nuxt-link class="flex gap-1 md:mr-4" to="/">
@@ -161,7 +161,7 @@
         </client-only>
       </div>
     </div>
-    <div class="w-full mx-auto px-4 font-semibold py-2 top-0">
+    <div class="w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0">
       <div class="flex gap-2 text-sm flex-wrap">
         <div v-if="isEditor" class="btn border" @click="openPalette">
           <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
