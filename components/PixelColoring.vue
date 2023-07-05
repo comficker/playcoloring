@@ -552,8 +552,8 @@ watch(() => [displaySize, workspace.width, workspace.height], () => {
 
 onMounted(() => {
   const wrapper = document.getElementById('wrapper')
-  if (wrapper && wrapper.offsetHeight < 576) {
-    displaySize.value = wrapper.clientHeight
+  if (wrapper && wrapper.offsetWidth < 576) {
+    displaySize.value = 384
   }
 
   const route = useRoute()
