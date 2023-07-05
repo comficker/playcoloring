@@ -1,10 +1,10 @@
 <template>
-  <div class="-mx-2 px-2 space-y-2 h-screen flex flex-col w-full py-2 border-b">
-    <div class="w-full mx-auto flex gap-2 font-semibold text-sm justify-between">
+  <div class="-mx-4 h-screen flex flex-col border-b divide-y">
+    <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm justify-between">
       <div class="flex gap-2 items-center">
-        <nuxt-link class="flex gap-1 mr-4" to="/">
+        <nuxt-link class="flex gap-1 md:mr-4" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
-          <img class="w-auto h-8" src="/logo.png" alt="Play Coloring">
+          <img class="md:block hidden w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
         <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white h-full" @click="reset">
           <div class="i-con-plus w-4 h-4"/>
@@ -61,10 +61,10 @@
     </div>
     <div class="w-full flex-1 mx-auto overflow-hidden">
       <div
-        class="relative h-full overflow-hidden border border-box"
+        class="relative h-full overflow-hidden"
         :style="{
-            '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
-          }"
+          '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
+        }"
       >
         <div id="wrapper" :class="{'grayscale': !!showModal}" @scroll="onScroll">
           <div
@@ -155,7 +155,7 @@
         </client-only>
       </div>
     </div>
-    <div class="w-full mx-auto flex gap-2 font-semibold text-sm flex-wrap">
+    <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm flex-wrap ">
       <div v-if="isEditor" class="btn border" @click="openPalette">
         <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
       </div>
