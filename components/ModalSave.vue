@@ -114,12 +114,12 @@ const actionSave = async () => {
       <div>
         <textarea v-model="form.desc" class="w-full border px-3 py-2 rounded" placeholder="Description"/>
       </div>
-      <div class="flex gap-4">
-        <div class="btn bg-green-500 text-white font-semibold text-sm" @click="actionSave">
+      <div class="flex gap-4 text-sm font-semibold">
+        <div class="btn px-8 bg-green-500 text-white" @click="actionSave">
           <div class="i-con-download w-5 h-5"/>
           <span>Share</span>
         </div>
-        <div class="btn border font-semibold text-sm" @click="actionSave">
+        <div class="btn px-8 border" @click="actionSave">
           <span>Save</span>
         </div>
       </div>
