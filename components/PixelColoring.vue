@@ -67,10 +67,10 @@
         }"
       >
         <div
-          id="wrapper" class="flex"
+          id="wrapper"
           :class="{
             'grayscale': !!showModal,
-            'items-center justify-center': options.zoomOriginal >= options.zoom
+            'flex items-center justify-center': options.zoomOriginal >= options.zoom
           }"
         >
           <div
@@ -544,7 +544,7 @@ watch(() => options.value.zoom, () => {
   debounce(reDraw, 100)()
 })
 
-watch(displaySize, () => {
+watch(() => [displaySize, workspace.width, workspace.height], () => {
   options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
   options.value.zoomOriginal = options.value.zoom
   reDraw()
@@ -552,7 +552,7 @@ watch(displaySize, () => {
 
 onMounted(() => {
   const wrapper = document.getElementById('wrapper')
-  if (wrapper) {
+  if (wrapper && wrapper.offsetHeight < 576) {
     displaySize.value = wrapper.clientHeight
   }
 
