@@ -66,7 +66,13 @@
           '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
         }"
       >
-        <div id="wrapper" :class="{'grayscale': !!showModal}">
+        <div
+          id="wrapper" class="flex"
+          :class="{
+            'grayscale': !!showModal,
+            'items-center justify-center': options.zoomOriginal >= options.zoom
+          }"
+        >
           <div
             id="workload" class="absolute"
             :style="{
@@ -82,8 +88,8 @@
               id="cursor" class="absolute"
               :style="{
                   backgroundColor: options.color || '#FFF',
-                  width: `${cellScaleSize}px`,
-                  height: `${cellScaleSize}px`
+                  width: `${Math.ceil(cellScaleSize)}px`,
+                  height: `${Math.ceil(cellScaleSize)}px`
                 }"
             />
             <div
@@ -175,6 +181,13 @@
         <span>OK</span>
         <div class="w-4 h-4 i-con-ok"/>
       </div>
+      <div
+        class="btn border"
+        :class="{'border-blue': !options.color}"
+        @click="onClickColor(null)"
+      >
+        <div class="w-4 h-4 i-con-eraser"/>
+      </div>
       <template v-for="(c, i) in workspace.colors">
         <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8 md:w-9 md:h-9">
           <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
@@ -192,13 +205,6 @@
           </div>
         </div>
       </template>
-      <div
-        class="btn border"
-        :class="{'border-blue': !options.color}"
-        @click="onClickColor(null)"
-      >
-        <div class="w-4 h-4 i-con-eraser"/>
-      </div>
     </div>
   </div>
 </template>
@@ -218,7 +224,8 @@ const route = useRoute()
 interface Options {
   color: string | null,
   pointer: string,
-  zoom: number
+  zoom: number,
+  zoomOriginal: number
 }
 
 const {isEditor} = defineProps<{isEditor: boolean}>()
@@ -250,6 +257,7 @@ const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
+  zoomOriginal: Math.log(displaySize.value / workspace.width) / Math.log(2),
   pointer: ''
 })
 const loadErrs = ref<string[]>([])
@@ -538,6 +546,7 @@ watch(() => options.value.zoom, () => {
 
 watch(displaySize, () => {
   options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
+  options.value.zoomOriginal = options.value.zoom
   reDraw()
 })
 
