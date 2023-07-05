@@ -43,11 +43,9 @@ const faqs = ref([
   <div class="space-y-6">
     <PixelColoring :is-editor="false"/>
     <div class="max-w-xl mx-auto space-y-4">
-      <div>
-        <h1 class="text-5xl font-bold">Play Coloring, Hi!</h1>
-        <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
-          <a href="/about" target="_blank" class="underline">About us!</a></p>
-      </div>
+      <h1 class="text-5xl font-bold">Play Coloring, Hi!</h1>
+      <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
+        <a href="/about" target="_blank" class="underline">About us!</a></p>
       <div class="grid gap-2 md:grid-cols-2">
         <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
           <div>
