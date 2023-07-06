@@ -56,9 +56,6 @@
       </nuxt-link>
     </div>
     <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
-      <div class="text-sm flex gap-2 flex-wrap items-center">
-        <div class="w-5 h-5 i-con-color"/>
-      </div>
       <nuxt-link
         class="w-6 h-6 border"
         v-for="item in value.colors" :key="item"

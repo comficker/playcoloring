@@ -35,7 +35,7 @@
         <div
           v-if="isEditor"
           class="btn hover:shadow rounded"
-          :class="{'border-blue': isMoving}"
+          :class="{'border border-blue': isMoving}"
           @click="isMoving = !isMoving"
         >
           <div class="i-con-move w-4 h-4"/>
@@ -43,12 +43,12 @@
         <div
           v-if="isEditor"
           class="btn hover:shadow rounded"
-          :class="{'border-blue': showModal === 'ruler'}"
+          :class="{'border border-blue': showModal === 'ruler'}"
           @click="showModal = showModal === 'ruler' ? null : 'ruler'"
         >
           <div class="i-con-ruler w-4 h-4"/>
         </div>
-        <div class="btn hover:shadow rounded" :class="{'border-blue': isDouble}" @click="isDouble = !isDouble">
+        <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
           <div class="i-con-compare w-4 h-4"/>
         </div>
         <div class="btn hover:shadow rounded" @click="handleZoom(true)">
@@ -163,34 +163,46 @@
     </div>
     <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0 bg-white">
       <div class="flex gap-2 text-sm flex-wrap">
-        <div v-if="isEditor" class="btn border" @click="openPalette">
+        <div
+          v-if="isEditor"
+          class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
+          @click="openPalette"
+        >
           <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
         </div>
         <div
           v-if="isCustomPalette"
-          class="btn border"
+          class="btn hover:border-gray-2"
           @click="changePalette"
         >
-          <span>Palette</span>
           <div class="w-4 h-4 i-con-down"/>
+          <span>Palette</span>
         </div>
         <div
           v-if="isCustomPalette"
-          class="btn border"
+          class="btn hover:border-gray-2"
           @click="changePalette"
         >
-          <span>OK</span>
           <div class="w-4 h-4 i-con-ok"/>
+          <span>OK</span>
         </div>
         <div
-          class="btn border"
+          v-if="!isCustomPalette && isEditor"
+          class="btn hover:border-gray-200"
+          @click="combine"
+        >
+          <div class="w-4 h-4 i-con-combine"/>
+        </div>
+        <div
+          v-if="!isCustomPalette"
+          class="btn hover:border-gray-2"
           :class="{'border-blue': !options.color}"
           @click="onClickColor(null)"
         >
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
         <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" key="i" class="border rounded-full overflow-hidden md:rounded box-content w-8 h-8 md:w-9 md:h-9">
+          <div v-if="isCustomPalette" :key="i" class="rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
             <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
           </div>
           <div
@@ -525,6 +537,13 @@ const changePalette = () => {
   options.value.color = workspace.colors[0] || null
   isCustomPalette.value = false
   reDraw()
+}
+
+const combine = () => {
+  const toFindDuplicates = (arr: string[]) => arr.filter((item: string, index: number) => arr.indexOf(item) !== index)
+  console.log(workspace.colors);
+  const duplicateElements = toFindDuplicates(workspace.colors);
+  console.log(duplicateElements);
 }
 
 watch(isPainting, async (newValue) => {

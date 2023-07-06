@@ -21,10 +21,8 @@ useSeoMeta({
       <PixelColoring :is-editor="true"/>
     </div>
     <div class="space-y-4 max-w-xl mx-auto">
-      <div>
-        <h1 class="text-5xl font-bold">Pixel Editor</h1>
-        <p>Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel art!</p>
-      </div>
+      <h1 class="text-5xl font-bold">Pixel Editor</h1>
+      <p>Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel art!</p>
       <div class="grid gap-2 md:grid-cols-2">
         <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
           <div>
