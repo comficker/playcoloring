@@ -226,6 +226,13 @@
             </div>
           </div>
         </template>
+        <div
+          v-if="!isCustomPalette && !isMerging && isEditor"
+          class="btn border-gray-100 hover:border-gray-200"
+          @click="addColor"
+        >
+          <div class="w-4 h-4 i-con-plus"/>
+        </div>
         <div v-if="isMerging && mergingList.length < 2" class="font-light">The first choose is main color!</div>
       </div>
     </div>
@@ -620,6 +627,14 @@ const step2Result = () => {
   })
   workspace.results = results
   workspace.colors = currentColors
+}
+
+const addColor = () => {
+  workspace.colors.push('#000000')
+  workspace.steps.push({
+    t: 'init_colors',
+    v: cloneDeep(workspace.colors)
+  })
 }
 
 watch(isPainting, async (newValue) => {
