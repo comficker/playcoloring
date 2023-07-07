@@ -21,7 +21,8 @@
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5" @click="toggleModal(!!showModal ? null : 'load')">
+        <div v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
+             @click="toggleModal(!!showModal ? null : 'load')">
           <span>Load</span>
         </div>
         <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
@@ -130,7 +131,7 @@
                     @input="loadFile"
                   >
                   <div v-if="loadErrs.length" class="p-4 bg-yellow-100 py-2 text-sm border rounded-[2px]">
-                    <div v-for="e in loadErrs" :key="e">{{e}}</div>
+                    <div v-for="e in loadErrs" :key="e">{{ e }}</div>
                   </div>
                 </div>
                 <modal-save v-else-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
@@ -146,7 +147,7 @@
                       :class="{'border-blue-500': newSize === s}"
                       @click="newSize = s"
                     >
-                      <span>{{s}}px</span>
+                      <span>{{ s }}px</span>
                     </div>
                   </div>
                   <div class="flex gap-4">
@@ -162,7 +163,7 @@
       </div>
     </div>
     <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0 bg-white">
-      <div class="flex gap-2 text-sm flex-wrap">
+      <div class="flex gap-2 text-sm flex-wrap items-center">
         <div
           v-if="isCustomPalette || isMerging"
           class="btn hover:border-gray-2"
@@ -203,27 +204,29 @@
           v-if="!isCustomPalette && !isMerging"
           class="btn hover:border-gray-2"
           :class="{'border-blue': !options.color}"
-          @click="onClickColor(null)"
+          @click="options.color = null"
         >
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
         <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" :key="i" class="rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
+          <div v-if="isCustomPalette" :key="i"
+               class="rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
             <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
           </div>
           <div
             v-else
             :key="c"
             class="cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
-            :class="{'border-blue': c === options.color, 'border-transparent': c !== options.color}"
+            :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
             :style="{backgroundColor: c}"
-            @click="onClickColor(c)"
+            @click="onClickColor(i)"
           >
             <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
               <div>{{ i }}</div>
             </div>
           </div>
         </template>
+        <div v-if="isMerging || !mergingList.length" class="font-light">The first choose is main color!</div>
       </div>
     </div>
   </div>
@@ -248,7 +251,7 @@ interface Options {
   zoomOriginal: number
 }
 
-const {isEditor} = defineProps<{isEditor: boolean}>()
+const {isEditor} = defineProps<{ isEditor: boolean }>()
 
 const workspace: Workspace = reactive<Workspace>({
   id: 0,
@@ -282,7 +285,7 @@ const options = ref<Options>({
   pointer: ''
 })
 const loadErrs = ref<string[]>([])
-
+const mergingList = ref<number[]>([])
 const PICTURE_SIZE = computed(() => ({
   w: Math.round(workspace.width * Math.pow(2, options.value.zoom)),
   h: Math.round(workspace.height * Math.pow(2, options.value.zoom))
@@ -290,7 +293,7 @@ const PICTURE_SIZE = computed(() => ({
 
 const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
 const result = computed(() => {
-  const out: {[key:string]: number} = {}
+  const out: { [key: string]: number } = {}
   workspace.steps.forEach((step: Step) => {
     if (step.c >= 0) {
       out[step.k] = step.c
@@ -342,8 +345,17 @@ const handleZoom = (isPlus = true) => {
   }
 }
 
-const onClickColor = (color: string | null) => {
-  options.value.color = color
+const onClickColor = (i: number) => {
+  if (isMerging.value) {
+    const index = mergingList.value.indexOf(i)
+    if (index < 0) {
+      mergingList.value.push(i)
+    } else {
+      mergingList.value.splice(index, 1)
+    }
+  } else {
+    options.value.color = workspace.colors[i]
+  }
 }
 
 const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
@@ -352,17 +364,22 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     return
   }
   options.value.pointer = key
+  const colors = isEditor ? workspace.map_numbers : result.value
   if (options.value.color) {
-    if (result.value[key] === workspace.colors.indexOf(options.value.color))
+    const index = workspace.colors.indexOf(options.value.color)
+    if (colors[key] === index)
       return;
     ctx.fillStyle = options.value.color;
     ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
-    workspace.steps.push({
-      k: key,
-      c: workspace.colors.indexOf(options.value.color),
-    })
+    if (isEditor) {
+      workspace.map_numbers[key] = index
+    } else
+      workspace.steps.push({
+        k: key,
+        c: index,
+      })
   } else {
-    if (typeof result.value[key] === 'undefined')
+    if (typeof colors[key] === 'undefined')
       return;
 
     ctx.clearRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
@@ -405,7 +422,6 @@ const reDraw = () => {
     PICTURE_SIZE.value.w,
     PICTURE_SIZE.value.h
   )
-  // ctx.scale(Math.pow(2, options.value.zoom), Math.pow(2, options.value.zoom));
   ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
@@ -418,9 +434,10 @@ const reDraw = () => {
       +arr[1] * cellScaleSize.value + cellScaleSize.value / 2
     );
   })
-  Object.keys(result.value).forEach((k: string) => {
+  const colors = isEditor ? workspace.map_numbers : result.value
+  Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
-    ctx.fillStyle = workspace.colors[result.value[k]];
+    ctx.fillStyle = workspace.colors[colors[k]];
     ctx.fillRect(arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
   })
 }
@@ -529,12 +546,34 @@ const reSize = () => {
   showModal.value = null
 }
 
+const checkColor = (i: number) => {
+  return (!isMerging.value && workspace.colors[i] === options.value.color) || mergingList.value.includes(i)
+}
+
 const handleOK = () => {
   if (isCustomPalette.value) {
     options.value.color = workspace.colors[0] || null
     isCustomPalette.value = false
     reDraw()
   }
+  if (isMerging.value && mergingList.value.length > 1) {
+    Object.keys(workspace.map_numbers).forEach((key: string) => {
+      if (mergingList.value.includes(workspace.map_numbers[key])) {
+        if (workspace.map_numbers[key] !== mergingList.value[0]) {
+          workspace.map_numbers[key] = mergingList.value[0]
+        }
+      }
+    })
+
+    mergingList.value.sort((x: number, y: number) => y - x).forEach((index: number) => {
+      workspace.colors.splice(index, 1)
+    })
+
+    reDraw()
+  }
+  mergingList.value = []
+  isMerging.value = false
+  isCustomPalette.value = false
 }
 
 const handleCancel = () => {
@@ -542,6 +581,7 @@ const handleCancel = () => {
     const last = palettes.value.pop()
     workspace.colors = last ? [...last] : []
   }
+  mergingList.value = []
   isMerging.value = false
   isCustomPalette.value = false
 }
@@ -618,7 +658,7 @@ onBeforeRouteUpdate(n => {
   inset: -1px;
 }
 
-#wrapper::-webkit-scrollbar{
+#wrapper::-webkit-scrollbar {
   display: none;
 }
 

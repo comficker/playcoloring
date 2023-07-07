@@ -4,7 +4,7 @@ import {SharedPage, Step, Workspace} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import pkg from "lodash";
 
-const {cloneDeep, debounce} = pkg
+const {cloneDeep} = pkg
 const {workspace} = defineProps<{ workspace: Workspace }>()
 const emits = defineEmits(['hide'])
 function slugify(text: string) {
