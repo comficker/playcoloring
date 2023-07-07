@@ -164,37 +164,43 @@
     <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0 bg-white">
       <div class="flex gap-2 text-sm flex-wrap">
         <div
-          v-if="isEditor"
-          class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
-          @click="openPalette"
+          v-if="isCustomPalette || isMerging"
+          class="btn hover:border-gray-2"
+          @click="handleCancel"
         >
-          <div class="w-4 h-4" :class="{'i-con-adjust': !isCustomPalette, 'i-con-rollback': isCustomPalette}"/>
+          <div class="w-4 h-4 i-con-rollback"/>
         </div>
         <div
-          v-if="isCustomPalette"
+          v-if="isCustomPalette || isMerging"
           class="btn hover:border-gray-2"
-          @click="changePalette"
-        >
-          <div class="w-4 h-4 i-con-down"/>
-          <span>Palette</span>
-        </div>
-        <div
-          v-if="isCustomPalette"
-          class="btn hover:border-gray-2"
-          @click="changePalette"
+          @click="handleOK"
         >
           <div class="w-4 h-4 i-con-ok"/>
           <span>OK</span>
         </div>
         <div
-          v-if="!isCustomPalette && isEditor"
+          v-if="isEditor && !isMerging && !isCustomPalette"
+          class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
+          @click="switchOpenPalette"
+        >
+          <div class="w-4 h-4 i-con-adjust"/>
+        </div>
+        <div
+          v-if="isEditor && !isMerging && !isCustomPalette"
           class="btn hover:border-gray-200"
-          @click="combine"
+          @click="isMerging = true"
         >
           <div class="w-4 h-4 i-con-combine"/>
         </div>
         <div
-          v-if="!isCustomPalette"
+          v-if="isCustomPalette && false"
+          class="btn hover:border-gray-2"
+        >
+          <div class="w-4 h-4 i-con-down"/>
+          <span>Palette</span>
+        </div>
+        <div
+          v-if="!isCustomPalette && !isMerging"
           class="btn hover:border-gray-2"
           :class="{'border-blue': !options.color}"
           @click="onClickColor(null)"
@@ -267,6 +273,7 @@ const showModal = ref<null | string>(null)
 const isDouble = ref(false)
 const isCustomPalette = ref(false)
 const isMoving = ref(false)
+const isMerging = ref(false)
 const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
@@ -522,28 +529,26 @@ const reSize = () => {
   showModal.value = null
 }
 
-const openPalette = () => {
-  if (!isCustomPalette.value) {
-    isCustomPalette.value = true
-    palettes.value.push([...workspace.colors])
-  } else {
-    const last = palettes.value.pop()
-    workspace.colors = last ? [...last] : []
+const handleOK = () => {
+  if (isCustomPalette.value) {
+    options.value.color = workspace.colors[0] || null
     isCustomPalette.value = false
+    reDraw()
   }
 }
 
-const changePalette = () => {
-  options.value.color = workspace.colors[0] || null
+const handleCancel = () => {
+  if (isCustomPalette.value) {
+    const last = palettes.value.pop()
+    workspace.colors = last ? [...last] : []
+  }
+  isMerging.value = false
   isCustomPalette.value = false
-  reDraw()
 }
 
-const combine = () => {
-  const toFindDuplicates = (arr: string[]) => arr.filter((item: string, index: number) => arr.indexOf(item) !== index)
-  console.log(workspace.colors);
-  const duplicateElements = toFindDuplicates(workspace.colors);
-  console.log(duplicateElements);
+const switchOpenPalette = () => {
+  isCustomPalette.value = true
+  palettes.value.push([...workspace.colors])
 }
 
 watch(isPainting, async (newValue) => {
