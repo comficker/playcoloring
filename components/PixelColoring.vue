@@ -226,7 +226,7 @@
             </div>
           </div>
         </template>
-        <div v-if="isMerging || !mergingList.length" class="font-light">The first choose is main color!</div>
+        <div v-if="isMerging && mergingList.length < 2" class="font-light">The first choose is main color!</div>
       </div>
     </div>
   </div>
@@ -241,8 +241,15 @@ import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
 
-const {debounce} = pkg
+const {debounce, cloneDeep} = pkg
 const route = useRoute()
+const DEFAULT_COLORS = [
+  "#FFF2CC",
+  "#FFD966",
+  "#F4B183",
+  "#DFA67B",
+  "#245953",
+]
 
 interface Options {
   color: string | null,
@@ -257,15 +264,13 @@ const workspace: Workspace = reactive<Workspace>({
   id: 0,
   width: 16,
   height: 16,
-  colors: [
-    "#FFF2CC",
-    "#FFD966",
-    "#F4B183",
-    "#DFA67B",
-    "#245953",
-  ],
+  colors: cloneDeep(DEFAULT_COLORS),
   map_numbers: {},
-  steps: []
+  results: {},
+  steps: [{
+    t: 'init_colors',
+    v: cloneDeep(DEFAULT_COLORS)
+  }]
 })
 
 const palettes = ref<string[][]>([])
@@ -292,17 +297,6 @@ const PICTURE_SIZE = computed(() => ({
 }))
 
 const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
-const result = computed(() => {
-  const out: { [key: string]: number } = {}
-  workspace.steps.forEach((step: Step) => {
-    if (step.c >= 0) {
-      out[step.k] = step.c
-    } else {
-      delete out[step.k]
-    }
-  })
-  return out
-})
 
 const rgbToHex = (r: number, g: number, b: number) => {
   return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
@@ -364,29 +358,29 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     return
   }
   options.value.pointer = key
-  const colors = isEditor ? workspace.map_numbers : result.value
+  const colors = workspace.results
   if (options.value.color) {
     const index = workspace.colors.indexOf(options.value.color)
     if (colors[key] === index)
       return;
     ctx.fillStyle = options.value.color;
     ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
-    if (isEditor) {
-      workspace.map_numbers[key] = index
-    } else
-      workspace.steps.push({
-        k: key,
-        c: index,
-      })
+    workspace.steps.push({
+      t: 'fill',
+      k: key,
+      c: index,
+    })
   } else {
     if (typeof colors[key] === 'undefined')
       return;
 
     ctx.clearRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
     workspace.steps.push({
+      t: 'fill',
       k: key,
       c: -1
     })
+
     if (workspace.map_numbers.hasOwnProperty(key)) {
       ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
       ctx.textBaseline = 'middle'
@@ -399,6 +393,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
       );
     }
   }
+  step2Result()
 }
 
 const fillColor = (e: PointerEvent) => {
@@ -434,7 +429,7 @@ const reDraw = () => {
       +arr[1] * cellScaleSize.value + cellScaleSize.value / 2
     );
   })
-  const colors = isEditor ? workspace.map_numbers : result.value
+  const colors = workspace.results
   Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
     ctx.fillStyle = workspace.colors[colors[k]];
@@ -509,7 +504,10 @@ const loadSharedPage = async (id: string) => {
   options.value.zoom = Math.log(displaySize.value / value.width) / Math.log(2);
   workspace.colors = value.colors
   workspace.map_numbers = value.map_numbers
-  workspace.steps = []
+  workspace.steps = [{
+    t: 'init_colors',
+    v: cloneDeep(value.colors)
+  }]
   if (value.is_template) {
     workspace.template = workspace.template || value.id
   } else {
@@ -534,7 +532,11 @@ const actionDownload = () => {
 
 const reset = () => {
   workspace.map_numbers = {}
-  workspace.steps = []
+  workspace.colors = cloneDeep(DEFAULT_COLORS)
+  workspace.steps = [{
+    t: 'init_colors',
+    v: cloneDeep(DEFAULT_COLORS)
+  }]
   reDraw()
 }
 
@@ -557,18 +559,11 @@ const handleOK = () => {
     reDraw()
   }
   if (isMerging.value && mergingList.value.length > 1) {
-    Object.keys(workspace.map_numbers).forEach((key: string) => {
-      if (mergingList.value.includes(workspace.map_numbers[key])) {
-        if (workspace.map_numbers[key] !== mergingList.value[0]) {
-          workspace.map_numbers[key] = mergingList.value[0]
-        }
-      }
+    workspace.steps.push({
+      t: 'merge',
+      v: mergingList.value
     })
-
-    mergingList.value.sort((x: number, y: number) => y - x).forEach((index: number) => {
-      workspace.colors.splice(index, 1)
-    })
-
+    step2Result()
     reDraw()
   }
   mergingList.value = []
@@ -589,6 +584,42 @@ const handleCancel = () => {
 const switchOpenPalette = () => {
   isCustomPalette.value = true
   palettes.value.push([...workspace.colors])
+}
+
+const step2Result = () => {
+  let currentColors = cloneDeep(workspace.colors)
+  const results: { [key: string]: number } = {}
+  workspace.steps.forEach((step: Step) => {
+    if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
+      if (step.c >= 0) {
+        results[step.k] = step.c
+        options.value.color = currentColors[step.c]
+      } else {
+        delete results[step.k]
+        options.value.color = null
+      }
+    } else if (step.t === 'merge' && step.v) {
+      const mergingList: number[] = cloneDeep(step.v)
+      const old = cloneDeep(currentColors)
+      const except = currentColors.indexOf(old[mergingList[0]])
+      mergingList.sort((x: number, y: number) => y - x).forEach((index: number) => {
+        if (index !== except)
+          currentColors.splice(index, 1)
+      })
+
+      Object.keys(results).forEach((key: string) => {
+        const newIndex = currentColors.indexOf(old[results[key]])
+        results[key] = newIndex >= 0 ? newIndex : currentColors.indexOf(old[except])
+      })
+
+      options.value.color = old[except]
+    } else if (step.t === 'init_colors' && step.v) {
+      currentColors = cloneDeep(step.v)
+      options.value.color = currentColors[0]
+    }
+  })
+  workspace.results = results
+  workspace.colors = currentColors
 }
 
 watch(isPainting, async (newValue) => {

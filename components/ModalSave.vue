@@ -28,18 +28,6 @@ const form = ref({
   desc: null
 } as any)
 
-const result = computed(() => {
-  const out: {[key:string]: number} = {}
-  workspace.steps.forEach((step: Step) => {
-    if (step.c >= 0) {
-      out[step.k] = step.c
-    } else {
-      delete out[step.k]
-    }
-  })
-  return out
-})
-
 const onAddTag = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   if (!target.value) return;
@@ -53,7 +41,10 @@ const actionSave = async () => {
   const data = {
     ...cloneDeep(form.value),
     ...cloneDeep(workspace),
-    map_numbers: workspace.map_numbers || result.value
+    map_numbers: workspace.map_numbers || workspace.results
+  }
+  if (!form.value.as_template) {
+    delete data.steps
   }
   saving.value = true
   const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {

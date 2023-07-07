@@ -31,8 +31,10 @@ export interface TagSchema {
 }
 
 export interface Step {
-  c: number,
-  k: string,
+  t: string,
+  c?: number,
+  k?: string,
+  v?: any
 }
 
 export interface SharedPage {
@@ -89,6 +91,7 @@ export interface Workspace {
   height: number
   colors: string[]
   map_numbers: {[key: string]: number}
+  results: {[key: string]: number}
   steps: Step[]
   template?: number | undefined
 }
