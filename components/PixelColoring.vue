@@ -163,7 +163,7 @@
       </div>
     </div>
     <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0 bg-white">
-      <div class="flex gap-2 text-sm flex-wrap items-center">
+      <div class="flex gap-2 text-sm flex-nowrap items-center">
         <div
           v-if="isCustomPalette || isMerging"
           class="btn hover:border-gray-2"
@@ -208,24 +208,29 @@
         >
           <div class="w-4 h-4 i-con-eraser"/>
         </div>
-        <template v-for="(c, i) in workspace.colors">
-          <div v-if="isCustomPalette" :key="i"
-               class="rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
-            <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
+        <div class="flex-1 overflow-auto no-scrollbar">
+          <div class="flex flex-nowrap gap-2 w-full">
+            <template v-for="(c, i) in workspace.colors">
+              <div
+                v-if="isCustomPalette" :key="i"
+                class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
+                <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
+              </div>
+              <div
+                v-else
+                :key="c"
+                class="flex-none cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
+                :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
+                :style="{backgroundColor: c}"
+                @click="onClickColor(i)"
+              >
+                <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
+                  <div>{{ i }}</div>
+                </div>
+              </div>
+            </template>
           </div>
-          <div
-            v-else
-            :key="c"
-            class="cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
-            :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
-            :style="{backgroundColor: c}"
-            @click="onClickColor(i)"
-          >
-            <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
-              <div>{{ i }}</div>
-            </div>
-          </div>
-        </template>
+        </div>
         <div
           v-if="!isCustomPalette && !isMerging && isEditor"
           class="btn border-gray-100 hover:border-gray-200"
@@ -247,6 +252,19 @@ import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
+import {trimCanvas} from "~/helper/canvas";
+import {rgbToHex} from "~/helper/color";
+
+function gcd(a: number, b: number) {
+  while (a != b) {
+    if (a > b) {
+      a -= b;
+    } else {
+      b -= a;
+    }
+  }
+  return a;
+}
 
 const {debounce, cloneDeep} = pkg
 const route = useRoute()
@@ -302,19 +320,7 @@ const PICTURE_SIZE = computed(() => ({
   w: Math.round(workspace.width * Math.pow(2, options.value.zoom)),
   h: Math.round(workspace.height * Math.pow(2, options.value.zoom))
 }))
-
 const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
-
-const rgbToHex = (r: number, g: number, b: number) => {
-  return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
-}
-
-const getCtx = (id: string): CanvasRenderingContext2D | null => {
-  const canvas = document.getElementById(id) as HTMLCanvasElement
-  return canvas?.getContext('2d', {
-    willReadFrequently: true
-  })
-}
 
 const handleMouseDown = (e: PointerEvent) => {
   isPainting.value = true
@@ -404,7 +410,10 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
 }
 
 const fillColor = (e: PointerEvent) => {
-  const ctx = getCtx('workspace')
+  const canvas = document.getElementById('workspace') as HTMLCanvasElement
+  const ctx = canvas?.getContext('2d', {
+    willReadFrequently: true
+  })
   if (ctx) {
     const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
     const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
@@ -417,7 +426,11 @@ const fillColor = (e: PointerEvent) => {
 }
 
 const reDraw = () => {
-  const ctx = getCtx('workspace')
+  console.log("A");
+  const canvas = document.getElementById('workspace') as HTMLCanvasElement
+  const ctx = canvas?.getContext('2d', {
+    willReadFrequently: true
+  })
   if (!ctx) return;
   ctx.clearRect(
     0, 0,
@@ -447,38 +460,62 @@ const reDraw = () => {
 const loadFile = () => {
   loadErrs.value = []
   const fileElm: HTMLInputElement | null = document.getElementById("inputFile") as HTMLInputElement
-  const ctx = getCtx('workspace')
+  const canvas = document.getElementById('workspace') as HTMLCanvasElement
+  const ctx = canvas?.getContext('2d', {
+    willReadFrequently: true
+  })
   if (fileElm && ctx) {
     const img = new Image;
+    canvas.width = PICTURE_SIZE.value.w
+    canvas.height = PICTURE_SIZE.value.h
     img.onload = function () {
-      if (img.width > 64 || img.height > 64) {
+      ctx.imageSmoothingEnabled = false;
+      const greater = gcd(img.width, img.height)
+      let width = img.width / greater, height = img.height / greater
+      if (width > 128 || height > 128) {
         loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
         return
       }
-      ctx?.drawImage(img, 0, 0)
-      workspace.colors = []
-      workspace.map_numbers = {}
-      workspace.steps = []
-      workspace.id = 0
-      workspace.width = img.width
-      workspace.height = img.height
-      workspace.template = undefined
-      for (let x = 0; x < img.width; x++) {
-        for (let y = 0; y < img.height; y++) {
+
+      ctx?.drawImage(img, 0, 0, width, height)
+      trimCanvas(canvas)
+      width = canvas.width
+      height = canvas.height
+      const size = width > height ? width : height
+      const colors: string[] = []
+      const results: { [key: string]: number } = {}
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
           const pixelData: any = ctx?.getImageData(x, y, 1, 1);
           const color = rgbToHex(pixelData.data[0], pixelData.data[1], pixelData.data[2])
           if (!(color === '#000000' && pixelData.data[3] === 0)) {
-            if (!workspace.colors.includes(color)) {
-              workspace.colors.push(color)
+            if (!colors.includes(color)) {
+              colors.push(color)
             }
-            workspace.map_numbers[`${x}_${y}`] = workspace.colors.indexOf(color)
+            results[`${x}_${y}`] = colors.indexOf(color)
           }
         }
       }
-      options.value.zoom = Math.log(displaySize.value / img.width) / Math.log(2);
-      options.value.color = workspace.colors[0]
+      workspace.results = {}
+      workspace.colors = []
+      workspace.map_numbers = {}
+      workspace.steps = [{
+        t: 'init_colors',
+        v: colors
+      }, {
+        t: 'init_results',
+        v: results
+      }]
+      workspace.id = 0
+      workspace.width = size
+      workspace.height = size
+      workspace.template = undefined
+      step2Result()
+      setTimeout(() => {
+        reDraw()
+        options.value.zoom = Math.log(displaySize.value / size) / Math.log(2);
+      }, 100)
       showModal.value = null
-      reDraw()
     }
     img.onerror = function () {
       loadErrs.value.push('Sorry, I can\'t load your image!')
@@ -551,7 +588,6 @@ const reSize = () => {
   workspace.width = newSize.value
   workspace.height = newSize.value
   options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
-  reset()
   showModal.value = null
 }
 
@@ -595,7 +631,7 @@ const switchOpenPalette = () => {
 
 const step2Result = () => {
   let currentColors = cloneDeep(workspace.colors)
-  const results: { [key: string]: number } = {}
+  let results: { [key: string]: number } = {}
   workspace.steps.forEach((step: Step) => {
     if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
       if (step.c >= 0) {
@@ -623,6 +659,8 @@ const step2Result = () => {
     } else if (step.t === 'init_colors' && step.v) {
       currentColors = cloneDeep(step.v)
       options.value.color = currentColors[0]
+    } else if (step.t === 'init_results' && step.v) {
+      results = cloneDeep(step.v)
     }
   })
   workspace.results = results
@@ -657,9 +695,9 @@ watch(() => options.value.zoom, () => {
 })
 
 watch(() => [displaySize, workspace.width, workspace.height], () => {
-  options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
-  options.value.zoomOriginal = options.value.zoom
-  reDraw()
+  // options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
+  // options.value.zoomOriginal = options.value.zoom
+  // reDraw()
 })
 
 onMounted(() => {
