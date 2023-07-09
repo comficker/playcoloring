@@ -28,6 +28,8 @@ const form = ref({
   desc: null
 } as any)
 
+const isEditor = computed(() => useRoute().name === 'editor')
+
 const onAddTag = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
   if (!target.value) return;
@@ -41,10 +43,10 @@ const actionSave = async () => {
   const data = {
     ...cloneDeep(form.value),
     ...cloneDeep(workspace),
-    map_numbers: workspace.map_numbers || workspace.results
   }
-  if (!form.value.as_template) {
+  if (isEditor.value) {
     delete data.steps
+    data.map_numbers = workspace.results
   }
   saving.value = true
   const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {
@@ -63,7 +65,7 @@ const actionSave = async () => {
         <div class="text-3xl font-bold">Public your work</div>
         <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
       </div>
-      <div class="flex items-center gap-2">
+      <div v-if="isEditor" class="flex items-center gap-2">
         <button
           type="button"
           class="bg-gray-200 rounded relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"

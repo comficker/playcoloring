@@ -160,9 +160,27 @@
             </div>
           </Transition>
         </client-only>
+        <div v-if="isMoving" class="absolute inset-0 z-60">
+          <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
+            <div class="btn bg-white border-gray-200" @click="teleport('h', -1)">
+              <div class="w-4 h-4 i-con-arrow-left"/>
+            </div>
+            <div class="btn bg-white border-gray-200" @click="teleport('h', 1)">
+              <div class="w-4 h-4 i-con-arrow-right"/>
+            </div>
+          </div>
+          <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
+            <div class="btn bg-white border-gray-200" @click="teleport('v', -1)">
+              <div class="w-4 h-4 i-con-arrow-up"/>
+            </div>
+            <div class="btn bg-white border-gray-200" @click="teleport('v', 1)">
+              <div class="w-4 h-4 i-con-arrow-down"/>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 sticky left-0 right-0 bg-white">
+    <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 left-0 right-0 bg-white" :class="{'sticky': !showModal}">
       <div class="flex gap-2 text-sm flex-nowrap items-center">
         <div
           v-if="isCustomPalette || isMerging"
@@ -264,6 +282,13 @@ function gcd(a: number, b: number) {
     }
   }
   return a;
+}
+
+function findSmallestOdd(num: number): number {
+  if (num % 2 === 0) {
+    return findSmallestOdd(num / 2)
+  }
+  return num
 }
 
 const {debounce, cloneDeep} = pkg
@@ -426,7 +451,6 @@ const fillColor = (e: PointerEvent) => {
 }
 
 const reDraw = () => {
-  console.log("A");
   const canvas = document.getElementById('workspace') as HTMLCanvasElement
   const ctx = canvas?.getContext('2d', {
     willReadFrequently: true
@@ -472,6 +496,9 @@ const loadFile = () => {
       ctx.imageSmoothingEnabled = false;
       const greater = gcd(img.width, img.height)
       let width = img.width / greater, height = img.height / greater
+      if (img.width === img.height) {
+        width = height = 64
+      }
       if (width > 128 || height > 128) {
         loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
         return
@@ -552,6 +579,7 @@ const loadSharedPage = async (id: string) => {
     t: 'init_colors',
     v: cloneDeep(value.colors)
   }]
+  step2Result()
   if (value.is_template) {
     workspace.template = workspace.template || value.id
   } else {
@@ -661,6 +689,16 @@ const step2Result = () => {
       options.value.color = currentColors[0]
     } else if (step.t === 'init_results' && step.v) {
       results = cloneDeep(step.v)
+    } else if (step.t === 'teleport' && step.v) {
+      const newR : { [key: string]: number } = {}
+      const arr = step.v.split("_")
+      const p = arr[0] === 'v' ? 1 : 0
+      Object.keys(results).forEach((k: string) => {
+        const pa = k.split("_").map(x => Number.parseInt(x))
+        pa[p] = pa[p] + Number.parseInt(arr[1])
+        newR[pa.join("_")] = results[k]
+      })
+      results = newR
     }
   })
   workspace.results = results
@@ -673,6 +711,15 @@ const addColor = () => {
     t: 'init_colors',
     v: cloneDeep(workspace.colors)
   })
+}
+
+const teleport = (direction: string, value: number) => {
+  workspace.steps.push({
+    t: 'teleport',
+    v: `${direction}_${value}`
+  })
+  step2Result()
+  reDraw()
 }
 
 watch(isPainting, async (newValue) => {
@@ -698,6 +745,10 @@ watch(() => [displaySize, workspace.width, workspace.height], () => {
   // options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
   // options.value.zoomOriginal = options.value.zoom
   // reDraw()
+})
+
+watch(showModal, () => {
+  isMoving.value = false
 })
 
 onMounted(() => {
