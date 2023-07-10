@@ -71,7 +71,7 @@
           id="wrapper"
           :class="{
             'grayscale': !!showModal,
-            'flex items-center justify-center': options.zoomOriginal >= options.zoom
+            'flex items-center justify-center': displaySize >= PICTURE_SIZE.w
           }"
         >
           <div
@@ -305,7 +305,6 @@ interface Options {
   color: string | null,
   pointer: string,
   zoom: number,
-  zoomOriginal: number
 }
 
 const {isEditor} = defineProps<{ isEditor: boolean }>()
@@ -325,6 +324,7 @@ const workspace: Workspace = reactive<Workspace>({
 
 const palettes = ref<string[][]>([])
 const newSize = ref(16)
+
 const displaySize = ref(576)
 const isPainting = ref(false)
 const showModal = ref<null | string>(null)
@@ -336,16 +336,16 @@ const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
   zoom: Math.log(displaySize.value / workspace.width) / Math.log(2),
-  zoomOriginal: Math.log(displaySize.value / workspace.width) / Math.log(2),
   pointer: ''
 })
 const loadErrs = ref<string[]>([])
 const mergingList = ref<number[]>([])
+
+const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
 const PICTURE_SIZE = computed(() => ({
-  w: Math.round(workspace.width * Math.pow(2, options.value.zoom)),
-  h: Math.round(workspace.height * Math.pow(2, options.value.zoom))
+  w: Math.round(workspace.width * cellScaleSize.value),
+  h: Math.round(workspace.height * cellScaleSize.value)
 }))
-const cellScaleSize = computed(() => Math.pow(2, options.value.zoom))
 
 const handleMouseDown = (e: PointerEvent) => {
   isPainting.value = true
@@ -443,6 +443,8 @@ const fillColor = (e: PointerEvent) => {
     const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
     const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
     filCanvas(ctx, x, y)
+    pop(e)
+    window.soundPop.play()
     if (isDouble.value) {
       const x2 = Math.round((workspace.width - 1 - x / cellScaleSize.value) * cellScaleSize.value)
       filCanvas(ctx, x2, y)
@@ -743,7 +745,6 @@ watch(() => options.value.zoom, () => {
 
 watch(() => [displaySize, workspace.width, workspace.height], () => {
   // options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
-  // options.value.zoomOriginal = options.value.zoom
   // reDraw()
 })
 
@@ -761,6 +762,8 @@ onMounted(() => {
   if (route.query.id || !isEditor) {
     loadSharedPage(route.query?.id?.toString() || 'random')
   }
+
+  window.soundPop = new Audio('/brush.wav')
 })
 
 onBeforeRouteUpdate(n => {
@@ -768,6 +771,41 @@ onBeforeRouteUpdate(n => {
     loadSharedPage(n.query.id.toString())
   }
 })
+
+function pop(e: PointerEvent) {
+  for (let i = 0; i < 4; i++) {
+    createParticle(e.clientX, e.clientY);
+  }
+}
+function createParticle(x: number, y: number) {
+  const particle = document.createElement('particle');
+  document.body.appendChild(particle);
+  const size = Math.floor(Math.random() * 20 + 5);
+  particle.style.width = `${size}px`;
+  particle.style.height = `${size}px`;
+  particle.style.background = options.value.color || '#FFF';
+  particle.style.zIndex = '99999'
+  const destinationX = x + (Math.random() - 0.5) * 2 * 75;
+  const destinationY = y + (Math.random() - 0.5) * 2 * 75;
+
+  const animation = particle.animate([
+    {
+      transform: `translate(${x - (size / 2)}px, ${y - (size / 2)}px)`,
+      opacity: 1
+    },
+    {
+      transform: `translate(${destinationX}px, ${destinationY}px)`,
+      opacity: 0
+    }
+  ], {
+    duration: 500 + Math.random() * 1000,
+    easing: 'cubic-bezier(0, .9, .57, 1)',
+    delay: Math.random() * 200
+  });
+  animation.onfinish = () => {
+    particle.remove();
+  };
+}
 </script>
 
 <style>
@@ -805,5 +843,13 @@ onBeforeRouteUpdate(n => {
 
 .hh2 {
   height: -webkit-fill-available;
+}
+
+particle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
 }
 </style>
