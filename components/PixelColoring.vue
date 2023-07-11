@@ -2,7 +2,7 @@
   <div class="hh1 -mx-4 h-screen flex flex-col border-b divide-y relative">
     <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm justify-between">
       <div class="flex gap-2 items-center">
-        <nuxt-link class="flex gap-1 md:mr-4" to="/">
+        <nuxt-link class="flex gap-1 mr-2 md:mr-4" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
           <img class="md:block hidden w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
@@ -33,6 +33,14 @@
         </div>
       </div>
       <div class="flex gap-2 items-center">
+        <div
+          v-if="!isEditor"
+          class="btn hover:shadow rounded"
+          :class="{'border border-blue': isFilling}"
+          @click="isFilling = !isFilling"
+        >
+          <div class="i-con-fill w-4 h-4"/>
+        </div>
         <div
           v-if="isEditor"
           class="btn hover:shadow rounded"
@@ -71,7 +79,7 @@
           id="wrapper"
           :class="{
             'grayscale': !!showModal,
-            'flex items-center justify-center': displaySize >= PICTURE_SIZE.w
+            'flex items-center justify-center': displaySize + 2 >= PICTURE_SIZE.w
           }"
         >
           <div
@@ -332,6 +340,7 @@ const isDouble = ref(false)
 const isCustomPalette = ref(false)
 const isMoving = ref(false)
 const isMerging = ref(false)
+const isFilling = ref(false)
 const fetchingPercent = ref(101)
 const options = ref<Options>({
   color: '#FFF2CC',
@@ -443,11 +452,30 @@ const fillColor = (e: PointerEvent) => {
     const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
     const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
     filCanvas(ctx, x, y)
-    pop(e)
+    pop(e.clientX, e.clientY)
     window.soundPop.play()
     if (isDouble.value) {
       const x2 = Math.round((workspace.width - 1 - x / cellScaleSize.value) * cellScaleSize.value)
       filCanvas(ctx, x2, y)
+    }
+    if (isFilling.value) {
+      const cIndex = workspace.map_numbers[`${Math.round(x  / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`]
+      const keys = Object.keys(workspace.map_numbers)
+      let start = 1
+      const e = document.getElementById('controller')
+      const b = e?.getBoundingClientRect()
+      Object.values(workspace.map_numbers).forEach((value: number, index: number) => {
+        if (cIndex === value && b) {
+          const arr = keys[index].split("_").map(n => Number.parseInt(n))
+          setTimeout(() => {
+            filCanvas(ctx, arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value)
+            pop(b.x + arr[0] * cellScaleSize.value, b.y + arr[1] * cellScaleSize.value)
+          }, start * 100)
+          if (index % 2) {
+            start++
+          }
+        }
+      })
     }
   }
 }
@@ -772,22 +800,23 @@ onBeforeRouteUpdate(n => {
   }
 })
 
-function pop(e: PointerEvent) {
+function pop(x:number, y: number) {
   for (let i = 0; i < 4; i++) {
-    createParticle(e.clientX, e.clientY);
+    createParticle(x, y);
   }
 }
 function createParticle(x: number, y: number) {
+  if (!x || !y)
+    return
   const particle = document.createElement('particle');
   document.body.appendChild(particle);
-  const size = Math.floor(Math.random() * 20 + 5);
+  const size = Math.floor(Math.random() * 15 + 5);
   particle.style.width = `${size}px`;
   particle.style.height = `${size}px`;
   particle.style.background = options.value.color || '#FFF';
   particle.style.zIndex = '99999'
-  const destinationX = x + (Math.random() - 0.5) * 2 * 75;
-  const destinationY = y + (Math.random() - 0.5) * 2 * 75;
-
+  const destinationX = x + (Math.random() - 0.5) * 2 * 50;
+  const destinationY = y + (Math.random() - 0.5) * 2 * 50;
   const animation = particle.animate([
     {
       transform: `translate(${x - (size / 2)}px, ${y - (size / 2)}px)`,
