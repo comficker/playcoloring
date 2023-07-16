@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import {useUserStore} from "~/stores/user";
+
 const route = useRoute()
 const showHead = computed(() => {
   return !['index', 'editor'].includes(route.name?.toString() || 'index')
 })
+
+await useUserStore().fetchUser()
 </script>
 
 <template>

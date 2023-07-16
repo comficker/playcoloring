@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {ref} from "@vue/reactivity";
-import {useFetch, useSeoMeta, useRuntimeConfig} from "nuxt/app";
-import {ResponseTagSchema, ResponseSharedPage} from "~/interface";
-import ColoringCard from "~/components/ColoringCard.vue";
+import {useSeoMeta, useRuntimeConfig} from "nuxt/app";
 import PixelColoring from "~/components/PixelColoring.vue";
 const router = useRouter()
 const config = useRuntimeConfig()

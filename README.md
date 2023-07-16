@@ -29,7 +29,7 @@
 
 - 🔥 The `<script setup>` syntax.
 
-- 🍍 [State Management via Pinia](https://pinia.esm.dev), see [./composables/user.ts](./composables/user.ts).
+- 🍍 [State Management via Pinia](https://pinia.esm.dev), see [./composables/user.ts](stores/user.ts).
 
 - 📑 [Layout system](./layouts).
 

@@ -282,6 +282,7 @@ import {SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
 import {trimCanvas} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
+import {useUserStore} from "~/stores/user";
 
 function gcd(a: number, b: number) {
   while (a != b) {

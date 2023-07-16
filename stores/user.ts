@@ -1,9 +1,7 @@
 import {computed, ref} from "vue"
 import {defineStore} from 'pinia'
-
 import {User} from "~/interface";
 import {useCookie} from "#app";
-import {useFetch} from "#app";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 
 export const useUserStore = defineStore('user', () => {
@@ -56,9 +54,9 @@ export const useUserStore = defineStore('user', () => {
 
   async function fetchUser() {
     if (logged.value.id) return
-    if (!cookieToken.value) {
-      await loginAnonymous()
-    }
+
+    if (!cookieToken.value) await loginAnonymous()
+
     if (cookieToken.value) {
       let {data: userRes} = await useAuthFetch<User>('/auth/user', {
         headers: {
