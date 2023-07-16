@@ -82,11 +82,18 @@ export interface User {
   id: number
   first_name: string
   last_name: string
-  username: string
+  username: string,
+  meta: {
+    coloring: {
+      current: string
+    }
+  }
 }
 
 export interface Workspace {
   id: number
+  name: string
+  desc: string
   width: number
   height: number
   colors: string[]

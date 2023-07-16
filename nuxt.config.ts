@@ -2,6 +2,7 @@ import { pwa } from './config/pwa'
 import { appDescription } from './constants'
 
 export default defineNuxtConfig({
+  _generate: false,
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
@@ -13,8 +14,8 @@ export default defineNuxtConfig({
     // when using generate, payload js assets included in sw precache manifest
     // but missing on offline, disabling extraction it until fixed
     payloadExtraction: false,
-    reactivityTransform: true,
     inlineSSRStyles: false,
+    renderJsonPayloads: true,
   },
   css: [
     '~/assets/custom.css',
@@ -37,14 +38,26 @@ export default defineNuxtConfig({
       titleTemplate: '%s - playcoloring.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        // { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'apple-touch-icon', href: '/favicon.png' },
       ],
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: appDescription },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-      ]
+      ],
+      script: [
+        {
+          hid: 'gtmHead',
+          innerHTML: `
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-5PJSPNJ');`,
+          body: true
+        },
+      ],
     },
   },
   pwa,
@@ -52,5 +65,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.API
     }
+  },
+  build: {
+    transpile: ['tslib'],
   },
 })

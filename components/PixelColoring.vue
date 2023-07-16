@@ -27,9 +27,7 @@
         </div>
         <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-4 h-4"/>
-        </div>
-        <div class="btn hover:shadow rounded" @click="actionDownload">
-          <div class="i-con-download w-4 h-4"/>
+          <span>Share</span>
         </div>
       </div>
       <div class="flex gap-2 items-center">
@@ -68,9 +66,10 @@
         </div>
       </div>
     </div>
-    <div class="z-10 relative hh2 w-full flex-1 mx-auto overflow-hidden">
+    <div class="z-30 relative hh2 w-full flex-1 mx-auto overflow-hidden">
       <div
         class="relative h-full overflow-hidden"
+        style="--zoom-size: 1px 1px"
         :style="{
           '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
         }"
@@ -122,14 +121,14 @@
             <div v-if="!!showModal" class="fixed md:absolute inset-0 bg-black/50" @click="showModal = null"/>
           </Transition>
           <Transition
-            enter-active-class="animated animated-faster animate-slide-in-up"
-            leave-active-class="animated animated-faster animate-slide-out-down"
+            enter-active-class="animated animated-faster animate-slide-in-down"
+            leave-active-class="animated animated-faster animate-slide-out-up"
           >
             <div
               v-if="!!showModal"
-              class="fixed md:absolute bottom-[-1px] left-[-1px] right-[-1px] z-60"
+              class="fixed md:absolute top-0 left-[-1px] right-[-1px] z-60"
             >
-              <div class="max-w-xl mx-auto bg-white shadow-xl rounded-tl-2xl rounded-tr-2xl border">
+              <div class="max-w-xl mx-auto bg-white shadow-xl rounded-bl-xl rounded-br-xl border">
                 <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>
@@ -188,7 +187,10 @@
         </div>
       </div>
     </div>
-    <div class="z-20 w-full mx-auto px-4 font-semibold py-2 bottom-0 left-0 right-0 bg-white" :class="{'sticky': !showModal}">
+    <div
+      class="z-20 relative w-full mx-auto px-4 font-semibold py-2 bottom-0 left-0 right-0 bg-white duration-200"
+      :class="{'sticky': !showModal}"
+    >
       <div class="flex gap-2 text-sm flex-nowrap items-center">
         <div
           v-if="isCustomPalette || isMerging"
@@ -239,13 +241,13 @@
             <template v-for="(c, i) in workspace.colors">
               <div
                 v-if="isCustomPalette" :key="i"
-                class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-8 h-8 md:w-9 md:h-9">
+                class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-9 h-9">
                 <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
               </div>
               <div
                 v-else
                 :key="c"
-                class="flex-none cursor-pointer border p-2 md:p-2.5 rounded-[2px] box-border"
+                class="flex-none cursor-pointer border p-2.5 rounded-[2px] box-border"
                 :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
                 :style="{backgroundColor: c}"
                 @click="onClickColor(i)"
@@ -292,13 +294,6 @@ function gcd(a: number, b: number) {
   return a;
 }
 
-function findSmallestOdd(num: number): number {
-  if (num % 2 === 0) {
-    return findSmallestOdd(num / 2)
-  }
-  return num
-}
-
 const {debounce, cloneDeep} = pkg
 const route = useRoute()
 const DEFAULT_COLORS = [
@@ -315,10 +310,14 @@ interface Options {
   zoom: number,
 }
 
+const userStore = useUserStore()
+
 const {isEditor} = defineProps<{ isEditor: boolean }>()
 
 const workspace: Workspace = reactive<Workspace>({
   id: 0,
+  name: '',
+  desc: '',
   width: 16,
   height: 16,
   colors: cloneDeep(DEFAULT_COLORS),
@@ -399,18 +398,18 @@ const onClickColor = (i: number) => {
   }
 }
 
-const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string | null) => {
   const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
   if (options.value.pointer === key) {
     return
   }
   options.value.pointer = key
   const colors = workspace.results
-  if (options.value.color) {
-    const index = workspace.colors.indexOf(options.value.color)
+  if (color) {
+    const index = workspace.colors.indexOf(color)
     if (colors[key] === index)
       return;
-    ctx.fillStyle = options.value.color;
+    ctx.fillStyle = color;
     ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
     workspace.steps.push({
       t: 'fill',
@@ -448,27 +447,29 @@ const fillColor = (e: PointerEvent) => {
   const ctx = canvas?.getContext('2d', {
     willReadFrequently: true
   })
+  const color = options.value.color
   if (ctx) {
     const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
     const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
-    filCanvas(ctx, x, y)
+    filCanvas(ctx, x, y, color)
     pop(e.clientX, e.clientY)
     window.soundPop.play()
     if (isDouble.value) {
       const x2 = Math.round((workspace.width - 1 - x / cellScaleSize.value) * cellScaleSize.value)
-      filCanvas(ctx, x2, y)
+      filCanvas(ctx, x2, y, color)
     }
     if (isFilling.value) {
-      const cIndex = workspace.map_numbers[`${Math.round(x  / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`]
+      const cIndex = workspace.map_numbers[`${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`]
       const keys = Object.keys(workspace.map_numbers)
       let start = 1
       const e = document.getElementById('controller')
       const b = e?.getBoundingClientRect()
+
       Object.values(workspace.map_numbers).forEach((value: number, index: number) => {
         if (cIndex === value && b) {
           const arr = keys[index].split("_").map(n => Number.parseInt(n))
           setTimeout(() => {
-            filCanvas(ctx, arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value)
+            filCanvas(ctx, arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, color)
             pop(b.x + arr[0] * cellScaleSize.value, b.y + arr[1] * cellScaleSize.value)
           }, start * 100)
           if (index % 2) {
@@ -605,16 +606,13 @@ const loadSharedPage = async (id: string) => {
   options.value.zoom = Math.log(displaySize.value / value.width) / Math.log(2);
   workspace.colors = value.colors
   workspace.map_numbers = value.map_numbers
-  workspace.steps = [{
+  workspace.steps = value.steps.length ? value.steps : [{
     t: 'init_colors',
     v: cloneDeep(value.colors)
   }]
+  workspace.template = value.template || value.id
+  workspace.id = value.id || 0
   step2Result()
-  if (value.is_template) {
-    workspace.template = workspace.template || value.id
-  } else {
-    workspace.template = undefined
-  }
   options.value.color = value.colors[0]
   reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;
@@ -627,9 +625,6 @@ const loadSharedPage = async (id: string) => {
 
 const toggleModal = (type: string | null) => {
   showModal.value = type
-}
-
-const actionDownload = () => {
 }
 
 const reset = () => {
@@ -720,7 +715,7 @@ const step2Result = () => {
     } else if (step.t === 'init_results' && step.v) {
       results = cloneDeep(step.v)
     } else if (step.t === 'teleport' && step.v) {
-      const newR : { [key: string]: number } = {}
+      const newR: { [key: string]: number } = {}
       const arr = step.v.split("_")
       const p = arr[0] === 'v' ? 1 : 0
       Object.keys(results).forEach((k: string) => {
@@ -751,6 +746,22 @@ const teleport = (direction: string, value: number) => {
   step2Result()
   reDraw()
 }
+
+const saveLate = debounce(async () => {
+  let uri = '/coloring/shared-pages'
+  let method: "POST" | "PUT" = 'POST'
+  if (workspace.id) {
+    method = 'PUT'
+    uri = uri + '/' + workspace.id
+  }
+  const {data: res} = await useAuthFetch<SharedPage>(uri, {
+    method: method,
+    body: workspace
+  })
+  workspace.id = res.value.id
+  workspace.name = res.value.name
+  workspace.desc = res.value.desc
+}, 800)
 
 watch(isPainting, async (newValue) => {
   const workload = document.getElementById('workload')
@@ -787,7 +798,9 @@ onMounted(() => {
   }
 
   const route = useRoute()
-  if (route.query.id || !isEditor) {
+  if (userStore.isLogged && userStore.logged.meta?.coloring?.current) {
+    loadSharedPage(userStore.logged.meta.coloring.current)
+  } else if (route.query.id || !isEditor) {
     loadSharedPage(route.query?.id?.toString() || 'random')
   }
 
@@ -800,15 +813,17 @@ onBeforeRouteUpdate(n => {
   }
 })
 
-function pop(x:number, y: number) {
+function pop(x: number, y: number) {
   for (let i = 0; i < 4; i++) {
     createParticle(x, y);
   }
 }
+
 function createParticle(x: number, y: number) {
   if (!x || !y)
     return
-  const particle = document.createElement('particle');
+  const particle = document.createElement('span');
+  particle.classList.add('particle')
   document.body.appendChild(particle);
   const size = Math.floor(Math.random() * 15 + 5);
   particle.style.width = `${size}px`;
@@ -866,7 +881,6 @@ function createParticle(x: number, y: number) {
 
 .hh1 {
   min-height: 100vh;
-  /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
 }
 
@@ -874,7 +888,7 @@ function createParticle(x: number, y: number) {
   height: -webkit-fill-available;
 }
 
-particle {
+span.particle {
   position: fixed;
   top: 0;
   left: 0;

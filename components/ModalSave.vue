@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {SharedPage, Step, Workspace} from "~/interface";
+import {SharedPage, Workspace} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import pkg from "lodash";
+import {debounce} from "perfect-debounce";
 
 const {cloneDeep} = pkg
 const {workspace} = defineProps<{ workspace: Workspace }>()
@@ -24,8 +25,8 @@ const saving = ref(false)
 const form = ref({
   as_template: false,
   tags: [],
-  name: null,
-  desc: null
+  name: workspace.name || `Untitled #${workspace.id}`,
+  desc: workspace.desc
 } as any)
 
 const isEditor = computed(() => useRoute().name === 'editor')
@@ -39,7 +40,8 @@ const onAddTag = (e: KeyboardEvent) => {
     target.value = ''
   }
 }
-const actionSave = async () => {
+
+const actionSave = debounce(async () => {
   const data = {
     ...cloneDeep(form.value),
     ...cloneDeep(workspace),
@@ -55,16 +57,19 @@ const actionSave = async () => {
   })
   saved.value = res.value as SharedPage
   saving.value = false
-}
+}, 800)
 </script>
 
 <template>
-  <div class="p-4">
-    <div v-if="!saved" class="space-y-3">
-      <div class="flex justify-between items-center text-xs">
-        <div class="text-3xl font-bold">Public your work</div>
-        <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
+  <div class="divide-y">
+    <div class="p-4 py-2 flex justify-between items-center">
+      <div class="flex gap-2 items-end">
+        <div class="font-semibold text-xl">Public your work</div>
+        <span class="italic text-xs">Automatic save enabled</span>
       </div>
+      <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
+    </div>
+    <div class="p-4 py-2 space-y-3">
       <div v-if="isEditor" class="flex items-center gap-2">
         <button
           type="button"
@@ -82,45 +87,43 @@ const actionSave = async () => {
         <span>Share as template</span>
       </div>
       <div>
-        <input v-model="form.name" type="text" class="w-full border px-3 py-2 rounded" placeholder="Title">
+        <input v-model="form.name" type="text" class="w-full outline-none" placeholder="Title">
       </div>
       <div>
-        <div class="flex gap-2 flex-wrap items-center border p-2 px-2 text-sm rounded">
+        <textarea v-model="form.desc" class="w-full outline-none" placeholder="Description"/>
+      </div>
+      <div class="flex gap-2 flex-wrap items-center">
+        <div
+          class="p-0.5 px-3 rounded bg-gray-100 relative group"
+          v-for="(item, i) in form.tags" :key="item"
+        >
+          <span>{{ item }}</span>
           <div
-            class="p-0.5 px-3 rounded bg-gray-100 relative group"
-            v-for="(item, i) in form.tags" :key="item"
+            class="opacity-0 group-hover:opacity-100 duration-300 absolute -top-1 -right-1 cursor-pointer p-0.5 rounded-full bg-red-500"
+            @click="form.tags.splice(i, 1)"
           >
-            <span>{{ item }}</span>
-            <div
-              class="opacity-0 group-hover:opacity-100 duration-300 absolute -top-1 -right-1 cursor-pointer p-0.5 rounded-full bg-red-500"
-              @click="form.tags.splice(i, 1)"
-            >
-              <div class="i-con-close w-3 h-3 text-white"/>
-            </div>
+            <div class="i-con-close w-3 h-3 text-white"/>
           </div>
-          <input
-            type="text" class="outline-none p-1" placeholder="#"
-            @keyup.enter="onAddTag"
-          />
         </div>
-      </div>
-      <div>
-        <textarea v-model="form.desc" class="w-full border px-3 py-2 rounded" placeholder="Description"/>
-      </div>
-      <div class="flex gap-4 text-sm font-semibold">
-        <div class="btn px-8 bg-green-500 text-white" @click="actionSave">
-          <div class="i-con-download w-5 h-5"/>
-          <span>Share</span>
-        </div>
-        <div class="btn px-8 border" @click="actionSave">
-          <span>Save</span>
-        </div>
+        <input
+          type="text" class="outline-none" placeholder="Add tag"
+          @keyup.enter="onAddTag"
+        />
       </div>
     </div>
-    <div v-else>
-      <p class="text-gray-500">Your work was saved, you can check it
-        <nuxt-link class="underline" :to="`/post/${saved.id_string}`">here</nuxt-link>
-      </p>
+    <div class="p-2">
+      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
+        <span>Privacy</span>
+        <div class="w-4 h-4 i-con-right"/>
+      </div>
+      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
+        <span>Share on social</span>
+        <div class="w-4 h-4 i-con-right"/>
+      </div>
+      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
+        <span>Download</span>
+        <div class="w-4 h-4 i-con-right"/>
+      </div>
     </div>
   </div>
 </template>
