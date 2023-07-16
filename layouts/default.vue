@@ -6,7 +6,9 @@ const showHead = computed(() => {
   return !['index', 'editor'].includes(route.name?.toString() || 'index')
 })
 
-await useUserStore().fetchUser()
+onMounted(() => {
+  useUserStore().fetchUser()
+})
 </script>
 
 <template>

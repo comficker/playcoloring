@@ -10,6 +10,7 @@ export function useAuthFetch<T>(
     // @ts-ignore
     KeyOfRes<(res: T extends void ? unknown : T) => T extends void ? unknown : T>>
     | undefined): any {
+
   const config = useRuntimeConfig()
   const route = useRoute()
   const cookieToken = useCookie('auth.token')
