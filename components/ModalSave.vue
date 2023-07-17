@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {SharedPage, Workspace} from "~/interface";
-import {useAuthFetch} from "~/composables/useAuthFetch";
-import pkg from "lodash";
-import {debounce} from "perfect-debounce";
+import {Workspace} from "~/interface";
 
-const {cloneDeep} = pkg
 const {workspace} = defineProps<{ workspace: Workspace }>()
 const emits = defineEmits(['hide'])
+
 function slugify(text: string) {
   return text
     .toString()
@@ -20,8 +17,6 @@ function slugify(text: string) {
     .replace(/--+/g, '-')
 }
 
-const saved = ref<SharedPage | null>(null)
-const saving = ref(false)
 const form = ref({
   as_template: false,
   tags: [],
@@ -40,24 +35,6 @@ const onAddTag = (e: KeyboardEvent) => {
     target.value = ''
   }
 }
-
-const actionSave = debounce(async () => {
-  const data = {
-    ...cloneDeep(form.value),
-    ...cloneDeep(workspace),
-  }
-  if (isEditor.value) {
-    delete data.steps
-    data.map_numbers = workspace.results
-  }
-  saving.value = true
-  const {data: res} = await useAuthFetch<SharedPage>('/coloring/shared-pages/', {
-    method: 'POST',
-    body: data
-  })
-  saved.value = res.value as SharedPage
-  saving.value = false
-}, 800)
 </script>
 
 <template>

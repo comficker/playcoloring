@@ -1,5 +1,4 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware(async () => {
   const { $fetchUser } = useNuxtApp()
-
-  $fetchUser()
+  await $fetchUser()
 })

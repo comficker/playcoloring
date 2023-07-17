@@ -1,5 +1,5 @@
 import {useUserStore} from "~/stores/user";
-import {useCookie, useFetch} from "#app";
+import {useCookie} from "#app";
 import {User} from "~/interface";
 
 export default defineNuxtPlugin(async(NuxtApp) => {
@@ -8,7 +8,10 @@ export default defineNuxtPlugin(async(NuxtApp) => {
   const cookieTokenRefresh = useCookie('auth.token_refresh')
   const userStore = useUserStore()
   async function loginAnonymous() {
-    const {data: res} = await useFetch<{refresh: string, access: string}>('/auth/guess', {
+    const {data: res} = await useAuthFetch<{refresh: string, access: string}>('/auth/guess', {
+      headers: {
+        'Authorization': ''
+      },
       baseURL: config.public.apiBase,
     })
     if (res.value) {
@@ -23,7 +26,7 @@ export default defineNuxtPlugin(async(NuxtApp) => {
     if (!cookieToken.value) await loginAnonymous()
 
     if (cookieToken.value) {
-      let {data: userRes} = await useFetch<User>('/auth/user', {
+      let {data: userRes} = await useAuthFetch<User>('/auth/user', {
         baseURL: config.public.apiBase,
         headers: {
           "Authorization": `Bearer ${cookieToken.value}`
@@ -33,7 +36,7 @@ export default defineNuxtPlugin(async(NuxtApp) => {
         userStore.setLogged(userRes.value)
       } else if (cookieTokenRefresh.value) {
         await refreshToken()
-        let {data: userRes} = await useFetch<User>('/auth/user', {
+        let {data: userRes} = await useAuthFetch<User>('/auth/user', {
           baseURL: config.public.apiBase,
           headers: {
             "Authorization": `Bearer ${cookieToken.value}`
@@ -46,7 +49,10 @@ export default defineNuxtPlugin(async(NuxtApp) => {
   }
 
   async function refreshToken() {{
-    const {data: res} = await useFetch<{access: string}>('/auth/token/refresh/', {
+    const {data: res} = await useAuthFetch<{access: string}>('/auth/token/refresh/', {
+      headers: {
+        'Authorization': ''
+      },
       baseURL: config.public.apiBase,
       body: {
         refresh: cookieTokenRefresh.value

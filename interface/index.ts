@@ -94,6 +94,7 @@ export interface Workspace {
   id: number
   name: string
   desc: string
+  id_string: string
   width: number
   height: number
   colors: string[]

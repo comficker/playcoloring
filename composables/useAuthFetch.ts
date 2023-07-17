@@ -1,35 +1,23 @@
-import {useCookie, UseFetchOptions, useRoute, useFetch} from '#app'
-import {NitroFetchRequest} from 'nitropack'
-import {KeyOfRes} from 'nuxt/dist/app/composables/asyncData'
+import {useCookie, UseFetchOptions, useFetch} from '#app'
+import { defu } from 'defu'
 
-export function useAuthFetch<T>(
-  request: NitroFetchRequest,
-  opts?:
-    | UseFetchOptions<T extends void ? unknown : T,
-    (res: T extends void ? unknown : T) => T extends void ? unknown : T,
-    // @ts-ignore
-    KeyOfRes<(res: T extends void ? unknown : T) => T extends void ? unknown : T>>
-    | undefined): any {
-
+export function useAuthFetch<T> (url: string, options: UseFetchOptions<T> = {}) {
+  const userAuth = useCookie('auth.token')
   const config = useRuntimeConfig()
-  const route = useRoute()
-  const cookieToken = useCookie('auth.token')
-  const token = route.query.token || cookieToken.value
-  if (!opts) {
-    opts = {}
+
+  const defaults: UseFetchOptions<T> = {
+    baseURL: config.public.apiBase,
+    key: url,
+    headers: {
+      ...userAuth.value
+        ? { Authorization: `Bearer ${userAuth.value}` }
+        : {},
+      "Content-Type": 'application/json',
+      "Accept": 'application/json; indent=2'
+    },
   }
-  const headers : any = opts.headers || {}
-  if (token && typeof headers["Authorization"] === 'undefined') {
-    headers["Authorization"] = `Bearer ${token}`
-  }
-  headers["Content-Type"] = 'application/json'
-  headers["Accept"] = 'application/json; indent=4'
-  opts.headers = headers
-  // @ts-ignore
-  return useFetch<T>(request, {baseURL: config.public.apiBase, ...opts}).then(async res => {
-    if (res.pending.value) {
-      await res.execute()
-    }
-    return res
-  })
+
+  const params = defu(options, defaults)
+
+  return useFetch(url, params)
 }

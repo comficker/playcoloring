@@ -276,7 +276,6 @@
 import pkg from 'lodash'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
-import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
@@ -295,6 +294,7 @@ function gcd(a: number, b: number) {
   return a;
 }
 
+const { $touch } = useNuxtApp()
 const {debounce, cloneDeep} = pkg
 const route = useRoute()
 const DEFAULT_COLORS = [
@@ -318,6 +318,7 @@ const {isEditor} = defineProps<{ isEditor: boolean }>()
 const workspace: Workspace = reactive<Workspace>({
   id: 0,
   name: '',
+  id_string: '',
   desc: '',
   width: 16,
   height: 16,
@@ -441,6 +442,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     }
   }
   step2Result()
+  saveLate()
 }
 
 const fillColor = (e: PointerEvent) => {
@@ -599,22 +601,21 @@ const loadSharedPage = async (id: string) => {
     fetchingPercent.value = fetchingPercent.value + timeLeft / 2
     timeLeft = timeLeft / 2
   }, 100)
-  const {data} = await useAuthFetch(`/coloring/shared-pages/${id}/`)
-  if (!data.value) return
-  const value = data.value as SharedPage
-  workspace.width = value.width
-  workspace.height = value.height
-  options.value.zoom = Math.log(displaySize.value / value.width) / Math.log(2);
-  workspace.colors = value.colors
-  workspace.map_numbers = value.map_numbers
-  workspace.steps = value.steps.length ? value.steps : [{
+  const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`)
+  if (!response) return
+  workspace.width = response.width
+  workspace.height = response.height
+  options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
+  workspace.colors = response.colors
+  workspace.map_numbers = response.map_numbers
+  workspace.steps = response.steps.length ? response.steps : [{
     t: 'init_colors',
-    v: cloneDeep(value.colors)
+    v: cloneDeep(response.colors)
   }]
-  workspace.template = value.template || value.id
-  workspace.id = value.id || 0
+  workspace.template = response.template || response.id
+  workspace.id_string = response.is_template ? '' : response.id_string
   step2Result()
-  options.value.color = value.colors[0]
+  options.value.color = response.colors[0]
   reDraw()
   document.body.scrollTop = document.documentElement.scrollTop = 0;
   clearInterval(itv)
@@ -749,19 +750,22 @@ const teleport = (direction: string, value: number) => {
 }
 
 const saveLate = debounce(async () => {
-  let uri = '/coloring/shared-pages'
+  let uri = '/coloring/shared-pages/'
   let method: "POST" | "PUT" = 'POST'
-  if (workspace.id) {
+  if (workspace.id_string) {
     method = 'PUT'
-    uri = uri + '/' + workspace.id
+    uri = uri + workspace.id_string + '/'
   }
-  const {data: res} = await useAuthFetch<SharedPage>(uri, {
+  const response: SharedPage = await $touch(uri, {
     method: method,
     body: workspace
   })
-  workspace.id = res.value.id
-  workspace.name = res.value.name
-  workspace.desc = res.value.desc
+  if (response) {
+    workspace.id = response.id
+    workspace.id_string = response.id_string
+    workspace.name = response.name
+    workspace.desc = response.desc
+  }
 }, 800)
 
 watch(isPainting, async (newValue) => {
