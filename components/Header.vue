@@ -7,8 +7,9 @@
           <img class="w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
       </h1>
-      <nuxt-link class="p-2.5 cursor-pointer" to="/editor">
+      <nuxt-link class="p-2.5 flex gap-1 items-center cursor-pointer" to="/editor">
         <div class="w-4 h-4 i-con-design"></div>
+        <span>Editor</span>
       </nuxt-link>
     </div>
   </div>

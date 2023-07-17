@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value" class="max-w-xl mx-auto space-y-6">
+  <div v-if="value" class="max-w-xl mx-auto space-y-4 my-4">
     <breadcrumb :crumbs="crumbs"/>
     <div>
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
@@ -99,8 +99,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="mt-4 max-w-xl mx-auto space-y-4">
     <div class="space-y-2">
       <h2 class="uppercase text-xs font-bold">Variants</h2>
       <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">

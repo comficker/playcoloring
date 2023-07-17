@@ -1,11 +1,13 @@
 <template>
-  <div class="hh1 -mx-4 h-screen flex flex-col border-b divide-y relative">
-    <div class="px-4 w-full mx-auto flex gap-2 font-semibold py-2 text-sm justify-between">
+  <div class="hh1 -mx-4 h-screen flex flex-col border-b relative divide-y font-semibold">
+    <div class="px-4 py-2 w-full mx-auto flex gap-2 text-sm justify-between">
       <div class="flex gap-2 items-center">
         <nuxt-link class="flex gap-1 mr-2 md:mr-4" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
           <img class="md:block hidden w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
+      </div>
+      <div class="flex gap-2 items-center">
         <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white h-full" @click="reset">
           <div class="i-con-plus w-4 h-4"/>
           <span class="hidden md:block">New</span>
@@ -30,43 +32,8 @@
           <span>Share</span>
         </div>
       </div>
-      <div class="flex gap-2 items-center">
-        <div
-          v-if="!isEditor"
-          class="btn hover:shadow rounded"
-          :class="{'border border-blue': isFilling}"
-          @click="isFilling = !isFilling"
-        >
-          <div class="i-con-fill w-4 h-4"/>
-        </div>
-        <div
-          v-if="isEditor"
-          class="btn hover:shadow rounded"
-          :class="{'border border-blue': isMoving}"
-          @click="isMoving = !isMoving"
-        >
-          <div class="i-con-move w-4 h-4"/>
-        </div>
-        <div
-          v-if="isEditor"
-          class="btn hover:shadow rounded"
-          :class="{'border border-blue': showModal === 'ruler'}"
-          @click="showModal = showModal === 'ruler' ? null : 'ruler'"
-        >
-          <div class="i-con-ruler w-4 h-4"/>
-        </div>
-        <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
-          <div class="i-con-compare w-4 h-4"/>
-        </div>
-        <div class="btn hover:shadow rounded" @click="handleZoom(true)">
-          <div class="i-con-zoom-in w-4 h-4"/>
-        </div>
-        <div class="btn hover:shadow rounded" @click="handleZoom(false)">
-          <div class="i-con-zoom-out w-4 h-4"/>
-        </div>
-      </div>
     </div>
-    <div class="z-30 relative hh2 w-full flex-1 mx-auto overflow-hidden">
+    <div class="z-10 relative hh2 w-full flex-1 mx-auto overflow-hidden">
       <div
         class="relative h-full overflow-hidden"
         style="--zoom-size: 1px 1px"
@@ -186,9 +153,46 @@
           </div>
         </div>
       </div>
+      <div class="absolute left-0 right-0 bottom-4 flex justify-center">
+        <div class="flex gap-2 items-center rounded justify-center p-2 py-1 bg-white shadow">
+          <div
+            v-if="!isEditor"
+            class="btn hover:shadow rounded"
+            :class="{'border border-blue': isFilling}"
+            @click="isFilling = !isFilling"
+          >
+            <div class="i-con-fill w-4 h-4"/>
+          </div>
+          <div
+            v-if="isEditor"
+            class="btn hover:shadow rounded"
+            :class="{'border border-blue': isMoving}"
+            @click="isMoving = !isMoving"
+          >
+            <div class="i-con-move w-4 h-4"/>
+          </div>
+          <div
+            v-if="isEditor"
+            class="btn hover:shadow rounded"
+            :class="{'border border-blue': showModal === 'ruler'}"
+            @click="showModal = showModal === 'ruler' ? null : 'ruler'"
+          >
+            <div class="i-con-ruler w-4 h-4"/>
+          </div>
+          <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
+            <div class="i-con-compare w-4 h-4"/>
+          </div>
+          <div class="btn hover:shadow rounded" @click="handleZoom(true)">
+            <div class="i-con-zoom-in w-4 h-4"/>
+          </div>
+          <div class="btn hover:shadow rounded" @click="handleZoom(false)">
+            <div class="i-con-zoom-out w-4 h-4"/>
+          </div>
+        </div>
+      </div>
     </div>
     <div
-      class="z-20 relative w-full mx-auto px-4 font-semibold py-2 bottom-0 left-0 right-0 bg-white duration-200"
+      class="px-4 py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
       :class="{'sticky': !showModal}"
     >
       <div class="flex gap-2 text-sm flex-nowrap items-center">
