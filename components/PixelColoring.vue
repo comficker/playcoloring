@@ -153,7 +153,7 @@
           </div>
         </div>
       </div>
-      <div class="absolute left-0 right-0 bottom-4 flex justify-center">
+      <div class="absolute right-4 top-4 flex justify-center">
         <div class="flex gap-2 items-center rounded justify-center p-2 py-1 bg-white shadow">
           <div
             v-if="!isEditor"

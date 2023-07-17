@@ -1,24 +1,39 @@
 import {useUserStore} from "~/stores/user";
 import {useCookie} from "#app";
 import {User} from "~/interface";
+import {ofetch} from "ofetch";
 
 export default defineNuxtPlugin(async(NuxtApp) => {
   const config = useRuntimeConfig()
   const cookieToken = useCookie('auth.token')
   const cookieTokenRefresh = useCookie('auth.token_refresh')
   const userStore = useUserStore()
+
+  const touch = ofetch.create({
+    baseURL: config.public.apiBase,
+    headers: {
+      "Accept": 'application/json',
+      "Content-Type": 'application/json'
+    }
+  })
   async function loginAnonymous() {
-    const {data: res} = await useAuthFetch<{refresh: string, access: string}>('/auth/guess', {
-      headers: {
-        'Authorization': ''
-      },
-      baseURL: config.public.apiBase,
-    })
+    const res = await touch('/auth/guess')
     if (res.value) {
-      cookieToken.value = res.value.access
-      cookieTokenRefresh.value = res.value.refresh
+      cookieToken.value = res.access
+      cookieTokenRefresh.value = res.refresh
     }
   }
+
+  async function refreshToken() {{
+    const res = await touch('/auth/token/refresh/', {
+      body: {
+        refresh: cookieTokenRefresh.value
+      }
+    })
+    if (res.value) {
+      cookieToken.value = res.access
+    }
+  }}
 
   async function fetchUser() {
     if (userStore.logged.id) return
@@ -26,42 +41,25 @@ export default defineNuxtPlugin(async(NuxtApp) => {
     if (!cookieToken.value) await loginAnonymous()
 
     if (cookieToken.value) {
-      let {data: userRes} = await useAuthFetch<User>('/auth/user', {
-        baseURL: config.public.apiBase,
+      let userRes = await touch<User>('/auth/user', {
         headers: {
           "Authorization": `Bearer ${cookieToken.value}`
         }
       })
-      if (userRes.value) {
-        userStore.setLogged(userRes.value)
+      if (userRes) {
+        userStore.setLogged(userRes)
       } else if (cookieTokenRefresh.value) {
         await refreshToken()
-        let {data: userRes} = await useAuthFetch<User>('/auth/user', {
-          baseURL: config.public.apiBase,
+        let userRes = await touch<User>('/auth/user', {
           headers: {
             "Authorization": `Bearer ${cookieToken.value}`
           }
         })
-        if (userRes.value)
-          userStore.setLogged(userRes.value)
+        if (userRes)
+          userStore.setLogged(userRes)
       }
     }
   }
-
-  async function refreshToken() {{
-    const {data: res} = await useAuthFetch<{access: string}>('/auth/token/refresh/', {
-      headers: {
-        'Authorization': ''
-      },
-      baseURL: config.public.apiBase,
-      body: {
-        refresh: cookieTokenRefresh.value
-      }
-    })
-    if (res.value) {
-      cookieToken.value = res.value.access
-    }
-  }}
 
   return {
     provide: {
