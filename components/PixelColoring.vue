@@ -45,7 +45,7 @@
           id="wrapper"
           :class="{
             'grayscale': !!showModal,
-            'flex items-center justify-center': displaySize + 2 >= PICTURE_SIZE.w
+            'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w
           }"
         >
           <div
@@ -339,6 +339,7 @@ const palettes = ref<string[][]>([])
 const newSize = ref(16)
 
 const displaySize = ref(576)
+const wrapperSize = ref(576)
 const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
@@ -802,6 +803,7 @@ watch(showModal, () => {
 
 onMounted(() => {
   const wrapper = document.getElementById('wrapper')
+  wrapperSize.value = wrapper?.offsetWidth || 576
   if (wrapper && wrapper.offsetWidth < 576) {
     displaySize.value = 384
   }
