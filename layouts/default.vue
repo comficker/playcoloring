@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute()
 const showHead = computed(() => {
-  return !['index', 'editor'].includes(route.name?.toString() || 'index')
+  return !['index', 'editor', 'my-space'].includes(route.name?.toString() || 'index')
 })
 </script>
 

@@ -31,6 +31,10 @@
           <div class="i-con-save w-4 h-4"/>
           <span>Share</span>
         </div>
+        <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
+          <div class="i-con-user w-4 h-4"/>
+          <span>My space</span>
+        </nuxt-link>
       </div>
     </div>
     <div class="z-10 relative hh2 w-full flex-1 mx-auto overflow-hidden">

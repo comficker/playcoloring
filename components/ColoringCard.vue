@@ -25,7 +25,7 @@
           class="font-semibold hover:underline uppercase whitespace-nowrap truncate">{{ value.name || value.id_string }}
         </nuxt-link>
       </div>
-      <div class="flex gap-1 items-center">
+      <div v-if="showAuthor" class="flex gap-1 items-center">
         <div class="i-con-user w-4 h-4"></div>
         <nuxt-link
           :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`"
@@ -43,7 +43,7 @@ import {useRuntimeConfig} from "nuxt/app";
 import {onMounted} from "@vue/runtime-core";
 import {computed} from "vue";
 
-const {value} = defineProps<{value: SharedPage}>()
+const {value, showAuthor} = defineProps<{value: SharedPage, showAuthor?: boolean}>()
 const config = useRuntimeConfig()
 
 const src = computed(() => `${config.public.apiBase}/coloring/files/${value.id_string}.png?type=thumbnail`)
