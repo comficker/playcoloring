@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value" class="max-w-xl mx-auto space-y-4 py-4">
+  <div v-if="value" class="max-w-xl mx-auto space-y-4 md:space-y-6 py-4">
     <breadcrumb :crumbs="crumbs"/>
     <div>
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
@@ -17,11 +17,13 @@
           <div class="w-4 h-4 i-con-download"/>
         </a>
         <nuxt-link
+          v-if="value.is_template || isOwner"
           :to="`/?id=${value.id_string}`"
           class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
         >
           <div class="w-4 h-4 i-con-gamepad"/>
-          <span>Play</span>
+          <span v-if="isOwner">Continue</span>
+          <span v-else>Play</span>
         </nuxt-link>
       </div>
       <div class="flex gap-2">
@@ -121,9 +123,11 @@ import {onMounted} from "@vue/runtime-core";
 import ColoringCard from "~/components/ColoringCard.vue";
 import {computed} from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
+import {useUserStore} from "~/stores/user";
 
 const config = useRuntimeConfig()
 const route = useRoute()
+const userStore = useUserStore()
 const [{data: r1}, {data: r2}] = await Promise.all([
   useAuthFetch<SharedPage>(`/coloring/shared-pages/${route.params.id_string}/`).then(res => {
     if (res.data.value) {
@@ -186,6 +190,10 @@ const meta = computed(() => {
       imgSrc: '/screenshot/default.png'
     }
   }
+})
+
+const isOwner = computed(() => {
+  return value.user && userStore.isLogged && value.user.id === userStore.logged.id
 })
 
 const crumbs = computed<IBreadcrumb[]>(() => [{
