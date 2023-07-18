@@ -1,13 +1,13 @@
 <template>
-  <div class="max-w-xl mx-auto w-full px-4 md:px-0">
-    <div class="flex justify-between">
+  <div class="max-w-xl mx-auto w-full px-4 md:px-0 py-2">
+    <div class="flex justify-between items-center">
       <h1>
         <nuxt-link class="flex gap-1" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
-          <img class="w-auto h-8" src="/logo.png" alt="Play Coloring">
+          <img class="hidden md:block w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
       </h1>
-      <nuxt-link class="p-2.5 flex gap-2 items-center cursor-pointer border rounded py-2 hover:shadow" to="/editor">
+      <nuxt-link class="btn hover:shadow rounded" to="/editor">
         <div class="w-4 h-4 i-con-design"></div>
         <span>Editor</span>
       </nuxt-link>

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-xl mx-auto space-y-6">
+  <div class="max-w-xl mx-auto space-y-4 py-4">
     <breadcrumb :crumbs="crumbs"/>
     <div class="space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
@@ -71,11 +71,8 @@ const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 const crumbs = computed<IBreadcrumb[]>(() => {
   let icon
   const tax_id = route.params.tax_id.toString()
-  let name
-  if (tax_id.startsWith('author')) {
-    name = "Author"
-    icon = 'i-con-user'
-  } else if (tax_id.startsWith('size')) {
+  let name = ''
+  if (tax_id.startsWith('size')) {
     name = "Size"
     icon = 'i-con-ruler'
   } else if (tax_id.startsWith('color')) {
@@ -88,7 +85,7 @@ const crumbs = computed<IBreadcrumb[]>(() => {
     name = "Pixel Art"
     icon = 'i-con-color'
   }
-  const arr = [{
+  const arr: IBreadcrumb[] = [{
     name,
     to: `/${route.params.tax_id}`,
     icon: icon

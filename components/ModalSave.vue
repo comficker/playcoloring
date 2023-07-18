@@ -3,7 +3,7 @@ import {computed, ref} from "vue";
 import {Workspace} from "~/interface";
 
 const {workspace} = defineProps<{ workspace: Workspace }>()
-const emits = defineEmits(['hide'])
+const emits = defineEmits(['hide', 'change'])
 
 function slugify(text: string) {
   return text
@@ -19,7 +19,7 @@ function slugify(text: string) {
 
 const form = ref({
   as_template: false,
-  tags: [],
+  tags: workspace.taxonomies?.map(x => x.name),
   name: workspace.name || `Untitled #${workspace.id}`,
   desc: workspace.desc
 } as any)
@@ -35,6 +35,10 @@ const onAddTag = (e: KeyboardEvent) => {
     target.value = ''
   }
 }
+
+watch(form, () => {
+  emits('change', form)
+})
 </script>
 
 <template>

@@ -796,11 +796,6 @@ watch(() => options.value.zoom, () => {
   debounce(reDraw, 100)()
 })
 
-watch(() => [displaySize, workspace.width, workspace.height], () => {
-  // options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2)
-  // reDraw()
-})
-
 watch(showModal, () => {
   isMoving.value = false
 })

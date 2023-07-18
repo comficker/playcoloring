@@ -37,6 +37,14 @@ export interface Step {
   v?: any
 }
 
+export interface Tax {
+  "id" : number
+  "id_string" : string
+  "name" : string
+  "title" : string
+  "desc" : string
+}
+
 export interface SharedPage {
   id: number
   width: number
@@ -55,7 +63,7 @@ export interface SharedPage {
 
   user: any
   template?: number
-  taxonomies: any[]
+  taxonomies: Tax[]
 }
 
 export interface ResponseTagSchema {
@@ -102,6 +110,7 @@ export interface Workspace {
   results: {[key: string]: number}
   steps: Step[]
   template?: number | undefined
+  taxonomies?: Tax[]
 }
 
 export interface IBreadcrumb {

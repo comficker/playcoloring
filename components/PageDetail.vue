@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value" class="max-w-xl mx-auto space-y-4 mb-4">
+  <div v-if="value" class="max-w-xl mx-auto space-y-4 py-4">
     <breadcrumb :crumbs="crumbs"/>
     <div>
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
@@ -88,7 +88,9 @@
         <div class="w-8 h-8 i-con-user"/>
         <div>
           <div class="text-sm text-gray-500">Creator</div>
-          <nuxt-link :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`" class="font-bold hover:underline">Anonymous</nuxt-link>
+          <nuxt-link
+            :to="`/author/${value.user?.username || 'anonymous'}`"
+            class="font-bold hover:underline">{{value.user?.username || 'Anonymous'}}</nuxt-link>
         </div>
       </div>
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
