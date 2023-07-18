@@ -633,6 +633,13 @@ const loadSharedPage = async (id: string) => {
   if (!response) return
   Object.assign(workspace, response)
   workspace.tags = workspace.taxonomies.map(x => x.name)
+  if (id === 'random') {
+    workspace.id = 0
+    workspace.name = ''
+    workspace.desc = ''
+    workspace.is_template = false
+    workspace.id_string = ''
+  }
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
   step2Result()
   options.value.color = response.colors[0]
@@ -770,7 +777,7 @@ const teleport = (direction: string, value: number) => {
 }
 
 const saveLate = debounce(async () => {
-  if (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id) return
+  if (!!workspace.id && (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id)) return
 
   let uri = '/coloring/shared-pages/'
   let method: "POST" | "PUT" = 'POST'
@@ -786,12 +793,8 @@ const saveLate = debounce(async () => {
       taxonomies: undefined
     }
   })
-  if (response) {
-    workspace.id = response.id
-    workspace.id_string = response.id_string
-    workspace.name = response.name
-    workspace.desc = response.desc
-  }
+  Object.assign(workspace, response)
+  workspace.tags = workspace.taxonomies.map(x => x.name)
 }, 800)
 
 watch(isPainting, async (newValue) => {
