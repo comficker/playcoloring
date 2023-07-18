@@ -634,11 +634,12 @@ const loadSharedPage = async (id: string) => {
   Object.assign(workspace, response)
   workspace.tags = workspace.taxonomies.map(x => x.name)
   if (id === 'random') {
-    workspace.id = 0
     workspace.name = ''
     workspace.desc = ''
     workspace.is_template = false
     workspace.id_string = ''
+    workspace.template = workspace.id
+    workspace.id = 0
   }
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
   step2Result()
