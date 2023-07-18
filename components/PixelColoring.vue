@@ -15,7 +15,7 @@
         <div v-else class="relative">
           <div class="btn md:px-5 bg-rose-700 text-white" @click="loadSharedPage('random')">
             <div class="i-con-refresh w-4 h-4"/>
-            <span class="hidden md:block">Random picture</span>
+            <span class="hidden md:block">New Game</span>
           </div>
           <div
             v-if="fetchingPercent < 101"
@@ -817,7 +817,7 @@ onMounted(() => {
     if (route.query.id) {
       loadSharedPage(route.query?.id?.toString() || 'random')
     } else if (userStore.isLogged && userStore.logged.meta?.coloring?.current) {
-      loadSharedPage(userStore.logged.meta.coloring.current)
+      loadSharedPage(userStore.logged.meta.coloring.current || 'random')
     }
   }
 
