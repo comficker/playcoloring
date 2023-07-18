@@ -18,7 +18,7 @@ export default defineNuxtPlugin(async(NuxtApp) => {
   })
   async function loginAnonymous() {
     const res = await touch('/auth/guess')
-    if (res.value) {
+    if (res) {
       cookieToken.value = res.access
       cookieTokenRefresh.value = res.refresh
     }

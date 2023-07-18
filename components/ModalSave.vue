@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {Workspace} from "~/interface";
+import {SaveForm, Workspace} from "~/interface";
 
 const {workspace} = defineProps<{ workspace: Workspace }>()
 const emits = defineEmits(['hide', 'change'])
@@ -17,12 +17,12 @@ function slugify(text: string) {
     .replace(/--+/g, '-')
 }
 
-const form = ref({
+const form = ref<SaveForm>({
   as_template: false,
-  tags: workspace.taxonomies?.map(x => x.name),
+  tags: workspace.taxonomies?.map(x => x.name) || [],
   name: workspace.name || `Untitled #${workspace.id}`,
   desc: workspace.desc
-} as any)
+})
 
 const isEditor = computed(() => useRoute().name === 'editor')
 

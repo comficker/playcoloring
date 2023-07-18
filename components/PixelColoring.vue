@@ -112,7 +112,10 @@
                     <div v-for="e in loadErrs" :key="e">{{ e }}</div>
                   </div>
                 </div>
-                <modal-save v-else-if="showModal === 'saving'" :workspace="workspace" @hide="showModal = null"/>
+                <modal-save
+                  v-else-if="showModal === 'saving'" :workspace="workspace"
+                  @hide="showModal = null" @change="handleFormChange"
+                />
                 <div v-else-if="showModal === 'ruler'" class="p-4 space-y-3">
                   <div class="flex justify-between items-center text-xs">
                     <div class="text-2xl font-bold">Resize</div>
@@ -285,7 +288,7 @@ import pkg from 'lodash'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {onBeforeRouteUpdate, useRoute} from "#app";
-import {SharedPage, Step, Workspace} from "~/interface";
+import {SaveForm, SharedPage, Step, Workspace} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
 import {trimCanvas} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
@@ -394,6 +397,10 @@ const handleZoom = (isPlus = true) => {
   } else if (!isPlus && options.value.zoom > 4) {
     options.value.zoom--
   }
+}
+
+const handleFormChange = (form: SaveForm) => {
+  console.log(form);
 }
 
 const onClickColor = (i: number) => {

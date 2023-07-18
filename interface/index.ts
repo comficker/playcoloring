@@ -113,6 +113,13 @@ export interface Workspace {
   taxonomies?: Tax[]
 }
 
+export interface SaveForm {
+  as_template: boolean
+  tags: string[]
+  name: string
+  desc: string
+}
+
 export interface IBreadcrumb {
   name: string
   icon?: string | null
