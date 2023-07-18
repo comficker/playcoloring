@@ -816,10 +816,10 @@ onMounted(() => {
 
   if (!isEditor) {
     const route = useRoute()
-    if (route.query.id) {
+    if (userStore.isLogged) {
+      loadSharedPage(userStore.logged.meta?.coloring?.current || 'random')
+    } else {
       loadSharedPage(route.query?.id?.toString() || 'random')
-    } else if (userStore.isLogged && userStore.logged.meta?.coloring?.current) {
-      loadSharedPage(userStore.logged.meta.coloring.current || 'random')
     }
   }
 
