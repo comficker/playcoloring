@@ -64,6 +64,9 @@ export interface SharedPage {
   user: any
   template?: number
   taxonomies: Tax[]
+
+  tags?: string[]
+  results?: {[key: string]: number}
 }
 
 export interface ResponseTagSchema {
@@ -98,23 +101,8 @@ export interface User {
   }
 }
 
-export interface Workspace {
-  id: number
-  name: string
-  desc: string
-  id_string: string
-  width: number
-  height: number
-  colors: string[]
-  map_numbers: {[key: string]: number}
-  results: {[key: string]: number}
-  steps: Step[]
-  template?: number | undefined
-  taxonomies?: Tax[]
-}
-
 export interface SaveForm {
-  as_template: boolean
+  is_template: boolean
   tags: string[]
   name: string
   desc: string

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {SaveForm, Workspace} from "~/interface";
+import {SaveForm, SharedPage} from "~/interface";
 
-const {workspace} = defineProps<{ workspace: Workspace }>()
+const {workspace} = defineProps<{ workspace: SharedPage }>()
 const emits = defineEmits(['hide', 'change'])
 
 function slugify(text: string) {
@@ -18,8 +18,8 @@ function slugify(text: string) {
 }
 
 const form = ref<SaveForm>({
-  as_template: false,
-  tags: workspace.taxonomies?.map(x => x.name) || [],
+  is_template: workspace.is_template,
+  tags: workspace.tags || [],
   name: workspace.name || `Untitled #${workspace.id}`,
   desc: workspace.desc
 })
@@ -37,8 +37,8 @@ const onAddTag = (e: KeyboardEvent) => {
 }
 
 watch(form, () => {
-  emits('change', form)
-})
+  emits('change', form.value)
+}, {deep: true})
 </script>
 
 <template>
@@ -56,13 +56,13 @@ watch(form, () => {
           type="button"
           class="bg-gray-200 rounded relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
           role="switch" aria-checked="false"
-          :class="{'bg-indigo-600': form.as_template}"
-          @click="form.as_template = !form.as_template"
+          :class="{'bg-indigo-600': form.is_template}"
+          @click="form.is_template = !form.is_template"
         >
           <span
             aria-hidden="true"
             class="translate-x-0 rounded pointer-events-none inline-block h-4 w-4 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
-            :class="{'translate-x-4 bg-green-500': form.as_template}"
+            :class="{'translate-x-4 bg-green-500': form.is_template}"
           />
         </button>
         <span>Share as template</span>

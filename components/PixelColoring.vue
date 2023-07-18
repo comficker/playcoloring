@@ -288,7 +288,7 @@ import pkg from 'lodash'
 import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {onBeforeRouteUpdate, useRoute} from "#app";
-import {SaveForm, SharedPage, Step, Workspace} from "~/interface";
+import {SaveForm, SharedPage, Step} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
 import {trimCanvas} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
@@ -315,18 +315,7 @@ const DEFAULT_COLORS = [
   "#DFA67B",
   "#245953",
 ]
-
-interface Options {
-  color: string | null,
-  pointer: string,
-  zoom: number,
-}
-
-const userStore = useUserStore()
-
-const {isEditor} = defineProps<{ isEditor: boolean }>()
-
-const workspace: Workspace = reactive<Workspace>({
+const DEFAULT_WORKSPACE: SharedPage = {
   id: 0,
   name: '',
   id_string: '',
@@ -335,12 +324,35 @@ const workspace: Workspace = reactive<Workspace>({
   height: 16,
   colors: cloneDeep(DEFAULT_COLORS),
   map_numbers: {},
-  results: {},
   steps: [{
     t: 'init_colors',
     v: cloneDeep(DEFAULT_COLORS)
-  }]
-})
+  }],
+  updated: '',
+  created: '',
+  db_status: 0,
+  is_template: false,
+  meta: undefined,
+  user: undefined,
+  taxonomies: [],
+
+  tags: [],
+  results: {},
+}
+
+interface Options {
+  color: string | null,
+  pointer: string,
+  zoom: number,
+}
+
+type Keys = keyof SharedPage;
+
+const userStore = useUserStore()
+
+const {isEditor} = defineProps<{ isEditor: boolean }>()
+
+const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
 
 const palettes = ref<string[][]>([])
 const newSize = ref(16)
@@ -400,7 +412,11 @@ const handleZoom = (isPlus = true) => {
 }
 
 const handleFormChange = (form: SaveForm) => {
-  console.log(form);
+  workspace.name = form.name
+  workspace.desc = form.desc
+  workspace.tags = form.tags
+  workspace.is_template = form.is_template
+  saveLate()
 }
 
 const onClickColor = (i: number) => {
@@ -422,7 +438,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     return
   }
   options.value.pointer = key
-  const colors = workspace.results
+  const colors = workspace.results || {}
   if (color) {
     const index = workspace.colors.indexOf(color)
     if (colors[key] === index)
@@ -523,7 +539,7 @@ const reDraw = () => {
       +arr[1] * cellScaleSize.value + cellScaleSize.value / 2
     );
   })
-  const colors = workspace.results
+  const colors = workspace.results || {}
   Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
     ctx.fillStyle = workspace.colors[colors[k]];
@@ -543,6 +559,7 @@ const loadFile = () => {
     canvas.width = PICTURE_SIZE.value.w
     canvas.height = PICTURE_SIZE.value.h
     img.onload = function () {
+      Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
       ctx.imageSmoothingEnabled = false;
       const greater = gcd(img.width, img.height)
       let width = img.width / greater, height = img.height / greater
@@ -553,7 +570,6 @@ const loadFile = () => {
         loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
         return
       }
-
       ctx?.drawImage(img, 0, 0, width, height)
       trimCanvas(canvas)
       width = canvas.width
@@ -573,9 +589,6 @@ const loadFile = () => {
           }
         }
       }
-      workspace.results = {}
-      workspace.colors = []
-      workspace.map_numbers = {}
       workspace.steps = [{
         t: 'init_colors',
         v: colors
@@ -583,10 +596,8 @@ const loadFile = () => {
         t: 'init_results',
         v: results
       }]
-      workspace.id = 0
       workspace.width = size
       workspace.height = size
-      workspace.template = undefined
       step2Result()
       setTimeout(() => {
         reDraw()
@@ -609,6 +620,7 @@ const loadFile = () => {
 }
 
 const loadSharedPage = async (id: string) => {
+  Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
   showModal.value = null
   if (fetchingPercent.value < 101) return
   fetchingPercent.value = 0
@@ -619,17 +631,9 @@ const loadSharedPage = async (id: string) => {
   }, 100)
   const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`)
   if (!response) return
-  workspace.width = response.width
-  workspace.height = response.height
+  Object.assign(workspace, response)
+  workspace.tags = workspace.taxonomies.map(x => x.name)
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
-  workspace.colors = response.colors
-  workspace.map_numbers = response.map_numbers
-  workspace.steps = response.steps.length ? response.steps : [{
-    t: 'init_colors',
-    v: cloneDeep(response.colors)
-  }]
-  workspace.template = response.template || response.id
-  workspace.id_string = response.is_template ? '' : response.id_string
   step2Result()
   options.value.color = response.colors[0]
   reDraw()
@@ -766,6 +770,8 @@ const teleport = (direction: string, value: number) => {
 }
 
 const saveLate = debounce(async () => {
+  if (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id) return
+
   let uri = '/coloring/shared-pages/'
   let method: "POST" | "PUT" = 'POST'
   if (workspace.id_string) {
@@ -774,7 +780,11 @@ const saveLate = debounce(async () => {
   }
   const response: SharedPage = await $touch(uri, {
     method: method,
-    body: workspace
+    body: {
+      ...workspace,
+      user: undefined,
+      taxonomies: undefined
+    }
   })
   if (response) {
     workspace.id = response.id
