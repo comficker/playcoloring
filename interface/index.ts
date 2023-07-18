@@ -61,7 +61,7 @@ export interface SharedPage {
   map_numbers: {[key: string]: number}
   steps: Step[]
 
-  user: any
+  user: User | null
   template?: number
   taxonomies: Tax[]
 

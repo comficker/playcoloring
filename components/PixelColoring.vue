@@ -433,6 +433,9 @@ const onClickColor = (i: number) => {
 }
 
 const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string | null) => {
+  if (isNaN(x) || isNaN(y))
+    return;
+
   const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
   if (options.value.pointer === key) {
     return
@@ -633,12 +636,12 @@ const loadSharedPage = async (id: string) => {
   if (!response) return
   Object.assign(workspace, response)
   workspace.tags = workspace.taxonomies.map(x => x.name)
-  if (id === 'random') {
+  if (workspace.is_template || !workspace.user || !userStore.isLogged || workspace.user.id != userStore.logged.id) {
     workspace.name = ''
     workspace.desc = ''
     workspace.is_template = false
     workspace.id_string = ''
-    workspace.template = workspace.id
+    workspace.template = workspace.template ? workspace.template : workspace.id
     workspace.id = 0
   }
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
@@ -897,11 +900,11 @@ function createParticle(x: number, y: number) {
 }
 
 #controller {
-  background-size: 50% 50%;
-  background-image: linear-gradient(to right, #DDDDDD 1px, transparent 1px),
-  linear-gradient(to bottom, #DDDDDD 1px, transparent 1px);
-  background-position-x: -0.5px;
-  background-position-y: -0.5px;
+  //background-size: 50% 50%;
+  //background-image: linear-gradient(to right, #F9F9F9 1px, transparent 1px),
+  //linear-gradient(to bottom, #F9F9F9 1px, transparent 1px);
+  //background-position-x: -0.5px;
+  //background-position-y: -0.5px;
 }
 
 #wrapper {
