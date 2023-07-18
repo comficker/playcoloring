@@ -812,11 +812,13 @@ onMounted(() => {
     displaySize.value = 384
   }
 
-  const route = useRoute()
-  if (userStore.isLogged && userStore.logged.meta?.coloring?.current) {
-    loadSharedPage(userStore.logged.meta.coloring.current)
-  } else if (route.query.id || !isEditor) {
-    loadSharedPage(route.query?.id?.toString() || 'random')
+  if (!isEditor) {
+    const route = useRoute()
+    if (route.query.id) {
+      loadSharedPage(route.query?.id?.toString() || 'random')
+    } else if (userStore.isLogged && userStore.logged.meta?.coloring?.current) {
+      loadSharedPage(userStore.logged.meta.coloring.current)
+    }
   }
 
   window.soundPop = new Audio('/brush.wav')
