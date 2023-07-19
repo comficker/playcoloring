@@ -49,8 +49,8 @@ export interface SharedPage {
   id: number
   width: number
   height: number
-  updated: string
-  created: string
+  updated?: string
+  created?: string
   db_status: number
   is_template: boolean
   name: string

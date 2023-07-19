@@ -328,12 +328,10 @@ const DEFAULT_WORKSPACE: SharedPage = {
     t: 'init_colors',
     v: cloneDeep(DEFAULT_COLORS)
   }],
-  updated: '',
-  created: '',
   db_status: 0,
   is_template: false,
   meta: undefined,
-  user: undefined,
+  user: null,
   taxonomies: [],
 
   tags: [],
