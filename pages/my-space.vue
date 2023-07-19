@@ -6,6 +6,7 @@ import {IBreadcrumb, ResponseSharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import ColoringCard from "~/components/ColoringCard.vue";
 import {useUserStore} from "~/stores/user";
+import {useSeoMeta} from "#app";
 
 const crumbs = computed<IBreadcrumb[]>(() => {
   return [
@@ -28,6 +29,16 @@ const {data: response} = await useAuthFetch<ResponseSharedPage>(`/coloring/share
   }
 })
 
+useSeoMeta({
+  title: "My Space",
+  description: 'Your area!',
+})
+
+useHead({
+  meta: [
+    { hid: 'robots', name: 'robots', content: 'noindex' }
+  ]
+})
 </script>
 
 <template>

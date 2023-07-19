@@ -221,7 +221,8 @@ useHead({
     {
       name: "description",
       content: meta.value.desc
-    }
+    },
+    ...value.status !== 'public' ? [{ hid: 'robots', name: 'robots', content: 'noindex' }] : []
   ]
 })
 
