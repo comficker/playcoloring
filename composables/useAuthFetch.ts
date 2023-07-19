@@ -2,7 +2,7 @@ import {useCookie, UseFetchOptions, useFetch} from '#app'
 import { defu } from 'defu'
 
 export function useAuthFetch<T> (url: string, options: UseFetchOptions<T> = {}) {
-  const userAuth = useCookie('auth.token')
+  const userAuth = useCookie('auth.token', {maxAge: 60 * 60 * 24 * 7 * 30})
   const config = useRuntimeConfig()
 
   const defaults: UseFetchOptions<T> = {
