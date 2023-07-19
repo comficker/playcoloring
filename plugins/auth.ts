@@ -5,8 +5,9 @@ import {ofetch} from "ofetch";
 
 export default defineNuxtPlugin(async(NuxtApp) => {
   const config = useRuntimeConfig()
-  const cookieToken = useCookie('auth.token')
-  const cookieTokenRefresh = useCookie('auth.token_refresh')
+  const maxAge = 60 * 60 * 24 * 7 * 30
+  const cookieToken = useCookie('auth.token', { maxAge })
+  const cookieTokenRefresh = useCookie('auth.token_refresh', { maxAge })
   const userStore = useUserStore()
 
   const touch = ofetch.create({
