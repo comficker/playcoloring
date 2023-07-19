@@ -202,7 +202,7 @@ const crumbs = computed<IBreadcrumb[]>(() => [{
   icon: value.is_template ? 'i-con-template' : 'i-con-shared',
 },{
   name: meta.value.title,
-  to: (value.is_template ? '/pages/' : '/shared/') + value.id_string,
+  to: '/post/' + value.id_string,
   icon: 'i-con-picture',
 }])
 
