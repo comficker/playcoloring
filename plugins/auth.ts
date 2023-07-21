@@ -58,6 +58,10 @@ export default defineNuxtPlugin(async(NuxtApp) => {
         }).catch(() => null)
         if (userRes)
           userStore.setLogged(userRes)
+        else {
+          cookieTokenRefresh.value = ''
+          cookieToken.value = ''
+        }
       } else {
         cookieTokenRefresh.value = ''
         cookieToken.value = ''
