@@ -34,7 +34,9 @@ export default defineNuxtPlugin(async(NuxtApp) => {
     })
     if (res) {
       cookieToken.value = res.access
+      return true
     }
+    return false
   }}
 
   async function fetchUser() {
@@ -50,15 +52,19 @@ export default defineNuxtPlugin(async(NuxtApp) => {
       if (userRes) {
         userStore.setLogged(userRes)
       } else if (cookieTokenRefresh.value) {
-        await refreshToken()
-        let userRes = await touch<User>('/auth/user', {
-          headers: {
-            "Authorization": `Bearer ${cookieToken.value}`
+        if (await refreshToken()) {
+          let userRes = await touch<User>('/auth/user', {
+            headers: {
+              "Authorization": `Bearer ${cookieToken.value}`
+            }
+          }).catch(() => null)
+          if (userRes)
+            userStore.setLogged(userRes)
+          else {
+            cookieTokenRefresh.value = ''
+            cookieToken.value = ''
           }
-        }).catch(() => null)
-        if (userRes)
-          userStore.setLogged(userRes)
-        else {
+        } else {
           cookieTokenRefresh.value = ''
           cookieToken.value = ''
         }
