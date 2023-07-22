@@ -31,7 +31,7 @@ export default defineNuxtPlugin(async(NuxtApp) => {
       body: {
         refresh: cookieTokenRefresh.value
       }
-    })
+    }).catch(() => null)
     if (res) {
       cookieToken.value = res.access
       return true
