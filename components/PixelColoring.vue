@@ -336,6 +336,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
 
   tags: [],
   results: {},
+  status: 'draft'
 }
 
 interface Options {
@@ -786,6 +787,9 @@ const saveLate = debounce(async () => {
   if (workspace.id_string) {
     method = 'PUT'
     uri = uri + workspace.id_string + '/'
+  }
+  if (workspace.is_template && workspace.results) {
+    workspace.map_numbers = workspace.results
   }
   const response: SharedPage = await $touch(uri, {
     method: method,
