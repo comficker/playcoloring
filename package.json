@@ -36,6 +36,7 @@
     "animated-unocss": "^0.0.4",
     "fabric": "^5.3.0",
     "lodash": "^4.17.21",
+    "nuxt-lazy-load": "^3.0.4",
     "vue-social-sharing": "^4.0.0-alpha4",
     "vue-tippy": "v6",
     "vue3-touch-events": "^4.1.3"

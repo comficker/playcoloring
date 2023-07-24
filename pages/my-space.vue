@@ -44,7 +44,7 @@ useHead({
 <template>
   <div class="py-4 space-y-4">
     <breadcrumb :crumbs="crumbs"/>
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-5">
+    <div v-if="response" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-5">
       <coloring-card v-for="item in response.results" :value="item"/>
     </div>
   </div>

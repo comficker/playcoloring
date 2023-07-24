@@ -60,7 +60,7 @@ export interface SharedPage {
   colors: any[]
   map_numbers: {[key: string]: number}
   steps: Step[]
-  status: 'draft'
+  status: string
 
   user: User | null
   template?: number

@@ -51,6 +51,7 @@ export default defineConfig({
     'i-con-picture',
     'i-con-shared',
     'i-con-color',
-    'i-con-hash'
+    'i-con-hash',
+    'animate-pulse'
   ],
 })

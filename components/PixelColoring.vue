@@ -15,7 +15,7 @@
         <div v-else class="relative">
           <div class="btn md:px-5 bg-rose-700 text-white" @click="loadSharedPage('random')">
             <div class="i-con-refresh w-4 h-4"/>
-            <span class="hidden md:block">New Game</span>
+            <span class="hidden md:block">Random coloring page</span>
           </div>
           <div
             v-if="fetchingPercent < 101"
@@ -49,7 +49,7 @@
           id="wrapper"
           :class="{
             'grayscale': !!showModal,
-            'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w
+            'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w,
           }"
         >
           <div
@@ -58,6 +58,7 @@
               width: `${PICTURE_SIZE.w}px`,
               height: `${PICTURE_SIZE.h}px`
             }"
+            :class="{'mx-auto': wrapperSize < PICTURE_SIZE.w}"
           >
             <canvas
               id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
@@ -74,9 +75,6 @@
             <div
               id="controller"
               class="absolute inset-0"
-              @touchstart="handleMouseDown"
-              @touchmove="handleMouseHover"
-              @touchend="handleMouseUp"
               @mousedown="handleMouseDown"
               @mouseup="handleMouseUp"
               @mousemove="handleMouseHover"
@@ -380,7 +378,7 @@ const PICTURE_SIZE = computed(() => ({
   h: Math.round(workspace.height * cellScaleSize.value)
 }))
 
-const handleMouseDown = (e: PointerEvent) => {
+const handleMouseDown = (e: MouseEvent) => {
   isPainting.value = true
   fillColor(e)
 }
@@ -389,7 +387,7 @@ const handleMouseUp = () => {
   isPainting.value = false
 }
 
-const handleMouseHover = (e: PointerEvent) => {
+const handleMouseHover = (e: MouseEvent) => {
   const cs = cellScaleSize.value
   const cursor: HTMLElement | null = document.getElementById('cursor');
   if (!isPainting.value) {
@@ -479,7 +477,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
   saveLate()
 }
 
-const fillColor = (e: PointerEvent) => {
+const fillColor = (e: MouseEvent) => {
   const canvas = document.getElementById('workspace') as HTMLCanvasElement
   const ctx = canvas?.getContext('2d', {
     willReadFrequently: true
@@ -828,7 +826,7 @@ watch(showModal, () => {
 
 onMounted(() => {
   const wrapper = document.getElementById('wrapper')
-  wrapperSize.value = wrapper?.offsetWidth || 576
+  wrapperSize.value = wrapper ? wrapper.offsetWidth > wrapper.offsetHeight ? wrapper.offsetHeight : wrapper.offsetWidth : 576
   if (wrapper && wrapper.offsetWidth < 576) {
     displaySize.value = 384
   }

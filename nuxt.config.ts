@@ -1,14 +1,20 @@
 import { pwa } from './config/pwa'
 import { appDescription } from './constants'
 
+
 export default defineNuxtConfig({
+  typescript: {
+    strict: true
+  },
   _generate: false,
+  // @ts-ignore
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    'nuxt-lazy-load',
   ],
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
@@ -69,4 +75,19 @@ export default defineNuxtConfig({
   build: {
     transpile: ['tslib'],
   },
+  lazyLoad: {
+    // These are the default values
+    images: true,
+    videos: true,
+    audios: true,
+    iframes: true,
+    native: false,
+    directiveOnly: false,
+
+    // Default image must be in the public folder
+    defaultImage: '/images/default-image.svg',
+
+    // To remove class set value to false
+    loadingClass: 'animate-pulse'
+  }
 })
