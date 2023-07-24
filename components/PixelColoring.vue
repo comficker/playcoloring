@@ -31,6 +31,10 @@
           <div class="i-con-save w-4 h-4"/>
           <span>Share</span>
         </div>
+        <nuxt-link class="btn hover:shadow rounded" to="/editor">
+          <div class="w-4 h-4 i-con-design"></div>
+          <span>Pixel editor</span>
+        </nuxt-link>
         <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
           <div class="i-con-user w-4 h-4"/>
           <span>My space</span>
