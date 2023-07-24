@@ -23,21 +23,22 @@
             :style="{width: `${fetchingPercent}%`}"
           />
         </div>
-        <div v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
-             @click="toggleModal(!!showModal ? null : 'load')">
+        <div
+          v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
+          @click="toggleModal(!!showModal ? null : 'load')">
           <span>Load</span>
         </div>
         <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
           <div class="i-con-save w-4 h-4"/>
-          <span>Share</span>
+          <span class="hidden md:block">Share</span>
         </div>
         <nuxt-link class="btn hover:shadow rounded" to="/editor">
           <div class="w-4 h-4 i-con-design"></div>
-          <span>Pixel editor</span>
+          <span class="hidden md:block">Pixel editor</span>
         </nuxt-link>
         <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
           <div class="i-con-user w-4 h-4"/>
-          <span>My space</span>
+          <span class="hidden md:block">My space</span>
         </nuxt-link>
       </div>
     </div>
