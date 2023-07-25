@@ -1,28 +1,14 @@
 <template>
   <div class="hh1 -mx-4 h-screen flex flex-col border-b relative divide-y font-semibold">
-    <div class="px-4 py-2 w-full mx-auto flex gap-2 text-sm justify-between">
-      <div class="flex gap-2 items-center">
-        <nuxt-link class="flex gap-1 mr-2 md:mr-4" to="/">
+    <div class="px-4 py-2 w-full mx-auto flex gap-2 justify-between relative">
+      <div class="flex gap-6 items-center">
+        <nuxt-link class="flex gap-1" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
           <img class="md:block hidden w-auto h-8" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
+        <main-navigator/>
       </div>
       <div class="flex gap-2 items-center">
-        <div v-if="isEditor" class="btn md:px-5 bg-rose-700 text-white h-full" @click="reset">
-          <div class="i-con-plus w-4 h-4"/>
-          <span class="hidden md:block">New</span>
-        </div>
-        <div v-else class="relative">
-          <div class="btn md:px-5 bg-rose-700 text-white" @click="loadSharedPage('random')">
-            <div class="i-con-refresh w-4 h-4"/>
-            <span class="hidden md:block">Random coloring page</span>
-          </div>
-          <div
-            v-if="fetchingPercent < 101"
-            class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
-            :style="{width: `${fetchingPercent}%`}"
-          />
-        </div>
         <div
           v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
           @click="toggleModal(!!showModal ? null : 'load')">
@@ -32,10 +18,6 @@
           <div class="i-con-save w-4 h-4"/>
           <span class="hidden md:block">Share</span>
         </div>
-        <nuxt-link class="btn hover:shadow rounded" to="/editor">
-          <div class="w-4 h-4 i-con-design"></div>
-          <span class="hidden md:block">Pixel editor</span>
-        </nuxt-link>
         <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
           <div class="i-con-user w-4 h-4"/>
           <span class="hidden md:block">My space</span>
@@ -144,7 +126,7 @@
             </div>
           </Transition>
         </client-only>
-        <div v-if="isMoving" class="absolute inset-0 z-60">
+        <div v-if="isMoving" class="absolute inset-0 z-50">
           <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
             <div class="btn bg-white border-gray-200" @click="teleport('h', -1)">
               <div class="w-4 h-4 i-con-arrow-left"/>
@@ -163,8 +145,20 @@
           </div>
         </div>
       </div>
-      <div class="absolute right-4 top-4 flex justify-center">
+      <div class="absolute right-4 top-4 flex justify-center z-60 opacity-40 duration-200 hover:opacity-100">
         <div class="flex gap-2 items-center rounded justify-center p-2 py-1 bg-white shadow">
+          <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
+            <div class="i-con-plus w-4 h-4"/>
+            <span class="hidden md:block">New</span>
+          </div>
+          <div v-else class="relative">
+            <random-button/>
+            <div
+              v-if="fetchingPercent < 101"
+              class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
+              :style="{width: `${fetchingPercent}%`}"
+            />
+          </div>
           <div
             v-if="!isEditor"
             class="btn hover:shadow rounded"
@@ -296,6 +290,8 @@ import ModalSave from "~/components/ModalSave.vue";
 import {trimCanvas} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
 import {useUserStore} from "~/stores/user";
+import RandomButton from "~/components/RandomButton.vue";
+import MainNavigator from "~/components/MainNavigator.vue";
 
 function gcd(a: number, b: number) {
   while (a != b) {

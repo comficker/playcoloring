@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {SaveForm, SharedPage} from "~/interface";
 
 const {workspace} = defineProps<{ workspace: SharedPage }>()
@@ -23,8 +23,6 @@ const form = ref<SaveForm>({
   name: workspace.name || `Untitled #${workspace.id}`,
   desc: workspace.desc
 })
-
-const isEditor = computed(() => useRoute().name === 'editor')
 
 const onAddTag = (e: KeyboardEvent) => {
   const target = e.target as HTMLTextAreaElement;
@@ -51,7 +49,7 @@ watch(form, () => {
       <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
     </div>
     <div class="p-4 py-2 space-y-3">
-      <div v-if="isEditor" class="flex items-center gap-2">
+      <div v-if="!workspace.template" class="flex items-center gap-2">
         <button
           type="button"
           class="bg-gray-200 rounded relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
