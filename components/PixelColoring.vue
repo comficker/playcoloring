@@ -1,6 +1,6 @@
 <template>
   <div class="hh1 -mx-4 h-screen flex flex-col border-b relative divide-y font-semibold">
-    <div class="px-4 py-2 w-full mx-auto flex gap-2 justify-between relative">
+    <div class="px-4 py-2 w-full mx-auto flex gap-2 justify-between relative text-sm">
       <div class="flex gap-6 items-center">
         <nuxt-link class="flex gap-1" to="/">
           <div class="i-con-pad fill-red-400 h-8 w-8"/>
@@ -145,10 +145,10 @@
           </div>
         </div>
       </div>
-      <div class="absolute right-4 top-4 flex justify-center z-60 opacity-40 duration-200 hover:opacity-100">
-        <div class="flex gap-2 items-center rounded justify-center p-2 py-1 bg-white shadow">
+      <div class="absolute right-4 top-4 flex justify-center z-10 text-sm">
+        <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
           <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
-            <div class="i-con-plus w-4 h-4"/>
+            <div class="i-con-plus w-3 h-3"/>
             <span class="hidden md:block">New</span>
           </div>
           <div v-else class="relative">
@@ -307,6 +307,16 @@ function gcd(a: number, b: number) {
 const { $touch } = useNuxtApp()
 const {debounce, cloneDeep} = pkg
 const route = useRoute()
+interface Options {
+  color: string | null,
+  pointer: string,
+  zoom: number,
+}
+
+const userStore = useUserStore()
+
+const {isEditor} = defineProps<{ isEditor: boolean }>()
+
 const DEFAULT_COLORS = [
   "#FFF2CC",
   "#FFD966",
@@ -328,7 +338,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
     v: cloneDeep(DEFAULT_COLORS)
   }],
   db_status: 0,
-  is_template: false,
+  is_template: isEditor,
   meta: undefined,
   user: null,
   taxonomies: [],
@@ -337,18 +347,6 @@ const DEFAULT_WORKSPACE: SharedPage = {
   results: {},
   status: 'draft'
 }
-
-interface Options {
-  color: string | null,
-  pointer: string,
-  zoom: number,
-}
-
-type Keys = keyof SharedPage;
-
-const userStore = useUserStore()
-
-const {isEditor} = defineProps<{ isEditor: boolean }>()
 
 const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
 
@@ -413,7 +411,6 @@ const handleFormChange = (form: SaveForm) => {
   workspace.name = form.name
   workspace.desc = form.desc
   workspace.tags = form.tags
-  workspace.is_template = form.is_template
   saveLate()
 }
 

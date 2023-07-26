@@ -49,22 +49,6 @@ watch(form, () => {
       <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="emits('hide')"/>
     </div>
     <div class="p-4 py-2 space-y-3">
-      <div v-if="!workspace.template" class="flex items-center gap-2">
-        <button
-          type="button"
-          class="bg-gray-200 rounded relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-          role="switch" aria-checked="false"
-          :class="{'bg-indigo-600': form.is_template}"
-          @click="form.is_template = !form.is_template"
-        >
-          <span
-            aria-hidden="true"
-            class="translate-x-0 rounded pointer-events-none inline-block h-4 w-4 transform bg-white shadow ring-0 transition duration-200 ease-in-out"
-            :class="{'translate-x-4 bg-green-500': form.is_template}"
-          />
-        </button>
-        <span>Share as template</span>
-      </div>
       <div>
         <input v-model="form.name" type="text" class="w-full outline-none" placeholder="Title">
       </div>
