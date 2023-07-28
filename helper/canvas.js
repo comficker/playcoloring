@@ -1,4 +1,6 @@
-import {cloneDeep} from 'lodash'
+import pkg from 'lodash'
+
+const {cloneDeep} = pkg
 
 export function trimCanvas(canvas) {
   const context = canvas.getContext('2d');
