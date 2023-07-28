@@ -3,8 +3,15 @@
     <div class="pt-full relative bg-white">
       <div class="absolute inset-4 group">
         <img
+          v-if="value.status == 'public' || !value.status"
           :src="src" :alt="value.name"
           class="group-hover:blur-sm duration-300 w-full h-full"
+        />
+        <canvas
+          :id="`canvas_${value.id}`"
+          class="group-hover:blur-sm duration-300 w-full h-full"
+          width="200"
+          height="200"
         />
         <div
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
@@ -43,7 +50,7 @@
 <script setup lang="ts">
 import {SharedPage} from "~/interface";
 import {useRuntimeConfig} from "nuxt/app";
-import {onMounted} from "@vue/runtime-core";
+import {drawThumbnail} from "~/helper/canvas";
 import {computed} from "vue";
 
 const {value, showAuthor} = defineProps<{value: SharedPage, showAuthor?: boolean}>()
@@ -54,5 +61,11 @@ const src = computed(() => {
 })
 const to = computed(() => {
   return `/post/${value.id_string}`
+})
+
+onMounted(() => {
+  if (!(value.status == 'public' || !value.status)) {
+    drawThumbnail(value)
+  }
 })
 </script>

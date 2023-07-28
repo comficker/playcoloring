@@ -74,7 +74,10 @@
             enter-active-class="animated animated-faster animate-fade-in"
             leave-active-class="animated animated-faster animate-fade-out"
           >
-            <div v-if="!!showModal" class="fixed md:absolute inset-0 bg-black/50" @click="showModal = null"/>
+            <div
+              v-if="!!showModal"
+              class="z-20 fixed md:absolute inset-0 bg-black/50" @click="showModal = null"
+            />
           </Transition>
           <Transition
             enter-active-class="animated animated-faster animate-slide-in-down"
@@ -82,7 +85,7 @@
           >
             <div
               v-if="!!showModal"
-              class="fixed md:absolute top-0 left-[-1px] right-[-1px] z-60"
+              class="z-20 fixed md:absolute top-0 left-[-1px] right-[-1px] z-60"
             >
               <div class="max-w-xl mx-auto bg-white shadow-xl rounded-bl-xl rounded-br-xl border">
                 <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
@@ -144,53 +147,53 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="absolute right-4 top-4 flex justify-center z-10 text-sm">
-        <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
-          <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
-            <div class="i-con-plus w-3 h-3"/>
-            <span class="hidden md:block">New</span>
-          </div>
-          <div v-else class="relative">
-            <random-button/>
+        <div class="absolute right-4 top-4 flex justify-center z-10 text-sm">
+          <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
+            <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
+              <div class="i-con-plus w-3 h-3"/>
+              <span class="hidden md:block">New</span>
+            </div>
+            <div v-else class="relative">
+              <random-button/>
+              <div
+                v-if="fetchingPercent < 101"
+                class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
+                :style="{width: `${fetchingPercent}%`}"
+              />
+            </div>
             <div
-              v-if="fetchingPercent < 101"
-              class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
-              :style="{width: `${fetchingPercent}%`}"
-            />
-          </div>
-          <div
-            v-if="!isEditor"
-            class="btn hover:shadow rounded"
-            :class="{'border border-blue': isFilling}"
-            @click="isFilling = !isFilling"
-          >
-            <div class="i-con-fill w-4 h-4"/>
-          </div>
-          <div
-            v-if="isEditor"
-            class="btn hover:shadow rounded"
-            :class="{'border border-blue': isMoving}"
-            @click="isMoving = !isMoving"
-          >
-            <div class="i-con-move w-4 h-4"/>
-          </div>
-          <div
-            v-if="isEditor"
-            class="btn hover:shadow rounded"
-            :class="{'border border-blue': showModal === 'ruler'}"
-            @click="showModal = showModal === 'ruler' ? null : 'ruler'"
-          >
-            <div class="i-con-ruler w-4 h-4"/>
-          </div>
-          <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
-            <div class="i-con-compare w-4 h-4"/>
-          </div>
-          <div class="btn hover:shadow rounded" @click="handleZoom(true)">
-            <div class="i-con-zoom-in w-4 h-4"/>
-          </div>
-          <div class="btn hover:shadow rounded" @click="handleZoom(false)">
-            <div class="i-con-zoom-out w-4 h-4"/>
+              v-if="!isEditor"
+              class="btn hover:shadow rounded"
+              :class="{'border border-blue': isFilling}"
+              @click="isFilling = !isFilling"
+            >
+              <div class="i-con-fill w-4 h-4"/>
+            </div>
+            <div
+              v-if="isEditor"
+              class="btn hover:shadow rounded"
+              :class="{'border border-blue': isMoving}"
+              @click="isMoving = !isMoving"
+            >
+              <div class="i-con-move w-4 h-4"/>
+            </div>
+            <div
+              v-if="isEditor"
+              class="btn hover:shadow rounded"
+              :class="{'border border-blue': showModal === 'ruler'}"
+              @click="showModal = showModal === 'ruler' ? null : 'ruler'"
+            >
+              <div class="i-con-ruler w-4 h-4"/>
+            </div>
+            <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
+              <div class="i-con-compare w-4 h-4"/>
+            </div>
+            <div class="btn hover:shadow rounded" @click="handleZoom(true)">
+              <div class="i-con-zoom-in w-4 h-4"/>
+            </div>
+            <div class="btn hover:shadow rounded" @click="handleZoom(false)">
+              <div class="i-con-zoom-out w-4 h-4"/>
+            </div>
           </div>
         </div>
       </div>
@@ -287,7 +290,7 @@ import {computed, ref} from "vue";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SaveForm, SharedPage, Step} from "~/interface";
 import ModalSave from "~/components/ModalSave.vue";
-import {trimCanvas} from "~/helper/canvas";
+import {trimCanvas, convertSteps} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
 import {useUserStore} from "~/stores/user";
 import RandomButton from "~/components/RandomButton.vue";
@@ -711,51 +714,10 @@ const switchOpenPalette = () => {
 }
 
 const step2Result = () => {
-  let currentColors = cloneDeep(workspace.colors)
-  let results: { [key: string]: number } = {}
-  workspace.steps.forEach((step: Step) => {
-    if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
-      if (step.c >= 0) {
-        results[step.k] = step.c
-        options.value.color = currentColors[step.c]
-      } else {
-        delete results[step.k]
-        options.value.color = null
-      }
-    } else if (step.t === 'merge' && step.v) {
-      const mergingList: number[] = cloneDeep(step.v)
-      const old = cloneDeep(currentColors)
-      const except = currentColors.indexOf(old[mergingList[0]])
-      mergingList.sort((x: number, y: number) => y - x).forEach((index: number) => {
-        if (index !== except)
-          currentColors.splice(index, 1)
-      })
-
-      Object.keys(results).forEach((key: string) => {
-        const newIndex = currentColors.indexOf(old[results[key]])
-        results[key] = newIndex >= 0 ? newIndex : currentColors.indexOf(old[except])
-      })
-
-      options.value.color = old[except]
-    } else if (step.t === 'init_colors' && step.v) {
-      currentColors = cloneDeep(step.v)
-      options.value.color = currentColors[0]
-    } else if (step.t === 'init_results' && step.v) {
-      results = cloneDeep(step.v)
-    } else if (step.t === 'teleport' && step.v) {
-      const newR: { [key: string]: number } = {}
-      const arr = step.v.split("_")
-      const p = arr[0] === 'v' ? 1 : 0
-      Object.keys(results).forEach((k: string) => {
-        const pa = k.split("_").map(x => Number.parseInt(x))
-        pa[p] = pa[p] + Number.parseInt(arr[1])
-        newR[pa.join("_")] = results[k]
-      })
-      results = newR
-    }
-  })
-  workspace.results = results
-  workspace.colors = currentColors
+  const out = convertSteps(workspace.steps, workspace.colors)
+  workspace.results = out.results as {[key: string]: number}
+  workspace.colors = out.colors
+  options.value.color = out.color
 }
 
 const addColor = () => {

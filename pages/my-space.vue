@@ -25,7 +25,8 @@ const {data: response} = await useAuthFetch<ResponseSharedPage>(`/coloring/share
   params: {
     page: page.value,
     page_size: 32,
-    user: userStore.logged.username
+    user: userStore.logged.username,
+    full_schema: true
   }
 })
 
@@ -44,7 +45,7 @@ useHead({
 <template>
   <div class="py-4 space-y-4">
     <breadcrumb :crumbs="crumbs"/>
-    <div v-if="response" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-5">
+    <div v-if="response" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-5">
       <coloring-card v-for="item in response.results" :value="item"/>
     </div>
   </div>

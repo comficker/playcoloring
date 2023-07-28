@@ -5,8 +5,21 @@
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
       <p>{{ meta.desc }}</p>
     </div>
-    <div class="w-full">
-      <img :src="meta.imgSrc" :alt="meta.title" class="object-cover w-full md:max-w-sm mx-auto h-full">
+    <div class="w-full pt-full relative bg-white">
+      <div class="absolute inset-4 group">
+        <img
+          v-if="value.status == 'public' || !value.status"
+          :src="meta.imgSrc"
+          :alt="meta.title"
+          class="object-cover w-full md:max-w-sm mx-auto h-full"
+        >
+        <canvas
+          :id="`canvas_${value.id}`"
+          class="group-hover:blur-sm duration-300 w-full h-full"
+          width="200"
+          height="200"
+        />
+      </div>
     </div>
     <div class="flex flex-col md:flex-row gap-4 justify-between">
       <div class="flex-1 flex gap-2">
@@ -124,6 +137,7 @@ import ColoringCard from "~/components/ColoringCard.vue";
 import {computed} from "vue";
 import Breadcrumb from "~/components/Breadcrumb.vue";
 import {useUserStore} from "~/stores/user";
+import {drawThumbnail} from "~/helper/canvas";
 
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -232,6 +246,12 @@ useSeoMeta({
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',
   twitterCard: 'summary_large_image',
+})
+
+onMounted(() => {
+  if (!(value.status == 'public' || !value.status)) {
+    drawThumbnail(value)
+  }
 })
 </script>
 
