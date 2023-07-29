@@ -11,9 +11,10 @@
           v-if="value.status == 'public' || !value.status"
           :src="meta.imgSrc"
           :alt="meta.title"
-          class="object-cover w-full md:max-w-sm mx-auto h-full"
+          class="object-contain w-full md:max-w-sm mx-auto h-full"
         >
         <canvas
+          v-else
           :id="`canvas_${value.id}`"
           class="duration-300 w-full h-full"
           width="200"
