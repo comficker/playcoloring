@@ -8,6 +8,7 @@
           class="group-hover:blur-sm duration-300 w-full h-full"
         />
         <canvas
+          v-else
           :id="`canvas_${value.id}`"
           class="group-hover:blur-sm duration-300 w-full h-full"
           width="200"

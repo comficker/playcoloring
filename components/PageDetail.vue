@@ -6,7 +6,7 @@
       <p>{{ meta.desc }}</p>
     </div>
     <div class="w-full pt-full relative bg-white">
-      <div class="absolute inset-4 group">
+      <div class="absolute inset-4">
         <img
           v-if="value.status == 'public' || !value.status"
           :src="meta.imgSrc"
@@ -15,7 +15,7 @@
         >
         <canvas
           :id="`canvas_${value.id}`"
-          class="group-hover:blur-sm duration-300 w-full h-full"
+          class="duration-300 w-full h-full"
           width="200"
           height="200"
         />
