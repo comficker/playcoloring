@@ -11,8 +11,8 @@ const userStore = useUserStore()
       <div class="flex gap-6 items-center">
         <h1>
           <nuxt-link class="flex gap-1" to="/">
-            <div class="i-con-pad fill-red-400 h-8 w-8"/>
-            <img class="hidden md:block w-auto h-8" src="/logo.png" alt="Play Coloring">
+            <div class="i-con-pad fill-red-400 h-6 w-6"/>
+            <img class="hidden md:block w-auto h-6" src="/logo.png" alt="Play Coloring">
           </nuxt-link>
         </h1>
         <main-navigator/>

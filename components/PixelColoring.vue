@@ -3,8 +3,8 @@
     <div class="px-4 py-2 w-full mx-auto flex gap-2 justify-between relative text-sm">
       <div class="flex gap-6 items-center">
         <nuxt-link class="flex gap-1" to="/">
-          <div class="i-con-pad fill-red-400 h-8 w-8"/>
-          <img class="md:block hidden w-auto h-8" src="/logo.png" alt="Play Coloring">
+          <div class="i-con-pad fill-red-400 h-6 w-6"/>
+          <img class="md:block hidden w-auto h-6" src="/logo.png" alt="Play Coloring">
         </nuxt-link>
         <main-navigator/>
       </div>
@@ -634,7 +634,7 @@ const loadSharedPage = async (id: string) => {
   if (!response) return
   Object.assign(workspace, response)
   workspace.tags = workspace.taxonomies.map(x => x.name)
-  if (workspace.is_template || !workspace.user || !userStore.isLogged || workspace.user.id != userStore.logged.id) {
+  if (!isEditor) {
     workspace.name = ''
     workspace.desc = ''
     workspace.is_template = false
