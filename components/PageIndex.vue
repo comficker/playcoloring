@@ -45,20 +45,20 @@ const faqs = ref([
       <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
         <a href="/about" target="_blank" class="underline">About us!</a></p>
       <div class="grid gap-2 md:grid-cols-2">
-        <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.push('/pages')">
+        <nuxt-link to="/pages" class="border p-3 flex justify-between items-center cursor-pointer group">
           <div>
-            <nuxt-link to="/pages" class="text-2xl font-bold group-hover:underline">Coloring Pages</nuxt-link>
+            <div class="text-2xl font-bold group-hover:underline">Coloring Pages</div>
             <p>You might want to try!</p>
           </div>
           <div class="i-con-right w-6 h-6"/>
-        </div>
-        <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.push('/arts')">
+        </nuxt-link>
+        <nuxt-link to="/arts" class="border p-3 flex justify-between items-center cursor-pointer group">
           <div>
-            <nuxt-link to="/arts" class="text-2xl font-bold group-hover:underline">Pixel Art</nuxt-link>
+            <div class="text-2xl font-bold group-hover:underline">Pixel Art</div>
             <p>Pixel art by community!</p>
           </div>
           <div class="i-con-right w-6 h-6"/>
-        </div>
+        </nuxt-link>
       </div>
     </div>
     <div class="max-w-xl mx-auto">

@@ -28,23 +28,15 @@
       <div
         class="relative h-full"
         style="--zoom-size: 1px 1px"
-        :style="{
-          '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
-        }"
+        :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,}"
       >
         <div
           id="wrapper"
-          :class="{
-            'grayscale': !!showModal,
-            'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w,
-          }"
+          :class="{'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w}"
         >
           <div
             id="workload" class="relative"
-            :style="{
-              width: `${PICTURE_SIZE.w}px`,
-              height: `${PICTURE_SIZE.h}px`
-            }"
+            :style="{width: `${PICTURE_SIZE.w}px`, height: `${PICTURE_SIZE.h}px`}"
             :class="{'mx-auto': wrapperSize < PICTURE_SIZE.w, 'has-grid': isEditor,}"
           >
             <canvas
@@ -54,10 +46,10 @@
             <div
               id="cursor" class="absolute"
               :style="{
-                  backgroundColor: options.color || '#FFF',
-                  width: `${Math.ceil(cellScaleSize)}px`,
-                  height: `${Math.ceil(cellScaleSize)}px`
-                }"
+                backgroundColor: options.color || '#FFF',
+                width: `${Math.ceil(cellScaleSize)}px`,
+                height: `${Math.ceil(cellScaleSize)}px`
+              }"
             />
             <div
               id="controller"
@@ -72,23 +64,21 @@
         </div>
         <client-only>
           <Transition
-            enter-active-class="animated animated-faster animate-fade-in"
-            leave-active-class="animated animated-faster animate-fade-out"
+            enter-active-class="animated animated-duration-300 animate-slide-fade-in"
+            leave-active-class="animated animated-duration-300 animate-slide-fade-out"
           >
-            <div
-              v-if="!!showModal"
-              class="z-20 fixed md:absolute inset-0 bg-black/50" @click="showModal = null"
-            />
+            <div v-if="!!showModal" class="fixed inset-0" @click="showModal = null"/>
           </Transition>
           <Transition
-            enter-active-class="animated animated-faster animate-slide-in-down"
-            leave-active-class="animated animated-faster animate-slide-out-up"
+            enter-active-class="animated animated-duration-300 animate-slide-in-down"
+            leave-active-class="animated animated-duration-300 animate-slide-out-up"
           >
             <div
               v-if="!!showModal"
-              class="z-20 fixed md:absolute top-0 left-[-1px] right-[-1px] z-60"
+              class="z-20 fixed top-0 -right-[1px] -left-[1px] z-60"
             >
-              <div class="max-w-xl mx-auto bg-white shadow-xl rounded-bl-xl rounded-br-xl border">
+              <div class="absolute inset-0" @click="showModal = null"></div>
+              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border">
                 <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>

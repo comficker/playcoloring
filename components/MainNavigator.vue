@@ -11,26 +11,46 @@ watch(() => route.fullPath, () => {
 
 <template>
   <div class="flex gap-2 items-center p-1 cursor-pointer" @click="force = !force">
-    <div class="w-6 h-6" :class="{'i-con-up': force, 'i-con-down': !force}"/>
+    <div class="w-4 h-4 i-con-menu"/>
     <span>Menu</span>
   </div>
-  <div
-    class="hidden flex-col absolute bg-white z-70 right-0 left-0 top-full border-y divide-y"
-    :class="{'flex': force}"
+  <Transition
+    enter-active-class="animated animated-duration-300 animate-fade-in"
+    leave-active-class="animated animated-duration-300 animate-fade-out"
   >
-    <nuxt-link class="flex gap-2 items-center p-4 md:py-2 hover:text-blue-500" to="/editor">
-      <div class="w-4 h-4 i-con-design"></div>
-      <span>Pixel editor</span>
-    </nuxt-link>
-    <nuxt-link class="flex gap-2 items-center p-4 md:py-2 hover:text-blue-500" to="/pages">
-      <div class="w-4 h-4 i-con-color"></div>
-      <span>Coloring Pages</span>
-    </nuxt-link>
-    <nuxt-link class="flex gap-2 items-center p-4 md:py-2 hover:text-blue-500" to="/arts">
-      <div class="w-4 h-4 i-con-picture"></div>
-      <span>Pixel Arts</span>
-    </nuxt-link>
-  </div>
+    <div v-if="force" class="fixed inset-0 grayscale bg-gray-50 z-10" @click="force = false"/>
+  </Transition>
+  <Transition
+    enter-active-class="animated animated-duration-300 animate-slide-in-down"
+    leave-active-class="animated animated-duration-300 animate-slide-out-up"
+  >
+    <div v-show="force" class="z-20 fixed top-0 -right-[1px] -left-[1px] z-60">
+      <div class="fixed inset-0" @click="force = false"/>
+      <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border divide-y">
+        <div class="p-4 flex justify-between items-center">
+          <div class="flex gap-2 items-end">
+            <div class="font-semibold text-xl">Menu</div>
+          </div>
+          <div class="i-con-close w-6 h-6 cursor-pointer" @click="force = false"/>
+        </div>
+        <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/pages">
+          <div class="w-4 h-4 i-con-color"/>
+          <span>Coloring Pages</span>
+          <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
+        </nuxt-link>
+        <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/arts">
+          <div class="w-4 h-4 i-con-picture"/>
+          <span>Pixel Arts</span>
+          <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
+        </nuxt-link>
+        <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/editor">
+          <div class="w-4 h-4 i-con-design"/>
+          <span>Pixel editor</span>
+          <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
+        </nuxt-link>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
