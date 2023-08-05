@@ -138,7 +138,7 @@
             </div>
           </div>
         </div>
-        <div class="absolute left-4 right-4 bottom-4 flex justify-center z-10 text-sm">
+        <div class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-10 text-sm">
           <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
             <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
               <div class="i-con-plus w-3 h-3"/>
