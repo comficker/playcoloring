@@ -1,30 +1,32 @@
 <template>
-  <div class="hh1 mx-auto max-w-xl h-screen flex flex-col relative font-semibold">
-    <div class="py-2 w-full mx-auto flex gap-2 justify-between relative">
-      <div class="flex gap-6 items-center">
-        <nuxt-link class="flex gap-1" to="/">
-          <div class="i-con-pad fill-red-400 h-6 w-6"/>
-          <img class="md:block hidden w-auto h-6" src="/logo.png" alt="Play Coloring">
-        </nuxt-link>
-        <main-navigator/>
-      </div>
-      <div class="flex gap-2 items-center">
-        <div
-          v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
-          @click="toggleModal(!!showModal ? null : 'load')">
-          <span>Load</span>
+  <div class="hh1 h-screen flex flex-col relative font-semibold">
+    <div class="border-b -mx-4 px-4">
+      <div class="mx-auto max-w-xl py-2 w-full mx-auto flex gap-2 justify-between relative">
+        <div class="flex gap-6 items-center">
+          <nuxt-link class="flex gap-1" to="/">
+            <div class="i-con-pad fill-red-400 h-6 w-6"/>
+            <img class="md:block hidden w-auto h-6" src="/logo.png" alt="Play Coloring">
+          </nuxt-link>
+          <main-navigator/>
         </div>
-        <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
-          <div class="i-con-save w-4 h-4"/>
-          <span class="hidden md:block">Share</span>
+        <div class="flex gap-2 items-center">
+          <div
+            v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
+            @click="toggleModal(!!showModal ? null : 'load')">
+            <span>Load</span>
+          </div>
+          <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
+            <div class="i-con-save w-4 h-4"/>
+            <span class="hidden md:block">Share</span>
+          </div>
+          <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
+            <div class="i-con-user w-4 h-4"/>
+            <span class="hidden md:block">My space</span>
+          </nuxt-link>
         </div>
-        <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
-          <div class="i-con-user w-4 h-4"/>
-          <span class="hidden md:block">My space</span>
-        </nuxt-link>
       </div>
     </div>
-    <div class="z-10 relative hh2 w-full flex-1 mx-auto">
+    <div class="mx-auto max-w-xl z-10 relative hh2 w-full flex-1 mx-auto">
       <div
         class="relative h-full"
         style="--zoom-size: 1px 1px"
@@ -192,7 +194,7 @@
       </div>
     </div>
     <div
-      class="py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
+      class="mx-auto max-w-xl py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
       :class="{'sticky': !showModal}"
     >
       <div class="flex gap-2 text-sm flex-nowrap items-center">

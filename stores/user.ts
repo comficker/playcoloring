@@ -1,10 +1,11 @@
 import {computed, ref} from "vue"
 import {defineStore} from 'pinia'
-import {User} from "~/interface";
+import {IBreadcrumb, User} from "~/interface";
 
 export const useUserStore = defineStore('user', () => {
 
   const logged = ref({} as User)
+  const breadcrumbs = ref<IBreadcrumb[]>([])
 
   const isLogged = computed(() => {
     return Boolean(logged.value && logged.value.id)
@@ -14,10 +15,16 @@ export const useUserStore = defineStore('user', () => {
     logged.value = user
   }
 
+  function setBC(bc: IBreadcrumb[]) {
+    breadcrumbs.value = bc
+  }
+
   return {
     logged,
     setLogged,
-    isLogged
+    isLogged,
+    breadcrumbs,
+    setBC
   }
 })
 

@@ -1,18 +1,15 @@
 <template>
-  <div class="max-w-xl mx-auto space-y-4">
-    <breadcrumb :crumbs="crumbs"/>
-    <div class="space-y-2">
-      <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
-      <p class="text-lg">
-        {{ meta.desc }}
-        <template v-if="route.params.tax_id === 'arts'">
-          using <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
-        </template>
-      </p>
-    </div>
+  <div class="max-w-xl mx-auto space-y-2">
+    <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
+    <p class="text-lg">
+      {{ meta.desc }}
+      <template v-if="route.params.tax_id === 'arts'">
+        using <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
+      </template>
+    </p>
   </div>
   <div class="max-w-xl mx-auto my-4">
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+    <div class="grid grid-cols-2 gap-2 md:gap-3">
       <coloring-card v-for="item in variant.results" :value="item" show-author/>
     </div>
   </div>
@@ -28,6 +25,9 @@ import ColoringCard from "~/components/ColoringCard.vue";
 
 import {useSeoMeta} from "nuxt/app";
 import Breadcrumb from "~/components/Breadcrumb.vue";
+import {useUserStore} from "~/stores/user";
+
+const userStore = useUserStore()
 function capitalize(word: string) {
   const lower = word.toLowerCase();
   return word.charAt(0).toUpperCase() + lower.slice(1);
@@ -100,6 +100,8 @@ const crumbs = computed<IBreadcrumb[]>(() => {
   }
   return arr
 })
+
+userStore.setBC(crumbs.value)
 
 const meta = computed(() => {
   let defaultDesc = `Free {name} that you can play online or print out and color.`

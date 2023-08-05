@@ -1,24 +1,18 @@
 <script setup lang="ts">
-
-import Breadcrumb from "~/components/Breadcrumb.vue";
-import {computed} from "vue";
-import {IBreadcrumb, ResponseSharedPage} from "~/interface";
+import {ResponseSharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import ColoringCard from "~/components/ColoringCard.vue";
 import {useUserStore} from "~/stores/user";
 import {useSeoMeta} from "#app";
 
-const crumbs = computed<IBreadcrumb[]>(() => {
-  return [
-    {
-      name: "My space",
-      to: `/my-space`,
-      icon: undefined
-    }
-  ]
-})
-
 const userStore = useUserStore()
+userStore.setBC([
+  {
+    name: "My space",
+    to: `/my-space`,
+    icon: undefined
+  }
+])
 const page = ref(1)
 
 const {data: response} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
@@ -37,14 +31,13 @@ useSeoMeta({
 
 useHead({
   meta: [
-    { hid: 'robots', name: 'robots', content: 'noindex' }
+    {hid: 'robots', name: 'robots', content: 'noindex'}
   ]
 })
 </script>
 
 <template>
   <div class="max-w-xl mx-auto space-y-4">
-    <breadcrumb :crumbs="crumbs"/>
     <div v-if="response" class="grid grid-cols-2 md:grid-cols-3 gap-3">
       <coloring-card v-for="item in response.results" :value="item"/>
     </div>

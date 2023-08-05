@@ -1,6 +1,5 @@
 <template>
   <div v-if="value" class="max-w-xl mx-auto space-y-4">
-    <breadcrumb :crumbs="crumbs"/>
     <div class="w-full pt-full relative bg-white">
       <div class="absolute inset-4">
         <img
@@ -211,7 +210,7 @@ const isOwner = computed(() => {
   return value.user && userStore.isLogged && value.user.id === userStore.logged.id
 })
 
-const crumbs = computed<IBreadcrumb[]>(() => [{
+userStore.setBC([{
   name: value.is_template ? 'Coloring Pages' : 'Arts',
   to: value.is_template ? '/pages' : '/arts',
   icon: value.is_template ? 'i-con-template' : 'i-con-shared',
@@ -220,7 +219,6 @@ const crumbs = computed<IBreadcrumb[]>(() => [{
   to: '/post/' + value.id_string,
   icon: 'i-con-picture',
 }])
-
 
 const space = computed(() => {
   return value.is_template ? 'pages' : 'arts'
