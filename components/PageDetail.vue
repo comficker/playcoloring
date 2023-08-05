@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value" class="max-w-xl mx-auto space-y-4 md:space-y-6 py-4">
+  <div v-if="value" class="max-w-xl mx-auto space-y-4">
     <breadcrumb :crumbs="crumbs"/>
     <div class="w-full pt-full relative bg-white">
       <div class="absolute inset-4">

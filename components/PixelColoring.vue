@@ -1,6 +1,6 @@
 <template>
   <div class="hh1 mx-auto max-w-xl h-screen flex flex-col relative font-semibold">
-    <div class="py-2 w-full mx-auto flex gap-2 justify-between relative text-sm">
+    <div class="py-2 w-full mx-auto flex gap-2 justify-between relative">
       <div class="flex gap-6 items-center">
         <nuxt-link class="flex gap-1" to="/">
           <div class="i-con-pad fill-red-400 h-6 w-6"/>
