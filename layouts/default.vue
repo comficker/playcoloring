@@ -6,7 +6,7 @@ const showHead = computed(() => {
 </script>
 
 <template>
-  <main id="main" class="flex flex-col min-h-full divide-y">
+  <main id="main" class="flex flex-col min-h-full">
     <Header v-if="showHead"/>
     <div class="flex-1 px-4">
       <slot class="w-full"/>

@@ -1,6 +1,6 @@
 <template>
-  <div class="hh1 -mx-4 h-screen flex flex-col border-b relative divide-y font-semibold">
-    <div class="px-4 py-2 w-full mx-auto flex gap-2 justify-between relative text-sm">
+  <div class="hh1 mx-auto max-w-xl h-screen flex flex-col relative font-semibold">
+    <div class="py-2 w-full mx-auto flex gap-2 justify-between relative text-sm">
       <div class="flex gap-6 items-center">
         <nuxt-link class="flex gap-1" to="/">
           <div class="i-con-pad fill-red-400 h-6 w-6"/>
@@ -24,9 +24,9 @@
         </nuxt-link>
       </div>
     </div>
-    <div class="z-10 relative hh2 w-full flex-1 mx-auto overflow-hidden">
+    <div class="z-10 relative hh2 w-full flex-1 mx-auto">
       <div
-        class="relative h-full overflow-hidden"
+        class="relative h-full"
         style="--zoom-size: 1px 1px"
         :style="{
           '--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,
@@ -45,7 +45,7 @@
               width: `${PICTURE_SIZE.w}px`,
               height: `${PICTURE_SIZE.h}px`
             }"
-            :class="{'mx-auto': wrapperSize < PICTURE_SIZE.w}"
+            :class="{'mx-auto': wrapperSize < PICTURE_SIZE.w, 'has-grid': isEditor,}"
           >
             <canvas
               id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
@@ -62,6 +62,7 @@
             <div
               id="controller"
               class="absolute inset-0"
+              :class="{'has-grid': isEditor}"
               @mousedown="handleMouseDown"
               @mouseup="handleMouseUp"
               @mousemove="handleMouseHover"
@@ -147,7 +148,7 @@
             </div>
           </div>
         </div>
-        <div class="absolute right-4 top-4 flex justify-center z-10 text-sm">
+        <div class="absolute left-4 right-4 bottom-4 flex justify-center z-10 text-sm">
           <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
             <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
               <div class="i-con-plus w-3 h-3"/>
@@ -199,7 +200,7 @@
       </div>
     </div>
     <div
-      class="px-4 py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
+      class="py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
       :class="{'sticky': !showModal}"
     >
       <div class="flex gap-2 text-sm flex-nowrap items-center">
@@ -851,7 +852,7 @@ function createParticle(x: number, y: number) {
 </script>
 
 <style>
-#workload {
+#workload.has-grid {
   background-size: var(--zoom-size);
   background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px),
   linear-gradient(to bottom, #F0F0F0 1px, transparent 1px);
@@ -859,12 +860,12 @@ function createParticle(x: number, y: number) {
   background-position-y: -0.5px;
 }
 
-#controller {
-  //background-size: 50% 50%;
-  //background-image: linear-gradient(to right, #F9F9F9 1px, transparent 1px),
-  //linear-gradient(to bottom, #F9F9F9 1px, transparent 1px);
-  //background-position-x: -0.5px;
-  //background-position-y: -0.5px;
+#controller.has-grid {
+  background-size: 50% 50%;
+  background-image: linear-gradient(to right, #DDDDDD 1px, transparent 1px),
+  linear-gradient(to bottom, #DDDDDD 1px, transparent 1px);
+  background-position-x: -0.5px;
+  background-position-y: -0.5px;
 }
 
 #wrapper {

@@ -43,9 +43,9 @@ useHead({
 </script>
 
 <template>
-  <div class="py-4 space-y-4">
+  <div class="max-w-xl mx-auto py-4 space-y-4">
     <breadcrumb :crumbs="crumbs"/>
-    <div v-if="response" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-5">
+    <div v-if="response" class="grid grid-cols-2 md:grid-cols-3 gap-3">
       <coloring-card v-for="item in response.results" :value="item"/>
     </div>
   </div>

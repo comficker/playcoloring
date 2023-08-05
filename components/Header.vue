@@ -6,7 +6,7 @@ import MainNavigator from "~/components/MainNavigator.vue";
 const userStore = useUserStore()
 </script>
 <template>
-  <div class="mx-auto w-full px-4 py-2 font-semibold relative text-sm">
+  <div class="mx-auto w-full max-w-xl py-2 font-semibold relative text-sm">
     <div class="flex justify-between items-center">
       <div class="flex gap-6 items-center">
         <h1>

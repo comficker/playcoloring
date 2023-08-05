@@ -10,11 +10,12 @@ watch(() => route.fullPath, () => {
 </script>
 
 <template>
-  <div class="md:hidden flex gap-2 items-center p-1" @click="force = !force">
+  <div class="flex gap-2 items-center p-1 cursor-pointer" @click="force = !force">
     <div class="w-6 h-6" :class="{'i-con-up': force, 'i-con-down': !force}"/>
+    <span>Menu</span>
   </div>
   <div
-    class="hidden md:flex flex-col md:flex-row absolute md:relative bg-white z-70 right-0 left-0 top-full md:top-0 border-y md:border-none divide-y md:divide-none"
+    class="hidden flex-col absolute bg-white z-70 right-0 left-0 top-full border-y divide-y"
     :class="{'flex': force}"
   >
     <nuxt-link class="flex gap-2 items-center p-4 md:py-2 hover:text-blue-500" to="/editor">

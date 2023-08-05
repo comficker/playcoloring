@@ -11,8 +11,8 @@
       </p>
     </div>
   </div>
-  <div class="max-w-4xl mx-auto my-6">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+  <div class="max-w-xl mx-auto my-6">
+    <div class="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-5">
       <coloring-card v-for="item in variant.results" :value="item" show-author/>
     </div>
   </div>

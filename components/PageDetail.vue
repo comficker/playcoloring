@@ -1,10 +1,6 @@
 <template>
   <div v-if="value" class="max-w-xl mx-auto space-y-4 md:space-y-6 py-4">
     <breadcrumb :crumbs="crumbs"/>
-    <div>
-      <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
-      <p>{{ meta.desc }}</p>
-    </div>
     <div class="w-full pt-full relative bg-white">
       <div class="absolute inset-4">
         <img
@@ -21,6 +17,10 @@
           height="200"
         />
       </div>
+    </div>
+    <div>
+      <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
+      <p>{{ meta.desc }}</p>
     </div>
     <div class="flex flex-col md:flex-row gap-4 justify-between">
       <div class="flex-1 flex gap-2">
