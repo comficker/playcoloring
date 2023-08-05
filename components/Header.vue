@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useUserStore} from "~/stores/user";
-import RandomButton from "~/components/RandomButton.vue";
 import MainNavigator from "~/components/MainNavigator.vue";
 
 const userStore = useUserStore()

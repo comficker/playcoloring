@@ -778,8 +778,9 @@ watch(showModal, () => {
 onMounted(() => {
   const wrapper = document.getElementById('wrapper')
   wrapperSize.value = wrapper ? wrapper.offsetWidth > wrapper.offsetHeight ? wrapper.offsetHeight : wrapper.offsetWidth : 576
+  console.log(wrapperSize.value);
   if (wrapper && wrapper.offsetWidth < 576) {
-    displaySize.value = 384
+    displaySize.value = wrapperSize.value - 2 // for border
   }
 
   if (!isEditor) {
