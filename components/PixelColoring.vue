@@ -30,17 +30,20 @@
         style="--zoom-size: 1px 1px"
         :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,}"
       >
-        <div
-          id="wrapper"
-          :class="{'flex items-center justify-center': wrapperSize >= PICTURE_SIZE.w}"
-        >
+        <div id="wrapper">
           <div
             id="workload" class="relative"
-            :style="{width: `${PICTURE_SIZE.w}px`, height: `${PICTURE_SIZE.h}px`}"
-            :class="{'mx-auto': wrapperSize < PICTURE_SIZE.w, 'has-grid': isEditor,}"
+            :style="{
+              width: `${PICTURE_SIZE.w}px`,
+              height: `${PICTURE_SIZE.h}px`,
+              transform: `scale(${1/dpr})`,
+              marginTop: `${(wrapperHeight - PICTURE_SIZE.h / 2) / 2}px`
+            }"
+            :class="{'has-grid': isEditor,}"
           >
             <canvas
               id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+              :style="{width: `${PICTURE_SIZE.w}px`, height: `${PICTURE_SIZE.h}px`}"
               class="absolute inset-0"
             />
             <div
@@ -346,9 +349,10 @@ const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
 
 const palettes = ref<string[][]>([])
 const newSize = ref(16)
-
+const dpr = ref(1)
 const displaySize = ref(576)
 const wrapperSize = ref(576)
+const wrapperHeight = ref(576)
 const isPainting = ref(false)
 const showModal = ref<null | string>(null)
 const isDouble = ref(false)
@@ -365,7 +369,7 @@ const options = ref<Options>({
 const loadErrs = ref<string[]>([])
 const mergingList = ref<number[]>([])
 
-const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
+const cellScaleSize = computed(() => Math.round(dpr.value * Math.pow(2, options.value.zoom)))
 const PICTURE_SIZE = computed(() => ({
   w: Math.round(workspace.width * cellScaleSize.value),
   h: Math.round(workspace.height * cellScaleSize.value)
@@ -454,10 +458,10 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     })
 
     if (workspace.map_numbers.hasOwnProperty(key)) {
-      ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
+      ctx.font = `${cellScaleSize.value / 4}px 'I pixel u', Arial, sans-serif`
       ctx.textBaseline = 'middle'
       ctx.textAlign = 'center'
-      ctx.fillStyle = '#000'
+      ctx.fillStyle = '#957777'
       ctx.fillText(
         workspace.map_numbers[key].toString(),
         x + cellScaleSize.value / 2,
@@ -519,10 +523,10 @@ const reDraw = () => {
     PICTURE_SIZE.value.w,
     PICTURE_SIZE.value.h
   )
-  ctx.font = `${cellScaleSize.value / 3}px Inter, Arial, sans-serif`
+  ctx.font = `${Math.round(cellScaleSize.value / 4)}px 'I pixel u', Arial, sans-serif`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
-  ctx.fillStyle = '#000'
+  ctx.fillStyle = '#957777'
   Object.keys(workspace.map_numbers).forEach((index: string) => {
     const arr = index.split("_").map(x => Number.parseInt(x))
     ctx.fillText(
@@ -535,7 +539,12 @@ const reDraw = () => {
   Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
     ctx.fillStyle = workspace.colors[colors[k]];
-    ctx.fillRect(arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, cellScaleSize.value, cellScaleSize.value);
+    ctx.fillRect(
+      arr[0] * cellScaleSize.value,
+      arr[1] * cellScaleSize.value,
+      cellScaleSize.value,
+      cellScaleSize.value
+    );
   })
 }
 
@@ -776,9 +785,10 @@ watch(showModal, () => {
 })
 
 onMounted(() => {
+  dpr.value = window.devicePixelRatio
   const wrapper = document.getElementById('wrapper')
   wrapperSize.value = wrapper ? wrapper.offsetWidth > wrapper.offsetHeight ? wrapper.offsetHeight : wrapper.offsetWidth : 576
-  console.log(wrapperSize.value);
+  wrapperHeight.value = wrapper ? wrapper.offsetHeight : 576
   if (wrapper && wrapper.offsetWidth < 576) {
     displaySize.value = wrapperSize.value - 2 // for border
   }
@@ -843,6 +853,10 @@ function createParticle(x: number, y: number) {
 </script>
 
 <style>
+#workload {
+  transform-origin: 0 0;
+}
+
 #workload.has-grid {
   background-size: var(--zoom-size);
   background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px),

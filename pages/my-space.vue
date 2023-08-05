@@ -43,7 +43,7 @@ useHead({
 </script>
 
 <template>
-  <div class="max-w-xl mx-auto py-4 space-y-4">
+  <div class="max-w-xl mx-auto space-y-4">
     <breadcrumb :crumbs="crumbs"/>
     <div v-if="response" class="grid grid-cols-2 md:grid-cols-3 gap-3">
       <coloring-card v-for="item in response.results" :value="item"/>
