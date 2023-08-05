@@ -36,8 +36,7 @@
             :style="{
               width: `${PICTURE_SIZE.w}px`,
               height: `${PICTURE_SIZE.h}px`,
-              transform: `scale(${1/dpr})`,
-              marginTop: `${(wrapperHeight - PICTURE_SIZE.h / 2) / 2}px`
+              marginTop: mt > 0 ? `${mt}px`: undefined
             }"
             :class="{'has-grid': isEditor,}"
           >
@@ -369,12 +368,12 @@ const options = ref<Options>({
 const loadErrs = ref<string[]>([])
 const mergingList = ref<number[]>([])
 
-const cellScaleSize = computed(() => Math.round(dpr.value * Math.pow(2, options.value.zoom)))
+const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
 const PICTURE_SIZE = computed(() => ({
   w: Math.round(workspace.width * cellScaleSize.value),
   h: Math.round(workspace.height * cellScaleSize.value)
 }))
-
+const mt = computed(() => (wrapperHeight.value - PICTURE_SIZE.value.h) / 2)
 const handleMouseDown = (e: MouseEvent) => {
   isPainting.value = true
   fillColor(e)
