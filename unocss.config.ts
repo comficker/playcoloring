@@ -2,9 +2,7 @@ import {
   defineConfig,
   presetAttributify,
   presetIcons,
-  presetTypography,
   presetUno,
-  presetWebFonts,
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
@@ -25,13 +23,6 @@ export default defineConfig({
           './assets/icons',
           svg => svg,
         ),
-      },
-    }),
-    presetTypography(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        'Press+Start+2P': 'Press+Start+2P',
       },
     }),
     animatedUno(),

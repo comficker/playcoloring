@@ -818,6 +818,11 @@ onMounted(() => {
   }
 
   window.soundPop = new Audio('/brush.wav')
+  let f = new FontFace("I pixel u", "url(/I-pixel-u.ttf)");
+
+  f.load().then(() => {
+    console.log("OK");
+  });
 })
 
 onBeforeRouteUpdate(n => {
