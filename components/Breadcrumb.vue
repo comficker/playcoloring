@@ -6,23 +6,19 @@ const crumbs = computed(() => userStore.breadcrumbs)
 </script>
 
 <template>
-  <div class="py-2 mb-4 border-b -mx-4 px-4 md:border-transparent">
-    <div class="mx-auto max-w-xl flex flex-wrap gap-2 font-semibold items-center">
-      <nuxt-link class="flex gap-2 items-center px-2" to="/">
+  <div class="py-1 mb-4 border-b -mx-4 bg-gray-100 overflow-auto no-scrollbar relative">
+    <div class="mx-auto max-w-xl flex flex-nowrap gap-1 font-semibold items-center">
+      <nuxt-link class="z-10 bg-gray-100 sticky left-0 flex-none flex gap-1 items-center px-2 pl-0 w-fit" to="/">
         <div class="w-4 h-4 i-con-home"/>
         <span class="hidden md:block">Home</span>
       </nuxt-link>
-      <div class="hidden md:block">
-        <div class="w-4 h-4 i-con-right"/>
-      </div>
+      <div class="flex-none w-4 h-4 i-con-right"/>
       <template v-for="(crumb, i) in crumbs" :key="crumb.to">
-        <nuxt-link class="flex gap-2 items-center px-2" :to="crumb.to">
+        <nuxt-link class="flex flex-none gap-1 items-center px-2 w-fit" :to="crumb.to">
           <div v-if="crumb.icon" class="w-4 h-4" :class="crumb.icon"/>
           <span>{{crumb.name}}</span>
         </nuxt-link>
-        <div v-if="i < crumbs.length - 1" class="hidden md:block">
-          <div class="w-4 h-4 i-con-right"/>
-        </div>
+        <div v-if="i < crumbs.length - 1" class="w-4 h-4 i-con-right"/>
       </template>
     </div>
   </div>
