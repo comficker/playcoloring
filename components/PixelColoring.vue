@@ -436,7 +436,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     return;
   x = dpr.value * x
   y = dpr.value * y
-  const key = `${Math.round(dpr.value * x / cellScaleSize.value)}_${Math.round(dpr.value * y / cellScaleSize.value)}`
+  const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
   if (options.value.pointer === key) {
     return
   }
@@ -444,6 +444,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
   const colors = workspace.results || {}
   if (color) {
     const index = workspace.colors.indexOf(color)
+    console.log(key, index);
     if (colors[key] === index)
       return;
     ctx.fillStyle = color;
@@ -543,8 +544,8 @@ const reDraw = () => {
     const arr = index.split("_").map(x => Number.parseInt(x))
     ctx.fillText(
       workspace.map_numbers[index].toString(),
-      +arr[0] * cellScaleSize.value + cellScaleSize.value / 2,
-      +arr[1] * cellScaleSize.value + cellScaleSize.value / 2
+      cellScaleSize.value * (+arr[0] + 0.5),
+      cellScaleSize.value * (+arr[1] + 0.5)
     );
   })
   const colors = workspace.results || {}
