@@ -346,6 +346,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
   results: {},
   status: 'draft'
 }
+const FONT = "'I pixel u', Inter, Arial, sans-serif"
 
 const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
 
@@ -431,7 +432,7 @@ const onClickColor = (i: number) => {
   }
 }
 
-const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string | null) => {
+const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string | null, saveStep = true) => {
   if (isNaN(x) || isNaN(y))
     return;
   x = dpr.value * x
@@ -444,29 +445,24 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
   const colors = workspace.results || {}
   if (color) {
     const index = workspace.colors.indexOf(color)
-    console.log(key, index);
     if (colors[key] === index)
       return;
     ctx.fillStyle = color;
     ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
-    workspace.steps.push({
-      t: 'fill',
-      k: key,
-      c: index,
-    })
+    if (saveStep) {
+      workspace.steps.push({t: 'fill', k: key, c: index,})
+    }
   } else {
     if (typeof colors[key] === 'undefined')
       return;
 
     ctx.clearRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
-    workspace.steps.push({
-      t: 'fill',
-      k: key,
-      c: -1
-    })
+    if (saveStep) {
+      workspace.steps.push({t: 'fill', k: key, c: -1})
+    }
 
     if (workspace.map_numbers.hasOwnProperty(key)) {
-      ctx.font = `${cellScaleSize.value / 4}px 'I pixel u', Arial, sans-serif`
+      ctx.font = `${cellScaleSize.value / 4}px ${FONT}`
       ctx.textBaseline = 'middle'
       ctx.textAlign = 'center'
       ctx.fillStyle = '#957777'
@@ -477,8 +473,10 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
       );
     }
   }
-  step2Result()
-  saveLate()
+  if (saveStep) {
+    step2Result()
+    saveLate()
+  }
 }
 
 const fillColor = (e: MouseEvent) => {
@@ -500,6 +498,8 @@ const fillColor = (e: MouseEvent) => {
     }
     if (isFilling.value) {
       const cIndex = workspace.map_numbers[`${Math.round(x / cs)}_${Math.round(y / cs)}`]
+      workspace.steps.push({t: 'fill_all', k: cIndex, c: color ? workspace.colors.indexOf(color) : null})
+      saveLate()
       const keys = Object.keys(workspace.map_numbers)
       let start = 1
       const e = document.getElementById('controller')
@@ -509,7 +509,7 @@ const fillColor = (e: MouseEvent) => {
         if (cIndex === value && b) {
           const arr = keys[index].split("_").map(n => Number.parseInt(n))
           setTimeout(() => {
-            filCanvas(ctx, arr[0] * cs, arr[1] * cs, color)
+            filCanvas(ctx, arr[0] * cs, arr[1] * cs, color, false)
             pop(
               b.x + arr[0] * cs,
               b.y + arr[1] * cs,
@@ -536,7 +536,7 @@ const reDraw = () => {
     PICTURE_SIZE.value.w,
     PICTURE_SIZE.value.h
   )
-  ctx.font = `${Math.round(cellScaleSize.value / 4)}px 'I pixel u', Arial, sans-serif`
+  ctx.font = `${Math.round(cellScaleSize.value / 4)}px ${FONT}`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#957777'
@@ -647,24 +647,31 @@ const loadSharedPage = async (id: string) => {
   if (!response) return
   Object.assign(workspace, response)
   workspace.tags = workspace.taxonomies.map(x => x.name)
-  if (!isEditor) {
+  if (!isEditor && response.is_template) {
     workspace.name = ''
     workspace.desc = ''
     workspace.is_template = false
-    workspace.id_string = ''
     workspace.template = workspace.template ? workspace.template : workspace.id
     workspace.id = 0
+    workspace.id_string = ''
   }
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
-  step2Result()
   options.value.color = response.colors[0]
+  step2Result()
+  workspace.steps = [{
+    t: 'init_colors',
+    v: workspace.colors
+  }, {
+    t: 'init_results',
+    v: workspace.results
+  }]
   reDraw()
-  document.body.scrollTop = document.documentElement.scrollTop = 0;
   clearInterval(itv)
   fetchingPercent.value = 100
   setTimeout(() => {
     fetchingPercent.value = 101
   }, 300)
+  document.body.scrollTop = document.documentElement.scrollTop = 0;
 }
 
 const toggleModal = (type: string | null) => {
@@ -727,7 +734,7 @@ const switchOpenPalette = () => {
 }
 
 const step2Result = () => {
-  const out = convertSteps(workspace.steps, workspace.colors)
+  const out = convertSteps(workspace)
   workspace.results = out.results as {[key: string]: number}
   workspace.colors = out.colors
   options.value.color = out.color
@@ -818,11 +825,6 @@ onMounted(() => {
   }
 
   window.soundPop = new Audio('/brush.wav')
-  let f = new FontFace("I pixel u", "url(/I-pixel-u.ttf)");
-
-  f.load().then(() => {
-    console.log("OK");
-  });
 })
 
 onBeforeRouteUpdate(n => {

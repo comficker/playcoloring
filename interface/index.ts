@@ -32,8 +32,8 @@ export interface TagSchema {
 
 export interface Step {
   t: string,
-  c?: number,
-  k?: string,
+  c?: string | number | null,
+  k?: string | number | null,
   v?: any
 }
 

@@ -1,14 +1,17 @@
 import pkg from 'lodash'
+import {SharedPage, Step} from "~/interface";
+import {pop} from "~/helper/animate";
 
 const {cloneDeep} = pkg
 
-export function trimCanvas(canvas) {
+export function trimCanvas(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d');
+  if (!context) return;
 
   const topLeft = {
     x: canvas.width,
     y: canvas.height,
-    update(x, y) {
+    update(x: number, y: number) {
       this.x = Math.min(this.x, x);
       this.y = Math.min(this.y, y);
     }
@@ -17,7 +20,7 @@ export function trimCanvas(canvas) {
   const bottomRight = {
     x: 0,
     y: 0,
-    update(x, y) {
+    update(x: number, y: number) {
       this.x = Math.max(this.x, x);
       this.y = Math.max(this.y, y);
     }
@@ -47,16 +50,16 @@ export function trimCanvas(canvas) {
 }
 
 
-export function convertSteps(steps, colors) {
+export function convertSteps({steps, colors, map_numbers}: SharedPage) {
   let currentColors = cloneDeep(colors)
-  let results = {}
+  let results: { [key: string]: number } = {}
   let color = null
   steps.forEach((step) => {
     if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
-      if (step.c >= 0) {
+      if (step.c && step.c >= 0 && step.k && typeof step.c === "number") {
         results[step.k] = step.c
         color = currentColors[step.c]
-      } else {
+      } else if (step.k) {
         delete results[step.k]
         color = null
       }
@@ -64,7 +67,7 @@ export function convertSteps(steps, colors) {
       const mergingList = cloneDeep(step.v)
       const old = cloneDeep(currentColors)
       const except = currentColors.indexOf(old[mergingList[0]])
-      mergingList.sort((x, y) => y - x).forEach((index) => {
+      mergingList.sort((x: number, y: number) => y - x).forEach((index: number) => {
         if (index !== except)
           currentColors.splice(index, 1)
       })
@@ -81,7 +84,7 @@ export function convertSteps(steps, colors) {
     } else if (step.t === 'init_results' && step.v) {
       results = cloneDeep(step.v)
     } else if (step.t === 'teleport' && step.v) {
-      const newR = {}
+      const newR: { [key: string]: number } = {}
       const arr = step.v.split("_")
       const p = arr[0] === 'v' ? 1 : 0
       Object.keys(results).forEach((k) => {
@@ -90,6 +93,19 @@ export function convertSteps(steps, colors) {
         newR[pa.join("_")] = results[k]
       })
       results = newR
+    } else if (step.t === 'fill_all') {
+      const colorIndex = step.c
+      const valueIndex = step.k
+      const keys = Object.keys(map_numbers)
+      Object.values(map_numbers).forEach((value: number, index: number) => {
+        if (valueIndex === value) {
+          if (typeof colorIndex === 'number') {
+            results[keys[index]] = colorIndex
+          } else {
+            delete results[keys[index]]
+          }
+        }
+      })
     }
   })
   return {
@@ -99,14 +115,15 @@ export function convertSteps(steps, colors) {
 }
 
 
-export function drawThumbnail(value) {
-  const canvas = document.getElementById(`canvas_${value.id}`)
+export function drawThumbnail(value: SharedPage) {
+  const canvas: HTMLCanvasElement | null = document.getElementById(`canvas_${value.id}`) as HTMLCanvasElement
+  if (!canvas) return;
   const ctx = canvas?.getContext('2d')
   if (!ctx) return;
   canvas.width = canvas.offsetWidth
   canvas.height = canvas.offsetHeight
   const cellSize = Math.round(canvas.offsetWidth / value.width)
-  const out = convertSteps(value.steps, value.colors)
+  const out = convertSteps(value)
   const results = out.results
   Object.keys(results).forEach((k) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
