@@ -43,7 +43,7 @@
             :class="{'has-grid': isEditor,}"
           >
             <canvas
-              id="workspace" :width="PICTURE_SIZE.w" :height="PICTURE_SIZE.h"
+              id="workspace" :width="scaleSize.w" :height="scaleSize.h"
               :style="{width: `${PICTURE_SIZE.w}px`, height: `${PICTURE_SIZE.h}px`}"
               class="absolute inset-0"
             />
@@ -51,8 +51,8 @@
               id="cursor" class="absolute"
               :style="{
                 backgroundColor: options.color || '#FFF',
-                width: `${Math.ceil(cellScaleSize)}px`,
-                height: `${Math.ceil(cellScaleSize)}px`
+                width: `${Math.ceil(cellScaleSize / dpr)}px`,
+                height: `${Math.ceil(cellScaleSize / dpr)}px`
               }"
             />
             <div
@@ -290,6 +290,7 @@ import {rgbToHex} from "~/helper/color";
 import {useUserStore} from "~/stores/user";
 import RandomButton from "~/components/RandomButton.vue";
 import MainNavigator from "~/components/MainNavigator.vue";
+import {pop} from "~/helper/animate";
 
 function gcd(a: number, b: number) {
   while (a != b) {
@@ -370,10 +371,14 @@ const options = ref<Options>({
 const loadErrs = ref<string[]>([])
 const mergingList = ref<number[]>([])
 
-const cellScaleSize = computed(() => Math.round(Math.pow(2, options.value.zoom)))
-const PICTURE_SIZE = computed(() => ({
+const cellScaleSize = computed(() => Math.round(dpr.value * Math.pow(2, options.value.zoom)))
+const scaleSize = computed(() => ({
   w: Math.round(workspace.width * cellScaleSize.value),
   h: Math.round(workspace.height * cellScaleSize.value)
+}))
+const PICTURE_SIZE = computed(() => ({
+  w: scaleSize.value.w / dpr.value,
+  h: scaleSize.value.h / dpr.value,
 }))
 const mt = computed(() => (wrapperHeight.value - PICTURE_SIZE.value.h) / 2)
 const handleMouseDown = (e: MouseEvent) => {
@@ -386,7 +391,7 @@ const handleMouseUp = () => {
 }
 
 const handleMouseHover = (e: MouseEvent) => {
-  const cs = cellScaleSize.value
+  const cs = cellScaleSize.value / dpr.value
   const cursor: HTMLElement | null = document.getElementById('cursor');
   if (!isPainting.value) {
     if (cursor) {
@@ -429,8 +434,9 @@ const onClickColor = (i: number) => {
 const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string | null) => {
   if (isNaN(x) || isNaN(y))
     return;
-
-  const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
+  x = dpr.value * x
+  y = dpr.value * y
+  const key = `${Math.round(dpr.value * x / cellScaleSize.value)}_${Math.round(dpr.value * y / cellScaleSize.value)}`
   if (options.value.pointer === key) {
     return
   }
@@ -475,23 +481,24 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
 }
 
 const fillColor = (e: MouseEvent) => {
+  const cs = cellScaleSize.value / dpr.value
   const canvas = document.getElementById('workspace') as HTMLCanvasElement
   const ctx = canvas?.getContext('2d', {
     willReadFrequently: true
   })
   const color = options.value.color
   if (ctx) {
-    const x = Math.round(e.offsetX - e.offsetX % cellScaleSize.value)
-    const y = Math.round(e.offsetY - e.offsetY % cellScaleSize.value)
+    const x = Math.round(e.offsetX - e.offsetX % cs)
+    const y = Math.round(e.offsetY - e.offsetY % cs)
     filCanvas(ctx, x, y, color)
-    pop(e.clientX, e.clientY)
+    pop(e.clientX, e.clientY, options.value.color)
     window.soundPop.play()
     if (isDouble.value) {
-      const x2 = Math.round((workspace.width - 1 - x / cellScaleSize.value) * cellScaleSize.value)
+      const x2 = Math.round((workspace.width - 1 - x / cs) * cs)
       filCanvas(ctx, x2, y, color)
     }
     if (isFilling.value) {
-      const cIndex = workspace.map_numbers[`${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`]
+      const cIndex = workspace.map_numbers[`${Math.round(x / cs)}_${Math.round(y / cs)}`]
       const keys = Object.keys(workspace.map_numbers)
       let start = 1
       const e = document.getElementById('controller')
@@ -501,8 +508,12 @@ const fillColor = (e: MouseEvent) => {
         if (cIndex === value && b) {
           const arr = keys[index].split("_").map(n => Number.parseInt(n))
           setTimeout(() => {
-            filCanvas(ctx, arr[0] * cellScaleSize.value, arr[1] * cellScaleSize.value, color)
-            pop(b.x + arr[0] * cellScaleSize.value, b.y + arr[1] * cellScaleSize.value)
+            filCanvas(ctx, arr[0] * cs, arr[1] * cs, color)
+            pop(
+              b.x + arr[0] * cs,
+              b.y + arr[1] * cs,
+              options.value.color
+            )
           }, start * 100)
           if (index % 2) {
             start++
@@ -813,44 +824,6 @@ onBeforeRouteUpdate(n => {
     loadSharedPage(n.query.id.toString())
   }
 })
-
-function pop(x: number, y: number) {
-  for (let i = 0; i < 4; i++) {
-    createParticle(x, y);
-  }
-}
-
-function createParticle(x: number, y: number) {
-  if (!x || !y)
-    return
-  const particle = document.createElement('span');
-  particle.classList.add('particle')
-  document.body.appendChild(particle);
-  const size = Math.floor(Math.random() * 15 + 5);
-  particle.style.width = `${size}px`;
-  particle.style.height = `${size}px`;
-  particle.style.background = options.value.color || '#FFF';
-  particle.style.zIndex = '99999'
-  const destinationX = x + (Math.random() - 0.5) * 2 * 50;
-  const destinationY = y + (Math.random() - 0.5) * 2 * 50;
-  const animation = particle.animate([
-    {
-      transform: `translate(${x - (size / 2)}px, ${y - (size / 2)}px)`,
-      opacity: 1
-    },
-    {
-      transform: `translate(${destinationX}px, ${destinationY}px)`,
-      opacity: 0
-    }
-  ], {
-    duration: 500 + Math.random() * 1000,
-    easing: 'cubic-bezier(0, .9, .57, 1)',
-    delay: Math.random() * 200
-  });
-  animation.onfinish = () => {
-    particle.remove();
-  };
-}
 </script>
 
 <style>
