@@ -41,12 +41,14 @@ watch(form, () => {
 
 <template>
   <div class="divide-y">
-    <div class="p-4 flex justify-between items-center">
+    <div class="p-4 py-2 flex justify-between items-center">
       <div class="flex gap-2 items-end">
         <div class="font-semibold text-xl">Public your work</div>
         <span class="italic text-xs">Automatic save enabled</span>
       </div>
-      <div class="i-con-close w-6 h-6 cursor-pointer" @click="emits('hide')"/>
+      <div class="btn hover:shadow rounded" @click="emits('hide')">
+        <div class="i-con-close w-4 h-4 cursor-pointer"/>
+      </div>
     </div>
     <div class="p-4 py-2 space-y-3">
       <div>

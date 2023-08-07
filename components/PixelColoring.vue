@@ -30,7 +30,7 @@
       <div
         class="relative h-full"
         style="--zoom-size: 1px 1px"
-        :style="{'--zoom-size': `${cellScaleSize}px ${cellScaleSize}px`,}"
+        :style="{'--zoom-size': `${cellScaleSize / dpr}px ${cellScaleSize / dpr}px`,}"
       >
         <div id="wrapper">
           <div
@@ -82,8 +82,8 @@
               class="z-20 fixed top-0 -right-[1px] -left-[1px] z-60"
             >
               <div class="absolute inset-0" @click="showModal = null"></div>
-              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border">
-                <div v-if="showModal === 'load'" class="p-4 space-y-3 cursor-pointer">
+              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border border-t-0">
+                <div v-if="showModal === 'load'" class="p-4 py-3 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>
                   </div>
@@ -99,7 +99,7 @@
                   v-else-if="showModal === 'saving'" :workspace="workspace"
                   @hide="showModal = null" @change="handleFormChange"
                 />
-                <div v-else-if="showModal === 'ruler'" class="p-4 space-y-3">
+                <div v-else-if="showModal === 'ruler'" class="p-4 py-3 space-y-3">
                   <div class="flex justify-between items-center text-xs">
                     <div class="text-2xl font-bold">Resize</div>
                     <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="showModal = null"/>
@@ -413,6 +413,7 @@ const handleZoom = (isPlus = true) => {
 }
 
 const handleFormChange = (form: SaveForm) => {
+  console.log("handleFormChange");
   workspace.name = form.name
   workspace.desc = form.desc
   workspace.tags = form.tags
@@ -473,10 +474,6 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
       );
     }
   }
-  if (saveStep) {
-
-    saveLate()
-  }
 }
 
 const fillColor = (e: MouseEvent) => {
@@ -489,43 +486,47 @@ const fillColor = (e: MouseEvent) => {
   if (ctx) {
     const x = Math.round(e.offsetX - e.offsetX % cs)
     const y = Math.round(e.offsetY - e.offsetY % cs)
-    filCanvas(ctx, x, y, color)
-    pop(e.clientX, e.clientY, options.value.color)
-    window.soundPop.play()
-    if (isDouble.value) {
-      const x2 = Math.round((workspace.width - 1 - x / cs) * cs)
-      filCanvas(ctx, x2, y, color)
-    }
     if (isFilling.value) {
       const cIndex = workspace.map_numbers[`${Math.round(x / cs)}_${Math.round(y / cs)}`]
       workspace.steps.push({t: 'fill_all', k: cIndex, c: color ? workspace.colors.indexOf(color) : null})
-      saveLate()
       const keys = Object.keys(workspace.map_numbers)
       let start = 1
       const e = document.getElementById('controller')
       const b = e?.getBoundingClientRect()
-
-      Object.values(workspace.map_numbers).forEach((value: number, index: number) => {
-        if (cIndex === value && b) {
-          const arr = keys[index].split("_").map(n => Number.parseInt(n))
-          setTimeout(() => {
-            filCanvas(ctx, arr[0] * cs, arr[1] * cs, color, false)
-            pop(
-              b.x + arr[0] * cs,
-              b.y + arr[1] * cs,
-              options.value.color
-            )
-          }, start * 100)
-          if (index % 2) {
-            start++
+      const values = Object.values(workspace.map_numbers)
+      if (b) {
+        values.forEach((value: number, index: number) => {
+          if (cIndex === value) {
+            const arr = keys[index].split("_").map(n => Number.parseInt(n))
+            setTimeout(() => {
+              filCanvas(ctx, arr[0] * cs, arr[1] * cs, color, false)
+              pop(
+                b.x + arr[0] * cs,
+                b.y + arr[1] * cs,
+                options.value.color
+              )
+            }, start * 100)
+            if (index % 2) start++
           }
-        }
-      })
+        })
+        setTimeout(saveLate, start * 100)
+      }
+
+    } else {
+      filCanvas(ctx, x, y, color)
+      pop(e.clientX, e.clientY, options.value.color)
+      window.soundPop.play()
+      if (isDouble.value) {
+        const x2 = Math.round((workspace.width - 1 - x / cs) * cs)
+        filCanvas(ctx, x2, y, color)
+      }
+      saveLate()
     }
   }
 }
 
 const reDraw = () => {
+  console.log("reDraw");
   step2Result()
   const canvas = document.getElementById('workspace') as HTMLCanvasElement
   const ctx = canvas?.getContext('2d', {
@@ -734,6 +735,7 @@ const switchOpenPalette = () => {
 }
 
 const step2Result = () => {
+  console.log("step2Result");
   const out = convertSteps(workspace)
   workspace.results = out.results as {[key: string]: number}
   workspace.colors = out.colors
@@ -757,6 +759,7 @@ const teleport = (direction: string, value: number) => {
 }
 
 const saveLate = debounce(async () => {
+  console.log("saveLate");
   if (!!workspace.id && (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id)) return
   step2Result()
   let uri = '/coloring/shared-pages/'
@@ -804,20 +807,25 @@ watch(showModal, () => {
 })
 
 onMounted(() => {
+  Object.assign(workspace, DEFAULT_WORKSPACE)
   dpr.value = window.devicePixelRatio
   const wrapper = document.getElementById('wrapper')
   wrapperSize.value = wrapper ? wrapper.offsetWidth > wrapper.offsetHeight ? wrapper.offsetHeight : wrapper.offsetWidth : 576
   wrapperHeight.value = wrapper ? wrapper.offsetHeight : 576
   if (wrapper && wrapper.offsetWidth < 576) {
     displaySize.value = wrapperSize.value - 2 // for border
+    options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2);
   }
 
-  if (!isEditor) {
-    const route = useRoute()
-    if (route.query.id) {
-      loadSharedPage(route.query.id.toString())
-    } else if (userStore.isLogged) {
-      loadSharedPage(userStore.logged.meta?.coloring?.current || 'random')
+  const route = useRoute()
+
+  if (route.query.id) {
+    loadSharedPage(route.query.id.toString())
+  } else if (isEditor && userStore.isLogged && userStore.logged?.meta?.coloring?.editor) {
+    loadSharedPage(userStore.logged?.meta?.coloring?.editor)
+  } else if (!isEditor) {
+    if (userStore.isLogged && userStore.logged?.meta?.coloring?.current) {
+      loadSharedPage(userStore.logged?.meta?.coloring?.current)
     } else {
       loadSharedPage('random')
     }

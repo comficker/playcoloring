@@ -54,6 +54,7 @@ import {useRuntimeConfig} from "nuxt/app";
 import {drawThumbnail} from "~/helper/canvas";
 import {computed} from "vue";
 
+const route = useRoute()
 const {value, showAuthor} = defineProps<{value: SharedPage, showAuthor?: boolean}>()
 const config = useRuntimeConfig()
 
@@ -61,7 +62,12 @@ const src = computed(() => {
   return `${config.public.apiBase}/coloring/files/${value.id_string}.png?type=thumbnail`
 })
 const to = computed(() => {
-  return `/post/${value.id_string}`
+  if (route.fullPath !== '/my-space') {
+    return `/post/${value.id_string}`
+  } else {
+    const p = value.is_template ? 'editor' : ''
+    return `/${p}?id=${value.id_string}`
+  }
 })
 
 onMounted(() => {

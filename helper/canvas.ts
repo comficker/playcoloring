@@ -56,7 +56,7 @@ export function convertSteps({steps, colors, map_numbers}: SharedPage) {
   let color = null
   steps.forEach((step) => {
     if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
-      if (step.c && step.c >= 0 && step.k && typeof step.c === "number") {
+      if (typeof step.c === 'number' && step.c >= 0 && step.k) {
         results[step.k] = step.c
         color = currentColors[step.c]
       } else if (step.k) {
@@ -97,6 +97,8 @@ export function convertSteps({steps, colors, map_numbers}: SharedPage) {
       const colorIndex = step.c
       const valueIndex = step.k
       const keys = Object.keys(map_numbers)
+      // @ts-ignore
+      color = currentColors[colorIndex]
       Object.values(map_numbers).forEach((value: number, index: number) => {
         if (valueIndex === value) {
           if (typeof colorIndex === 'number') {

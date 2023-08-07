@@ -18,7 +18,7 @@ watch(() => route.fullPath, () => {
     enter-active-class="animated animated-duration-300 animate-fade-in"
     leave-active-class="animated animated-duration-300 animate-fade-out"
   >
-    <div v-if="force" class="fixed inset-0 grayscale bg-gray-50 z-10" @click="force = false"/>
+    <div v-if="force" class="fixed inset-0 z-10" @click="force = false"/>
   </Transition>
   <Transition
     enter-active-class="animated animated-duration-300 animate-slide-in-down"
@@ -26,12 +26,15 @@ watch(() => route.fullPath, () => {
   >
     <div v-show="force" class="z-20 fixed top-0 -right-[1px] -left-[1px] z-60">
       <div class="fixed inset-0" @click="force = false"/>
-      <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border divide-y">
-        <div class="p-4 flex justify-between items-center">
+      <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border border-t-0 divide-y">
+        <div class="p-4 py-2 flex justify-between items-center">
           <div class="flex gap-2 items-end">
             <div class="font-semibold text-xl">Menu</div>
           </div>
-          <div class="i-con-close w-6 h-6 cursor-pointer" @click="force = false"/>
+          <div class="btn hover:shadow rounded" @click="force = false">
+            <div class="i-con-close w-4 h-4 cursor-pointer"/>
+            <span>Close</span>
+          </div>
         </div>
         <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/pages">
           <div class="w-4 h-4 i-con-color"/>
