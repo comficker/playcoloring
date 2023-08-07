@@ -1,7 +1,7 @@
 <template>
   <div class="border-emerald-100 border divide-y divide-emerald-100 rounded-md overflow-hidden">
     <div class="pt-full relative bg-white">
-      <div class="absolute inset-2 group">
+      <div class="absolute inset-4 group">
         <img
           v-if="value.status == 'public' || !value.status"
           :src="src" :alt="value.name"
