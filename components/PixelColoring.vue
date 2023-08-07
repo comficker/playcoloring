@@ -474,7 +474,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     }
   }
   if (saveStep) {
-    step2Result()
+
     saveLate()
   }
 }
@@ -526,6 +526,7 @@ const fillColor = (e: MouseEvent) => {
 }
 
 const reDraw = () => {
+  step2Result()
   const canvas = document.getElementById('workspace') as HTMLCanvasElement
   const ctx = canvas?.getContext('2d', {
     willReadFrequently: true
@@ -710,7 +711,6 @@ const handleOK = () => {
       t: 'merge',
       v: mergingList.value
     })
-    step2Result()
     reDraw()
   }
   mergingList.value = []
@@ -753,13 +753,12 @@ const teleport = (direction: string, value: number) => {
     t: 'teleport',
     v: `${direction}_${value}`
   })
-  step2Result()
   reDraw()
 }
 
 const saveLate = debounce(async () => {
   if (!!workspace.id && (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id)) return
-
+  step2Result()
   let uri = '/coloring/shared-pages/'
   let method: "POST" | "PUT" = 'POST'
   if (workspace.id_string) {
