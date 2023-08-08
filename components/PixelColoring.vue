@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div class="mx-auto max-w-xl z-10 relative hh2 w-full flex-1 mx-auto">
+    <div class="mx-auto px-4 md:px-0 max-w-xl z-10 relative hh2 w-full flex-1 mx-auto">
       <div
         class="relative h-full"
         style="--zoom-size: 1px 1px"
@@ -139,7 +139,7 @@
                   <span>Completed!</span>
                 </div>
               </div>
-              <div class="flex justify-center gap-3">
+              <div class="flex flex-col md:flex-row justify-center gap-3">
                 <nuxt-link
                   class="btn bg-green-500 text-white"
                   to="/?id=random"
@@ -235,7 +235,7 @@
       </div>
     </div>
     <div class="border-y bottom-0 left-0 right-0 duration-200 z-20 relative bg-gray-50" :class="{'sticky': !showModal}">
-      <div class="mx-auto max-w-xl py-4 w-full mx-auto">
+      <div class="mx-auto px-4 md:px-0 max-w-xl py-4 w-full mx-auto">
         <div class="flex gap-2 text-sm flex-nowrap items-center">
           <div
             v-if="isCustomPalette || isMerging"
@@ -422,7 +422,7 @@ const PICTURE_SIZE = computed(() => ({
   h: scaleSize.value.h / dpr.value,
 }))
 const mt = computed(() => (wrapperHeight.value - PICTURE_SIZE.value.h) / 2)
-const isComplete = computed(() => isEqual(workspace.map_numbers, workspace.results))
+const isComplete = computed(() => isEqual(!isEditor && workspace.map_numbers, workspace.results))
 const handleMouseDown = (e: MouseEvent) => {
   isPainting.value = true
   fillColor(e)
