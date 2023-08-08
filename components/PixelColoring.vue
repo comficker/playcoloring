@@ -1,6 +1,6 @@
 <template>
-  <div class="hh1 h-screen flex flex-col relative font-semibold">
-    <div class="border-b -mx-4 px-4">
+  <div class="hh1 h-screen flex flex-col relative font-semibold -mx-4">
+    <div class="border-b px-4">
       <div class="mx-auto max-w-xl py-2 w-full mx-auto flex gap-2 justify-between relative">
         <div class="flex gap-6 items-center">
           <nuxt-link class="flex gap-1" to="/">
@@ -32,7 +32,7 @@
         style="--zoom-size: 1px 1px"
         :style="{'--zoom-size': `${cellScaleSize / dpr}px ${cellScaleSize / dpr}px`,}"
       >
-        <div id="wrapper">
+        <div id="wrapper" :class="{'grayscale': isComplete && !showModal}">
           <div
             id="workload" class="relative"
             :style="{
@@ -40,7 +40,7 @@
               height: `${PICTURE_SIZE.h}px`,
               marginTop: mt > 0 ? `${mt}px`: undefined
             }"
-            :class="{'has-grid': isEditor,}"
+            :class="{'has-grid': isEditor}"
           >
             <canvas
               id="workspace" :width="scaleSize.w" :height="scaleSize.h"
@@ -123,6 +123,47 @@
               </div>
             </div>
           </Transition>
+          <Transition
+            enter-active-class="animated animated-faster animated-fade-in"
+            leave-active-class="animated animated-faster animated-fade-out-down"
+          >
+            <div
+              v-if="isComplete && !showModal"
+              class="absolute inset-0 flex flex-col items-center justify-center space-y-4"
+            >
+              <div class="text-center">
+                <div class="my-6" id="confetti">
+                  <img class="mx-auto w-32 h-32" src="/confetti.gif" alt="">
+                </div>
+                <div class="text-4xl font-extrabold text-white">
+                  <span>Completed!</span>
+                </div>
+              </div>
+              <div class="flex justify-center gap-3">
+                <nuxt-link
+                  class="btn bg-green-500 text-white"
+                  to="/?id=random"
+                >
+                  <div class="i-con-pad w-4 h-4"/>
+                  <span class="uppercase text-xs font-bold">Next Game</span>
+                </nuxt-link>
+                <div
+                  class="btn bg-green-500 text-white"
+                  @click="toggleModal(showModal === 'saving' ? null : 'saving')"
+                >
+                  <div class="i-con-share w-4 h-4"/>
+                  <span class="uppercase text-xs font-bold">Share</span>
+                </div>
+                <div
+                  class="btn bg-white"
+                  @click="replay"
+                >
+                  <div class="i-con-refresh w-4 h-4"/>
+                  <span class="uppercase text-xs font-bold">Replay</span>
+                </div>
+              </div>
+            </div>
+          </Transition>
         </client-only>
         <div v-if="isMoving" class="absolute inset-0 z-50">
           <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
@@ -193,86 +234,85 @@
         </div>
       </div>
     </div>
-    <div
-      class="mx-auto max-w-xl py-2 w-full mx-auto z-20 relative bottom-0 left-0 right-0 bg-white duration-200"
-      :class="{'sticky': !showModal}"
-    >
-      <div class="flex gap-2 text-sm flex-nowrap items-center">
-        <div
-          v-if="isCustomPalette || isMerging"
-          class="btn hover:border-gray-2"
-          @click="handleCancel"
-        >
-          <div class="w-4 h-4 i-con-rollback"/>
-        </div>
-        <div
-          v-if="isCustomPalette || isMerging"
-          class="btn hover:border-gray-2"
-          @click="handleOK"
-        >
-          <div class="w-4 h-4 i-con-ok"/>
-          <span>OK</span>
-        </div>
-        <div
-          v-if="isEditor && !isMerging && !isCustomPalette"
-          class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
-          @click="switchOpenPalette"
-        >
-          <div class="w-4 h-4 i-con-adjust"/>
-        </div>
-        <div
-          v-if="isEditor && !isMerging && !isCustomPalette"
-          class="btn hover:border-gray-200"
-          @click="isMerging = true"
-        >
-          <div class="w-4 h-4 i-con-combine"/>
-        </div>
-        <div
-          v-if="isCustomPalette && false"
-          class="btn hover:border-gray-2"
-        >
-          <div class="w-4 h-4 i-con-down"/>
-          <span>Palette</span>
-        </div>
-        <div
-          v-if="!isCustomPalette && !isMerging"
-          class="btn hover:border-gray-2"
-          :class="{'border-blue': !options.color}"
-          @click="options.color = null"
-        >
-          <div class="w-4 h-4 i-con-eraser"/>
-        </div>
-        <div class="flex-1 overflow-auto no-scrollbar">
-          <div class="flex flex-nowrap gap-2 w-full">
-            <template v-for="(c, i) in workspace.colors">
-              <div
-                v-if="isCustomPalette" :key="i"
-                class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-9 h-9">
-                <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
-              </div>
-              <div
-                v-else
-                :key="c"
-                class="flex-none cursor-pointer border p-2.5 rounded-[2px] box-border"
-                :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
-                :style="{backgroundColor: c}"
-                @click="onClickColor(i)"
-              >
-                <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
-                  <div>{{ i }}</div>
-                </div>
-              </div>
-            </template>
+    <div class="border-y bottom-0 left-0 right-0 duration-200 z-20 relative bg-gray-50" :class="{'sticky': !showModal}">
+      <div class="mx-auto max-w-xl py-4 w-full mx-auto">
+        <div class="flex gap-2 text-sm flex-nowrap items-center">
+          <div
+            v-if="isCustomPalette || isMerging"
+            class="btn hover:border-gray-2"
+            @click="handleCancel"
+          >
+            <div class="w-4 h-4 i-con-rollback"/>
           </div>
+          <div
+            v-if="isCustomPalette || isMerging"
+            class="btn hover:border-gray-2"
+            @click="handleOK"
+          >
+            <div class="w-4 h-4 i-con-ok"/>
+            <span>OK</span>
+          </div>
+          <div
+            v-if="isEditor && !isMerging && !isCustomPalette"
+            class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
+            @click="switchOpenPalette"
+          >
+            <div class="w-4 h-4 i-con-adjust"/>
+          </div>
+          <div
+            v-if="isEditor && !isMerging && !isCustomPalette"
+            class="btn hover:border-gray-200"
+            @click="isMerging = true"
+          >
+            <div class="w-4 h-4 i-con-combine"/>
+          </div>
+          <div
+            v-if="isCustomPalette && false"
+            class="btn hover:border-gray-2"
+          >
+            <div class="w-4 h-4 i-con-down"/>
+            <span>Palette</span>
+          </div>
+          <div
+            v-if="!isCustomPalette && !isMerging"
+            class="btn hover:border-gray-2"
+            :class="{'border-blue': !options.color}"
+            @click="options.color = null"
+          >
+            <div class="w-4 h-4 i-con-eraser"/>
+          </div>
+          <div class="flex-1 overflow-auto no-scrollbar">
+            <div class="flex flex-nowrap gap-2 w-full">
+              <template v-for="(c, i) in workspace.colors">
+                <div
+                  v-if="isCustomPalette" :key="i"
+                  class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-9 h-9">
+                  <input type="color" class="w-full h-full" v-model="workspace.colors[i]">
+                </div>
+                <div
+                  v-else
+                  :key="c"
+                  class="flex-none cursor-pointer border p-2.5 rounded-[2px] box-border"
+                  :class="{'border-blue': checkColor(i), 'border-transparent': !checkColor(i)}"
+                  :style="{backgroundColor: c}"
+                  @click="onClickColor(i)"
+                >
+                  <div class="w-4 h-4" :class="{'text-white': !c.startsWith('#f')}">
+                    <div>{{ i }}</div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div
+            v-if="!isCustomPalette && !isMerging && isEditor"
+            class="btn border-gray-100 hover:border-gray-200"
+            @click="addColor"
+          >
+            <div class="w-4 h-4 i-con-plus"/>
+          </div>
+          <div v-if="isMerging && mergingList.length < 2" class="hidden md:block font-light">The first choose is main color!</div>
         </div>
-        <div
-          v-if="!isCustomPalette && !isMerging && isEditor"
-          class="btn border-gray-100 hover:border-gray-200"
-          @click="addColor"
-        >
-          <div class="w-4 h-4 i-con-plus"/>
-        </div>
-        <div v-if="isMerging && mergingList.length < 2" class="font-light">The first choose is main color!</div>
       </div>
     </div>
   </div>
@@ -304,7 +344,7 @@ function gcd(a: number, b: number) {
 }
 
 const { $touch } = useNuxtApp()
-const {debounce, cloneDeep} = pkg
+const {debounce, cloneDeep, isEqual} = pkg
 const route = useRoute()
 interface Options {
   color: string | null,
@@ -382,6 +422,7 @@ const PICTURE_SIZE = computed(() => ({
   h: scaleSize.value.h / dpr.value,
 }))
 const mt = computed(() => (wrapperHeight.value - PICTURE_SIZE.value.h) / 2)
+const isComplete = computed(() => isEqual(workspace.map_numbers, workspace.results))
 const handleMouseDown = (e: MouseEvent) => {
   isPainting.value = true
   fillColor(e)
@@ -535,8 +576,8 @@ const reDraw = () => {
   if (!ctx) return;
   ctx.clearRect(
     0, 0,
-    PICTURE_SIZE.value.w,
-    PICTURE_SIZE.value.h
+    scaleSize.value.w,
+    scaleSize.value.h
   )
   ctx.font = `${Math.round(cellScaleSize.value / 4)}px ${FONT}`
   ctx.textBaseline = 'middle'
@@ -561,6 +602,17 @@ const reDraw = () => {
       cellScaleSize.value
     );
   })
+}
+
+const replay = () => {
+  workspace.steps = [{
+    t: 'init_colors',
+    v: workspace.colors
+  }, {
+    t: 'init_results',
+    v: {}
+  }]
+  reDraw()
 }
 
 const loadFile = () => {
