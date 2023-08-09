@@ -148,7 +148,7 @@ watch(form, () => {
             </ShareNetwork>
           </client-only>
         </div>
-        <div class="relative">
+        <div class="relative overflow-auto no-scrollbar">
           <blockquote class="p-4 py-2 border rounded shadow-inner">{{ meta.url }}</blockquote>
           <div class="absolute right-0 top-0 bottom-0 cursor-pointer p-4" @click="copy">
             <div class="i-con-copy w-4 h-4"></div>
