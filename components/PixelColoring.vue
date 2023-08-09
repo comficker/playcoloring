@@ -64,6 +64,24 @@
               @mousemove="handleMouseHover"
               @mouseover="handleMouseUp"
             ></div>
+            <div v-if="isMoving" class="absolute inset-0 z-10">
+              <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
+                <div class="btn bg-white border-gray-200" @click="teleport('h', -1)">
+                  <div class="w-4 h-4 i-con-arrow-left"/>
+                </div>
+                <div class="btn bg-white border-gray-200" @click="teleport('h', 1)">
+                  <div class="w-4 h-4 i-con-arrow-right"/>
+                </div>
+              </div>
+              <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
+                <div class="btn bg-white border-gray-200" @click="teleport('v', -1)">
+                  <div class="w-4 h-4 i-con-arrow-up"/>
+                </div>
+                <div class="btn bg-white border-gray-200" @click="teleport('v', 1)">
+                  <div class="w-4 h-4 i-con-arrow-down"/>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <client-only>
@@ -129,14 +147,14 @@
           >
             <div
               v-if="isComplete && !showModal"
-              class="absolute inset-0 flex flex-col items-center justify-center space-y-4"
+              class="absolute inset-0 flex flex-col items-center justify-center space-y-16"
             >
               <div class="text-center">
                 <div class="my-6" id="confetti">
                   <img class="mx-auto w-32 h-32" src="/confetti.gif" alt="">
                 </div>
                 <div class="text-4xl font-extrabold text-white">
-                  <span>Completed!</span>
+                  <span class="block bg-yellow-500 p-2 px-4">Completed!</span>
                 </div>
               </div>
               <div class="flex flex-col md:flex-row justify-center gap-3">
@@ -155,7 +173,7 @@
                   <span class="uppercase text-xs font-bold">Share</span>
                 </div>
                 <div
-                  class="btn bg-white"
+                  class="btn bg-gray-200"
                   @click="replay"
                 >
                   <div class="i-con-refresh w-4 h-4"/>
@@ -165,25 +183,7 @@
             </div>
           </Transition>
         </client-only>
-        <div v-if="isMoving" class="absolute inset-0 z-50">
-          <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
-            <div class="btn bg-white border-gray-200" @click="teleport('h', -1)">
-              <div class="w-4 h-4 i-con-arrow-left"/>
-            </div>
-            <div class="btn bg-white border-gray-200" @click="teleport('h', 1)">
-              <div class="w-4 h-4 i-con-arrow-right"/>
-            </div>
-          </div>
-          <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
-            <div class="btn bg-white border-gray-200" @click="teleport('v', -1)">
-              <div class="w-4 h-4 i-con-arrow-up"/>
-            </div>
-            <div class="btn bg-white border-gray-200" @click="teleport('v', 1)">
-              <div class="w-4 h-4 i-con-arrow-down"/>
-            </div>
-          </div>
-        </div>
-        <div class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-10 text-sm">
+        <div class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-20 text-sm">
           <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
             <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
               <div class="i-con-plus w-3 h-3"/>
@@ -221,7 +221,8 @@
             >
               <div class="i-con-ruler w-4 h-4"/>
             </div>
-            <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}" @click="isDouble = !isDouble">
+            <div class="btn hover:shadow rounded" :class="{'border border-blue': isDouble}"
+                 @click="isDouble = !isDouble">
               <div class="i-con-compare w-4 h-4"/>
             </div>
             <div class="btn hover:shadow rounded" @click="handleZoom(true)">
@@ -229,6 +230,9 @@
             </div>
             <div class="btn hover:shadow rounded" @click="handleZoom(false)">
               <div class="i-con-zoom-out w-4 h-4"/>
+            </div>
+            <div class="btn hover:shadow rounded" @click="replay">
+              <div class="i-con-refresh w-4 h-4"/>
             </div>
           </div>
         </div>
@@ -311,7 +315,9 @@
           >
             <div class="w-4 h-4 i-con-plus"/>
           </div>
-          <div v-if="isMerging && mergingList.length < 2" class="hidden md:block font-light">The first choose is main color!</div>
+          <div v-if="isMerging && mergingList.length < 2" class="hidden md:block font-light">The first choose is main
+            color!
+          </div>
         </div>
       </div>
     </div>
@@ -343,9 +349,10 @@ function gcd(a: number, b: number) {
   return a;
 }
 
-const { $touch } = useNuxtApp()
+const {$touch} = useNuxtApp()
 const {debounce, cloneDeep, isEqual} = pkg
 const route = useRoute()
+
 interface Options {
   color: string | null,
   pointer: string,
@@ -624,15 +631,16 @@ const loadFile = () => {
   })
   if (fileElm && ctx) {
     const img = new Image;
-    canvas.width = PICTURE_SIZE.value.w
-    canvas.height = PICTURE_SIZE.value.h
+    canvas.width = scaleSize.value.w
+    canvas.height = scaleSize.value.h
     img.onload = function () {
       Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
       ctx.imageSmoothingEnabled = false;
       const greater = gcd(img.width, img.height)
-      let width = img.width / greater, height = img.height / greater
-      if (img.width === img.height) {
-        width = height = 64
+      let width = img.width, height = img.height
+      if (img.width !== img.height) {
+        width = img.width / greater
+        height = img.height / greater
       }
       if (width > 128 || height > 128) {
         loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
@@ -789,7 +797,7 @@ const switchOpenPalette = () => {
 const step2Result = () => {
   console.log("step2Result");
   const out = convertSteps(workspace)
-  workspace.results = out.results as {[key: string]: number}
+  workspace.results = out.results as { [key: string]: number }
   workspace.colors = out.colors
   options.value.color = out.color
 }
