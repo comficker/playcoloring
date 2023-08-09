@@ -1,9 +1,34 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {SaveForm, SharedPage} from "~/interface";
+import {useRuntimeConfig} from "#app";
 
 const {workspace} = defineProps<{ workspace: SharedPage }>()
 const emits = defineEmits(['hide', 'change'])
+const config = useRuntimeConfig()
+const networks = ["facebook", "twitter", "telegram", "pinterest"]
+const cursor = ref<string | null>(null)
+
+const meta = computed(() => {
+  const defaultDesc = ''
+  const url = `https://www.playcoloring.com/post/${workspace.id_string}`
+  let src = `${config.public.apiBase}/coloring/files/${workspace.id_string}.png`
+  if (workspace) {
+    return {
+      url: url,
+      title: `${workspace.name || workspace.id_string}`,
+      desc: workspace.desc || defaultDesc,
+      imgSrc: src
+    }
+  } else {
+    return {
+      url: url,
+      title: 'Untitled',
+      desc: defaultDesc,
+      imgSrc: '/screenshot/default.png'
+    }
+  }
+})
 
 function slugify(text: string) {
   return text
@@ -15,6 +40,11 @@ function slugify(text: string) {
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '')
     .replace(/--+/g, '-')
+}
+
+
+function copy() {
+
 }
 
 const form = ref<SaveForm>({
@@ -77,18 +107,57 @@ watch(form, () => {
       </div>
     </div>
     <div class="p-2">
-      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
-        <span>Privacy</span>
-        <div class="w-4 h-4 i-con-right"/>
+      <template v-if="!cursor">
+        <div class="menu-item justify-between" @click="cursor = 'privacy'">
+          <span>Privacy</span>
+          <div class="w-4 h-4 i-con-arrow-right"/>
+        </div>
+        <div class="menu-item justify-between" @click="cursor = 'share'">
+          <span>Share on social</span>
+          <div class="w-4 h-4 i-con-arrow-right"/>
+        </div>
+        <div class="menu-item justify-between" @click="cursor = 'download'">
+          <span>Download</span>
+          <div class="w-4 h-4 i-con-arrow-right"/>
+        </div>
+      </template>
+      <div v-else class="menu-item" @click="cursor = null">
+        <div class="w-4 h-4 i-con-arrow-left"/>
+        <span class="capitalize">{{ cursor }}</span>
       </div>
-      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
-        <span>Share on social</span>
-        <div class="w-4 h-4 i-con-right"/>
-      </div>
-      <div class="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50 duration-200 rounded">
-        <span>Download</span>
-        <div class="w-4 h-4 i-con-right"/>
-      </div>
+      <template v-if="cursor === 'privacy'">
+        <div></div>
+      </template>
+      <template v-if="cursor === 'share'">
+        <div class="grid grid-cols-4 gap-4 capitalize">
+          <client-only>
+            <ShareNetwork
+              v-for="item in networks"
+              :key="item"
+              :network="item"
+              :url="meta.url"
+              :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
+              :description="meta.desc"
+              :quote="meta.desc"
+              :hashtags="workspace.taxonomies.map(x => x.title).join(',')"
+              :media="meta.imgSrc"
+              class="p-6 hover:bg-gray-50 space-y-4 rounded"
+            >
+              <div class="w-8 h-8 mx-auto" :class="`i-con-${item}`"/>
+              <div>{{ item }}</div>
+            </ShareNetwork>
+          </client-only>
+        </div>
+        <div class="relative">
+          <blockquote class="p-4 py-2 border rounded shadow-inner">{{ meta.url }}</blockquote>
+          <div class="absolute right-0 top-0 bottom-0 cursor-pointer p-4" @click="copy">
+            <div class="i-con-copy w-4 h-4"></div>
+          </div>
+        </div>
+      </template>
+      <template v-if="cursor === 'download'">
+        <div></div>
+      </template>
     </div>
   </div>
 </template>

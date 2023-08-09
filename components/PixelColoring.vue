@@ -48,6 +48,7 @@
               class="absolute inset-0"
             />
             <div
+              v-show="!isComplete"
               id="cursor" class="absolute"
               :style="{
                 backgroundColor: options.color || '#FFF',
