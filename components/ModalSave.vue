@@ -141,16 +141,16 @@ watch(form, () => {
               :quote="meta.desc"
               :hashtags="workspace.taxonomies.map(x => x.title).join(',')"
               :media="meta.imgSrc"
-              class="p-6 hover:bg-gray-50 space-y-4 rounded"
+              class="p-4 hover:bg-gray-50 space-y-4 rounded text-center"
             >
               <div class="w-8 h-8 mx-auto" :class="`i-con-${item}`"/>
               <div>{{ item }}</div>
             </ShareNetwork>
           </client-only>
         </div>
-        <div class="relative overflow-auto no-scrollbar">
+        <div class="relative overflow-auto no-scrollbar mt-4">
           <blockquote class="p-4 py-2 border rounded shadow-inner">{{ meta.url }}</blockquote>
-          <div class="absolute right-0 top-0 bottom-0 cursor-pointer p-4" @click="copy">
+          <div class="absolute right-2 top-2 bottom-2 rounded cursor-pointer p-2 bg-white" @click="copy">
             <div class="i-con-copy w-4 h-4"></div>
           </div>
         </div>
