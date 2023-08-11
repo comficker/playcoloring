@@ -108,6 +108,7 @@ export interface SaveForm {
   tags: string[]
   name: string
   desc: string
+  status: string
 }
 
 export interface IBreadcrumb {

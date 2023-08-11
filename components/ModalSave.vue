@@ -8,7 +8,16 @@ const emits = defineEmits(['hide', 'change'])
 const config = useRuntimeConfig()
 const networks = ["facebook", "twitter", "telegram", "pinterest"]
 const cursor = ref<string | null>(null)
-
+const privacy = [
+  {
+    id: 'draft',
+    title: "Only Me"
+  },
+  {
+    id: 'public',
+    title: "Public on web"
+  }
+]
 const meta = computed(() => {
   const defaultDesc = ''
   const url = `https://www.playcoloring.com/post/${workspace.id_string}`
@@ -51,7 +60,8 @@ const form = ref<SaveForm>({
   is_template: workspace.is_template,
   tags: workspace.tags || [],
   name: workspace.name || `Untitled #${workspace.id}`,
-  desc: workspace.desc
+  desc: workspace.desc,
+  status: 'draft'
 })
 
 const onAddTag = (e: KeyboardEvent) => {
@@ -123,10 +133,33 @@ watch(form, () => {
       </template>
       <div v-else class="menu-item" @click="cursor = null">
         <div class="w-4 h-4 i-con-arrow-left"/>
-        <span class="capitalize">{{ cursor }}</span>
+        <span class="capitalize">Back</span>
       </div>
       <template v-if="cursor === 'privacy'">
-        <div></div>
+        <div class="p-2 font-bold flex gap-2 items-center">
+          <div class="w-4 h-4 i-con-eye"/>
+          <span>View</span>
+        </div>
+        <div
+          v-for="item in privacy"
+          class="p-2 flex hover:bg-gray-50 flex items-center gap-2"
+        >
+          <input
+            v-model="form.status"
+            :id="item.id" type="radio" :value="item.id"
+            class="duration-200 w-4 h-4 bg-gray-100 border-gray-300"
+          >
+          <label :for="item.id" class="flex-1 font-light text-gray-900">{{ item.title }}</label>
+        </div>
+        <div class="p-2 font-bold flex gap-2 items-center">
+          <div class="w-4 h-4 i-con-download"/>
+          <span>Download</span>
+        </div>
+        <div class="p-2 font-bold flex gap-2 items-center">
+          <div class="w-4 h-4 i-con-license"/>
+          <span>License</span>
+        </div>
+        <input class="p-2 border shadow-inner w-full rounded" type="text" placeholder="Free to use">
       </template>
       <template v-if="cursor === 'share'">
         <div class="grid grid-cols-4 gap-4 capitalize">

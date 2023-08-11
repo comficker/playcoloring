@@ -32,7 +32,7 @@
         style="--zoom-size: 1px 1px"
         :style="{'--zoom-size': `${cellScaleSize / dpr}px ${cellScaleSize / dpr}px`,}"
       >
-        <div id="wrapper" :class="{'grayscale': isComplete && !showModal}">
+        <div id="wrapper">
           <div
             id="workload" class="relative"
             :style="{
@@ -148,17 +148,14 @@
           >
             <div
               v-if="isComplete && !showModal"
-              class="absolute inset-0 flex flex-col items-center justify-center space-y-16"
+              class="absolute inset-0 flex flex-col items-center justify-center"
             >
               <div class="text-center">
-                <div class="my-6" id="confetti">
-                  <img class="mx-auto w-32 h-32" src="/confetti.gif" alt="">
-                </div>
-                <div class="text-4xl font-extrabold text-white">
+                <div class="text-4xl font-extrabold text-white opacity-75">
                   <span class="block bg-yellow-500 p-2 px-4">Completed!</span>
                 </div>
               </div>
-              <div class="flex flex-col md:flex-row justify-center gap-3">
+              <div class="flex flex-col md:flex-row justify-center gap-3 absolute bottom-4 left-0 right-0">
                 <nuxt-link
                   class="btn bg-green-500 text-white"
                   to="/?id=random"
@@ -184,7 +181,7 @@
             </div>
           </Transition>
         </client-only>
-        <div class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-20 text-sm">
+        <div v-if="!isComplete" class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-20 text-sm">
           <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
             <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
               <div class="i-con-plus w-3 h-3"/>
@@ -239,7 +236,10 @@
         </div>
       </div>
     </div>
-    <div class="border-y bottom-0 left-0 right-0 duration-200 z-20 relative bg-gray-50" :class="{'sticky': !showModal}">
+    <div
+      v-if="!isComplete"
+      class="border-y bottom-0 left-0 right-0 duration-200 z-20 relative bg-gray-50"
+      :class="{'sticky': !showModal}">
       <div class="mx-auto px-4 md:px-0 max-w-xl py-4 w-full mx-auto">
         <div class="flex gap-2 text-sm flex-nowrap items-center">
           <div
