@@ -10,11 +10,6 @@
           <main-navigator/>
         </div>
         <div class="flex gap-2 items-center">
-          <div
-            v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
-            @click="toggleModal(!!showModal ? null : 'load')">
-            <span>Load</span>
-          </div>
           <div class="btn hover:shadow rounded" @click="toggleModal(showModal === 'saving' ? null : 'saving')">
             <div class="i-con-save w-4 h-4"/>
             <span class="hidden md:block">Share</span>
@@ -181,12 +176,19 @@
             </div>
           </Transition>
         </client-only>
-        <div v-if="!isComplete"
-             class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-20 text-sm">
+        <div
+          v-if="!isComplete"
+          class="absolute left-4 right-4 top-4 md:top-auto md:bottom-4 flex justify-center z-20 text-sm"
+        >
           <div class="flex gap-2 items-center rounded justify-center p-1 bg-white shadow">
             <div v-if="isEditor" class="btn hover:shadow rounded" @click="reset">
               <div class="i-con-plus w-3 h-3"/>
               <span class="hidden md:block">New</span>
+            </div>
+            <div
+              v-if="isEditor" class="hidden md:flex btn hover:shadow rounded p-2.5 px-5"
+              @click="toggleModal(!!showModal ? null : 'load')">
+              <span>Load</span>
             </div>
             <div v-else class="relative">
               <random-button/>
