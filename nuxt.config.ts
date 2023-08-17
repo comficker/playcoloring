@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
     'nuxt-lazy-load',
+    '@nuxtjs/partytown'
   ],
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
