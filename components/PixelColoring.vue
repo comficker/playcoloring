@@ -261,14 +261,14 @@
             <span>OK</span>
           </div>
           <div
-            v-if="isEditor && !isMerging && !isCustomPalette"
+            v-if="isCustomColor"
             class="btn hover:border-gray-2" :class="{'border-blue': isCustomPalette}"
             @click="switchOpenPalette"
           >
             <div class="w-4 h-4 i-con-adjust"/>
           </div>
           <div
-            v-if="isEditor && !isMerging && !isCustomPalette"
+            v-if="isCustomColor"
             class="btn hover:border-gray-200"
             @click="isMerging = true"
           >
@@ -280,14 +280,6 @@
           >
             <div class="w-4 h-4 i-con-down"/>
             <span>Palette</span>
-          </div>
-          <div
-            v-if="!isCustomPalette && !isMerging"
-            class="btn hover:border-gray-2"
-            :class="{'border-blue': !options.color}"
-            @click="options.color = null"
-          >
-            <div class="w-4 h-4 i-con-eraser"/>
           </div>
           <div class="flex-1 overflow-auto no-scrollbar">
             <div class="flex flex-nowrap gap-2 w-full">
@@ -313,7 +305,15 @@
             </div>
           </div>
           <div
-            v-if="!isCustomPalette && !isMerging && isEditor"
+            v-if="!isCustomPalette && !isMerging"
+            class="btn hover:border-gray-2"
+            :class="{'border-blue': !options.color}"
+            @click="options.color = null"
+          >
+            <div class="w-4 h-4 i-con-eraser"/>
+          </div>
+          <div
+            v-if="isCustomColor"
             class="btn border-gray-100 hover:border-gray-200"
             @click="addColor"
           >
@@ -437,6 +437,7 @@ const isComplete = computed(() =>
   Object.keys(workspace.map_numbers).length &&
   isEqual(!isEditor && workspace.map_numbers, workspace.results)
 )
+const isCustomColor = computed(() => !isCustomPalette.value && !isMerging.value && isEditor)
 const handleMouseDown = (e: MouseEvent) => {
   isPainting.value = true
   fillColor(e)
@@ -770,8 +771,6 @@ const checkColor = (i: number) => {
 
 const handleOK = () => {
   if (isCustomPalette.value) {
-    options.value.color = workspace.colors[0] || null
-    isCustomPalette.value = false
     reDraw()
   }
   if (isMerging.value && mergingList.value.length > 1) {
@@ -780,6 +779,7 @@ const handleOK = () => {
       v: mergingList.value
     })
     reDraw()
+    saveLate()
   }
   mergingList.value = []
   isMerging.value = false
