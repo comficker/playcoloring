@@ -3,6 +3,7 @@ const route = useRoute()
 const showHead = computed(() => {
   return !['index', 'editor'].includes(route.name?.toString() || 'index')
 })
+const { $pwa } = useNuxtApp()
 </script>
 
 <template>
@@ -11,6 +12,6 @@ const showHead = computed(() => {
     <div class="flex-1 ">
       <slot class="w-full"/>
     </div>
-    <Footer/>
+    <Footer v-if="!$pwa || !$pwa.isInstalled"/>
   </main>
 </template>
