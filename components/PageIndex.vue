@@ -63,7 +63,7 @@ const faqs = ref([
         </nuxt-link>
       </div>
     </div>
-    <div class="max-w-xl mx-auto">
+    <div v-if="!$pwa || !$pwa.isInstalled" class="max-w-xl mx-auto">
       <div class="space-y-4">
         <h2 class="text-5xl font-bold">FAQ</h2>
         <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
