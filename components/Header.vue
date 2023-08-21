@@ -5,7 +5,7 @@ import MainNavigator from "~/components/MainNavigator.vue";
 const userStore = useUserStore()
 </script>
 <template>
-  <header class="md:border-b sticky top-0 z-20 bg-white -mx-4 px-4">
+  <header class="sticky top-0 z-20 bg-white -mx-4 px-4">
     <div class="mx-auto max-w-xl w-full py-2 font-semibold relative">
       <div class="flex justify-between items-center">
         <div class="flex gap-6 items-center">

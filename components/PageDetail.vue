@@ -21,15 +21,15 @@
       <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
       <p>{{ meta.desc }}</p>
     </div>
-    <div class="flex flex-col md:flex-row gap-4 justify-between">
-      <div class="flex-1 flex gap-2 font-medium">
+    <div class="flex flex-row gap-4 justify-between">
+      <div class="md:flex-1 flex gap-2 font-medium">
         <div class="btn hover:shadow rounded border-gray-200" @click="print">
           <div class="w-4 h-4 i-con-print"/>
-          <span>Print</span>
+          <span class="hidden md:block">Print</span>
         </div>
         <a class="btn hover:shadow rounded border-gray-200" :href="meta.imgSrc" download target="_blank">
           <div class="w-4 h-4 i-con-download"/>
-          <span>Download</span>
+          <span class="hidden md:block">Download</span>
         </a>
         <nuxt-link
           v-if="value.is_template || isOwner"
