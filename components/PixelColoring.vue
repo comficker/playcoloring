@@ -241,7 +241,7 @@
     </div>
     <div
       v-if="!isComplete"
-      class="border-y bottom-0 left-0 right-0 duration-200 z-10 relative bg-gray-50"
+      class="palette border-y bottom-0 left-0 right-0 duration-200 z-10 relative bg-gray-50"
       :class="{'sticky': !showModal}">
       <div class="mx-auto px-4 md:px-0 max-w-xl py-4 w-full mx-auto">
         <div class="flex gap-2 text-sm flex-nowrap items-center">
@@ -954,5 +954,10 @@ span.particle {
   left: 0;
   pointer-events: none;
   opacity: 0;
+}
+
+.palette .p-2\.5,
+.palette .btn {
+  @apply p-4 md:p-3;
 }
 </style>
