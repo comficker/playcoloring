@@ -6,6 +6,8 @@ const router = useRouter()
 const config = useRuntimeConfig()
 const title = "Play Coloring - Online Coloring by Number - Pixel Editor"
 const desc = 'Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.'
+const { $pwa } = useNuxtApp()
+
 useSeoMeta({
   title: title,
   description: desc,
@@ -40,7 +42,7 @@ const faqs = ref([
 <template>
   <div class="space-y-6">
     <PixelColoring :is-editor="false"/>
-    <div class="max-w-xl mx-auto space-y-4">
+    <div v-if="!$pwa || !$pwa.isInstalled" class="max-w-xl mx-auto space-y-4">
       <h1 class="text-5xl font-bold">Play Coloring, Hi!</h1>
       <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
         <a href="/about" target="_blank" class="underline">About us!</a></p>

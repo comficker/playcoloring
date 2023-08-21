@@ -1,6 +1,6 @@
 <template>
   <div class="hh1 h-screen flex flex-col relative font-semibold -mx-4">
-    <div class="border-b px-4">
+    <div class="md:border-b sticky top-0 z-20 bg-white px-4">
       <div class="mx-auto max-w-xl py-2 w-full mx-auto flex gap-2 justify-between relative">
         <div class="flex gap-6 items-center">
           <nuxt-link class="flex gap-1" to="/">
@@ -241,7 +241,7 @@
     </div>
     <div
       v-if="!isComplete"
-      class="border-y bottom-0 left-0 right-0 duration-200 z-20 relative bg-gray-50"
+      class="border-y bottom-0 left-0 right-0 duration-200 z-10 relative bg-gray-50"
       :class="{'sticky': !showModal}">
       <div class="mx-auto px-4 md:px-0 max-w-xl py-4 w-full mx-auto">
         <div class="flex gap-2 text-sm flex-nowrap items-center">
