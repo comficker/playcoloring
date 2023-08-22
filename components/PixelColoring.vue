@@ -29,7 +29,7 @@
       >
         <div id="wrapper">
           <div
-            id="workload" class="relative"
+            id="workload" class="relative cursor-crosshair"
             :style="{
               width: `${PICTURE_SIZE.w}px`,
               height: `${PICTURE_SIZE.h}px`,
@@ -150,13 +150,13 @@
                   <span class="block bg-yellow-500 p-2 px-4">Completed!</span>
                 </div>
               </div>
-              <div class="flex flex-col md:flex-row justify-center gap-3 absolute bottom-4 left-0 right-0">
+              <div class="flex flex-row justify-center gap-3 absolute bottom-4 left-0 right-0">
                 <nuxt-link
                   class="btn bg-green-500 text-white"
                   to="/?id=random"
                 >
                   <div class="i-con-pad w-4 h-4"/>
-                  <span class="uppercase text-xs font-bold">Next Game</span>
+                  <span class="uppercase text-xs font-bold">Continue</span>
                 </nuxt-link>
                 <div
                   class="btn bg-green-500 text-white"
@@ -243,7 +243,7 @@
       v-if="!isComplete"
       class="palette border-y bottom-0 left-0 right-0 duration-200 z-10 relative bg-gray-50"
       :class="{'sticky': !showModal}">
-      <div class="mx-auto px-4 md:px-0 max-w-xl py-4 w-full mx-auto">
+      <div class="mx-auto px-4 md:px-0 max-w-xl py-3 w-full mx-auto">
         <div class="flex gap-2 text-sm flex-nowrap items-center">
           <div
             v-if="isCustomPalette || isMerging"
