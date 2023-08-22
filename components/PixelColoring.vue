@@ -397,7 +397,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
   results: {},
   status: 'draft'
 }
-const FONT = "'I pixel u', Inter, Arial, sans-serif"
+let FONT = "'I pixel u', Inter, Arial, sans-serif"
 
 const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
 
@@ -882,6 +882,7 @@ onMounted(() => {
   if (wrapper && wrapper.offsetWidth < 576) {
     displaySize.value = wrapperSize.value - 2 // for border
     options.value.zoom = Math.log(displaySize.value / workspace.width) / Math.log(2);
+    FONT = "Inter, Arial, sans-serif"
   }
 
   const route = useRoute()
