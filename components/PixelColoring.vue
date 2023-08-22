@@ -594,7 +594,7 @@ const reDraw = () => {
     scaleSize.value.w,
     scaleSize.value.h
   )
-  ctx.font = `${Math.round(cellScaleSize.value / 4)}px ${FONT}`
+  ctx.font = `bold ${Math.round(cellScaleSize.value / 4)}px ${FONT}`
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#957777'
