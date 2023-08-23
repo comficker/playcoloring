@@ -96,7 +96,7 @@
               class="z-20 fixed top-[55px] -right-[1px] -left-[1px] z-60"
             >
               <div class="absolute inset-0" @click="showModal = null"></div>
-              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border border-t-0">
+              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border md:border-t-0">
                 <div v-if="showModal === 'load'" class="p-4 py-3 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>

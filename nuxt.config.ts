@@ -18,8 +18,6 @@ export default defineNuxtConfig({
     '@nuxtjs/partytown'
   ],
   experimental: {
-    // when using generate, payload js assets included in sw precache manifest
-    // but missing on offline, disabling extraction it until fixed
     payloadExtraction: false,
     inlineSSRStyles: false,
     renderJsonPayloads: true,
@@ -79,18 +77,12 @@ export default defineNuxtConfig({
     transpile: ['tslib'],
   },
   lazyLoad: {
-    // These are the default values
     images: true,
     videos: true,
     audios: true,
     iframes: true,
     native: false,
     directiveOnly: false,
-
-    // Default image must be in the public folder
     defaultImage: '/images/default-image.svg',
-
-    // To remove class set value to false
-    loadingClass: 'animate-pulse'
   }
 })
