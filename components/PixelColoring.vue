@@ -93,7 +93,7 @@
           >
             <div
               v-if="!!showModal"
-              class="z-20 fixed top-0 -right-[1px] -left-[1px] z-60"
+              class="z-20 fixed top-[55px] -right-[1px] -left-[1px] z-60"
             >
               <div class="absolute inset-0" @click="showModal = null"></div>
               <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border border-t-0">
