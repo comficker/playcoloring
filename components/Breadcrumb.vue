@@ -3,10 +3,11 @@ import {useUserStore} from "~/stores/user";
 
 const userStore = useUserStore()
 const crumbs = computed(() => userStore.breadcrumbs)
+
 </script>
 
 <template>
-  <div class="py-2 mb-4 border-y -mx-4 bg-gray-100 overflow-auto no-scrollbar relative z-10">
+  <div v-if="crumbs.length" class="py-2 mb-4 border-y -mx-4 bg-gray-100 overflow-auto no-scrollbar relative z-10">
     <div class="mx-auto max-w-xl flex flex-nowrap gap-1 font-semibold items-center">
       <nuxt-link class="z-10 bg-gray-100 sticky left-0 flex-none flex gap-1 items-center px-2 pl-4 md:pl-0 w-fit" to="/">
         <div class="w-4 h-4 i-con-home"/>
@@ -23,7 +24,3 @@ const crumbs = computed(() => userStore.breadcrumbs)
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

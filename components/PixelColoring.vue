@@ -43,15 +43,6 @@
               class="absolute inset-0"
             />
             <div
-              v-show="!isComplete"
-              id="cursor" class="absolute"
-              :style="{
-                backgroundColor: options.color || '#FFF',
-                width: `${Math.ceil(cellScaleSize / dpr)}px`,
-                height: `${Math.ceil(cellScaleSize / dpr)}px`
-              }"
-            />
-            <div
               id="controller"
               class="absolute inset-0"
               :class="{'has-grid': isEditor}"
@@ -96,7 +87,8 @@
               class="z-20 fixed top-[55px] -right-[1px] -left-[1px] z-60"
             >
               <div class="absolute inset-0" @click="showModal = null"></div>
-              <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border md:border-t-0">
+              <div
+                class="relative max-w-xl mx-auto bg-white shadow-xl rounded-bl-lg rounded-br-lg border md:border-t-0">
                 <div v-if="showModal === 'load'" class="p-4 py-3 space-y-3 cursor-pointer">
                   <div class="p-4 bg-blue-100 py-2 text-sm border rounded-[2px]">
                     <p>You can load your pixel art by click to select file!</p>
@@ -126,6 +118,16 @@
                       @click="newSize = s"
                     >
                       <span>{{ s }}px</span>
+                    </div>
+                    <div
+                      class="border w-12 h-12 p-1 hover:border-blue-500 cursor-pointer duration-200"
+                      :class="{'border-blue-500': ![8, 16, 24, 32].includes(newSize)}"
+                    >
+                      <input
+                        v-model="newSize"
+                        class="w-full outline-none"
+                        type="number"
+                      >
                     </div>
                   </div>
                   <div class="flex gap-4">
@@ -448,14 +450,7 @@ const handleMouseUp = () => {
 }
 
 const handleMouseHover = (e: MouseEvent) => {
-  const cs = cellScaleSize.value / dpr.value
-  const cursor: HTMLElement | null = document.getElementById('cursor');
-  if (!isPainting.value) {
-    if (cursor) {
-      cursor.style.left = `${e.offsetX - e.offsetX % (cs)}px`
-      cursor.style.top = `${e.offsetY - e.offsetY % (cs)}px`
-    }
-  } else {
+  if (isPainting.value) {
     fillColor(e)
   }
 }
@@ -495,10 +490,10 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
   x = dpr.value * x
   y = dpr.value * y
   const key = `${Math.round(x / cellScaleSize.value)}_${Math.round(y / cellScaleSize.value)}`
-  if (options.value.pointer === key) {
+  if (options.value.pointer === key + color) {
     return
   }
-  options.value.pointer = key
+  options.value.pointer = key + color
   const colors = workspace.results || {}
   if (color) {
     const index = workspace.colors.indexOf(color)
@@ -518,7 +513,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
       workspace.steps.push({t: 'fill', k: key, c: -1})
     }
 
-    if (workspace.map_numbers.hasOwnProperty(key)) {
+    if (!isEditor && workspace.map_numbers.hasOwnProperty(key)) {
       ctx.font = `${cellScaleSize.value / 4}px ${FONT}`
       ctx.textBaseline = 'middle'
       ctx.textAlign = 'center'
@@ -567,7 +562,6 @@ const fillColor = (e: MouseEvent) => {
         })
         setTimeout(saveLate, start * 100)
       }
-
     } else {
       filCanvas(ctx, x, y, color)
       pop(e.clientX, e.clientY, options.value.color)
@@ -598,14 +592,16 @@ const reDraw = () => {
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#957777'
-  Object.keys(workspace.map_numbers).forEach((index: string) => {
-    const arr = index.split("_").map(x => Number.parseInt(x))
-    ctx.fillText(
-      workspace.map_numbers[index].toString(),
-      cellScaleSize.value * (+arr[0] + 0.5),
-      cellScaleSize.value * (+arr[1] + 0.5)
-    );
-  })
+  if (!isEditor) {
+    Object.keys(workspace.map_numbers).forEach((index: string) => {
+      const arr = index.split("_").map(x => Number.parseInt(x))
+      ctx.fillText(
+        workspace.map_numbers[index].toString(),
+        cellScaleSize.value * (+arr[0] + 0.5),
+        cellScaleSize.value * (+arr[1] + 0.5)
+      );
+    })
+  }
   const colors = workspace.results || {}
   Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))

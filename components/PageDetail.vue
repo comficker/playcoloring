@@ -1,4 +1,5 @@
 <template>
+  <breadcrumb/>
   <div v-if="value" class="max-w-xl mx-auto space-y-4">
     <div class="w-full pt-full relative bg-white">
       <div class="absolute inset-4">
@@ -87,7 +88,7 @@
         <div class="w-8 h-8 i-con-ruler"/>
         <div class="block">
           <div class="text-sm text-gray-500">Length</div>
-          <div class="font-bold">{{Object.keys(value.map_numbers).length}}</div>
+          <div class="font-bold">{{ Object.keys(value.map_numbers).length }}</div>
         </div>
       </div>
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
@@ -96,7 +97,7 @@
           <div class="text-sm text-gray-500">Size</div>
           <div class="flex gap-4">
             <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
-              <div class="font-bold">{{value.width}}x{{value.height}}</div>
+              <div class="font-bold">{{ value.width }}x{{ value.height }}</div>
             </nuxt-link>
           </div>
         </div>
@@ -107,7 +108,8 @@
           <div class="text-sm text-gray-500">Creator</div>
           <nuxt-link
             :to="`/author/${value.user?.username || 'anonymous'}`"
-            class="font-bold hover:underline">{{value.user?.username || 'Anonymous'}}</nuxt-link>
+            class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
+          </nuxt-link>
         </div>
       </div>
       <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
@@ -124,7 +126,8 @@
         <coloring-card v-for="item in variant.results" :value="item" show-author/>
       </div>
       <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 border text-sm">
-        Don't have any variant, <nuxt-link class="underline" :to="`/?id=${value.id_string}`">Play and create one</nuxt-link>
+        Don't have any variant,
+        <nuxt-link class="underline" :to="`/?id=${value.id_string}`">Play and create one</nuxt-link>
       </p>
     </div>
   </div>
@@ -212,15 +215,17 @@ const isOwner = computed(() => {
   return value.user && userStore.isLogged && value.user.id === userStore.logged.id
 })
 
-userStore.setBC([{
-  name: value.is_template ? 'Coloring Pages' : 'Arts',
-  to: value.is_template ? '/pages' : '/arts',
-  icon: value.is_template ? 'i-con-template' : 'i-con-shared',
-},{
-  name: meta.value.title,
-  to: '/post/' + value.id_string,
-  icon: 'i-con-picture',
-}])
+if (process.server) {
+  userStore.setBC([{
+    name: value.is_template ? 'Coloring Pages' : 'Arts',
+    to: value.is_template ? '/pages' : '/arts',
+    icon: value.is_template ? 'i-con-template' : 'i-con-shared',
+  }, {
+    name: meta.value.title,
+    to: '/post/' + value.id_string,
+    icon: 'i-con-picture',
+  }])
+}
 
 const space = computed(() => {
   return value.is_template ? 'pages' : 'arts'
@@ -231,18 +236,18 @@ const print = () => {
 }
 
 useHead({
-  title: meta.value.title +  ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number': 'Pixel Arts'}`,
+  title: meta.value.title + ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number' : 'Pixel Arts'}`,
   meta: [
     {
       name: "description",
       content: meta.value.desc
     },
-    ...value.status !== 'public' ? [{ hid: 'robots', name: 'robots', content: 'noindex' }] : []
+    ...value.status !== 'public' ? [{hid: 'robots', name: 'robots', content: 'noindex'}] : []
   ]
 })
 
 useSeoMeta({
-  title: meta.value.title +  ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number': 'Pixel Arts'}`,
+  title: meta.value.title + ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number' : 'Pixel Arts'}`,
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',

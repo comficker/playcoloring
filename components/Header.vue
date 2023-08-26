@@ -18,7 +18,7 @@ const userStore = useUserStore()
           <main-navigator/>
         </div>
         <div class="flex gap-2 items-center">
-          <nuxt-link v-if="userStore.isLogged" to="/my-space" class="btn hover:shadow rounded">
+          <nuxt-link v-if="userStore.isLogged" :immediate="true" to="/my-space" class="btn hover:shadow rounded">
             <div class="i-con-user w-4 h-4"/>
             <span class="hidden md:block">My space</span>
           </nuxt-link>
@@ -26,5 +26,4 @@ const userStore = useUserStore()
       </div>
     </div>
   </header>
-  <breadcrumb/>
 </template>

@@ -15,7 +15,8 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
     'nuxt-lazy-load',
-    '@nuxtjs/partytown'
+    '@nuxtjs/partytown',
+    'nuxt-delay-hydration',
   ],
   experimental: {
     payloadExtraction: false,
@@ -83,6 +84,6 @@ export default defineNuxtConfig({
     iframes: true,
     native: false,
     directiveOnly: false,
-    defaultImage: '/images/default-image.svg',
-  }
+    defaultImage: '/loading.svg',
+  },
 })
