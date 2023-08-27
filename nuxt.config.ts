@@ -47,8 +47,11 @@ export default defineNuxtConfig({
         // { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'apple-touch-icon', href: '/favicon.png' },
       ],
+      htmlAttrs: {
+        lang: "en",
+      },
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=6.0, minimum-scale=1.0' },
         { name: 'description', content: appDescription },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-touch-fullscreen', content: 'yes' },

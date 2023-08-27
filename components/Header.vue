@@ -10,7 +10,7 @@ const userStore = useUserStore()
       <div class="flex justify-between items-center">
         <div class="flex gap-6 items-center">
           <h1>
-            <nuxt-link class="flex gap-1" to="/">
+            <nuxt-link class="flex gap-1" title="Play Coloring Logo" to="/">
               <div class="i-con-pad fill-red-400 h-6 w-6"/>
               <img class="hidden md:block w-auto h-6" src="/logo.png" alt="Play Coloring">
             </nuxt-link>
@@ -18,7 +18,7 @@ const userStore = useUserStore()
           <main-navigator/>
         </div>
         <div class="flex gap-2 items-center">
-          <nuxt-link v-if="userStore.isLogged" :immediate="true" to="/my-space" class="btn hover:shadow rounded">
+          <nuxt-link v-if="userStore.isLogged" :immediate="true" to="/my-space" title="My space" class="btn hover:shadow rounded">
             <div class="i-con-user w-4 h-4"/>
             <span class="hidden md:block">My space</span>
           </nuxt-link>
