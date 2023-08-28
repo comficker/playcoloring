@@ -75,7 +75,7 @@
     </div>
     <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
       <nuxt-link
-        class="w-6 h-6 border"
+        class="w-10 h-10 border"
         v-for="item in value.colors" :key="item"
         :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
         :style="{background: item}"

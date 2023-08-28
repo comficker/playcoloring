@@ -500,7 +500,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     if (colors[key] === index)
       return;
     ctx.fillStyle = color;
-    ctx.fillRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
+    ctx.fillRect(x, y, cellScaleSize.value, cellScaleSize.value);
     if (saveStep) {
       workspace.steps.push({t: 'fill', k: key, c: index,})
     }
@@ -508,7 +508,7 @@ const filCanvas = (ctx: CanvasRenderingContext2D, x: number, y: number, color: s
     if (typeof colors[key] === 'undefined')
       return;
 
-    ctx.clearRect(x, y, Math.ceil(cellScaleSize.value), Math.ceil(cellScaleSize.value));
+    ctx.clearRect(x, y, cellScaleSize.value, cellScaleSize.value);
     if (saveStep) {
       workspace.steps.push({t: 'fill', k: key, c: -1})
     }
@@ -720,6 +720,7 @@ const loadSharedPage = async (id: string) => {
     workspace.template = workspace.template ? workspace.template : workspace.id
     workspace.id = 0
     workspace.id_string = ''
+    workspace.steps = []
   }
   options.value.zoom = Math.log(displaySize.value / response.width) / Math.log(2);
   options.value.color = response.colors[0]
