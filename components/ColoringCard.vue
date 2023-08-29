@@ -28,15 +28,15 @@
         </div>
       </div>
     </div>
-    <div class="space-y-2 py-2 p-3 bg-gray-50 text-xs">
+    <div class="space-y-2 py-2 p-3 bg-gray-50">
       <div class="flex gap-1 items-center">
         <div class="i-con-picture w-4 h-4"></div>
         <nuxt-link
           :to="to"
-          class="font-semibold hover:underline uppercase whitespace-nowrap truncate">{{ value.name || value.id_string }}
+          class="font-semibold hover:underline whitespace-nowrap truncate">{{ value.name || value.id_string }}
         </nuxt-link>
       </div>
-      <div v-if="showAuthor" class="flex gap-1 items-center">
+      <div v-if="showAuthor" class="flex gap-1 items-center text-sm">
         <div class="i-con-user w-4 h-4"></div>
         <nuxt-link
           :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`"

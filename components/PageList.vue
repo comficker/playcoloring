@@ -5,13 +5,32 @@
     <p class="text-lg">
       {{ meta.desc }}
       <template v-if="route.params.tax_id === 'arts'">
-        using <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
+        using
+        <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
       </template>
     </p>
   </div>
-  <div class="max-w-xl mx-auto my-4">
+  <div class="max-w-xl mx-auto my-4 space-y-6">
     <div class="grid grid-cols-2 gap-2 md:gap-3">
-      <coloring-card v-for="item in variant.results" :value="item" show-author/>
+      <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
+    </div>
+    <div class="flex font-semibold">
+      <nuxt-link v-if="pagination.p" class="btn hover:shadow" :to="pagination.p">
+        <div class="i-con-left w-6 h-6"/>
+        <span>Previous</span>
+      </nuxt-link>
+      <div class="flex-1 flex justify-center gap-3">
+        <div class="btn hover:shadow">
+          <span>Current:</span>
+          <span>{{ page }}</span>
+          <span>/</span>
+          <span>{{ r2.num_pages }}</span>
+        </div>
+      </div>
+      <nuxt-link v-if="pagination.n" class="btn hover:shadow" :to="pagination.n">
+        <span>Next</span>
+        <div class="i-con-right w-6 h-6"/>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -29,12 +48,16 @@ import Breadcrumb from "~/components/Breadcrumb.vue";
 import {useUserStore} from "~/stores/user";
 
 const userStore = useUserStore()
+
 function capitalize(word: string) {
   const lower = word.toLowerCase();
   return word.charAt(0).toUpperCase() + lower.slice(1);
 }
-const config = useRuntimeConfig()
+
 const route = useRoute()
+const config = useRuntimeConfig()
+
+const page = ref(route.query.page ? Number.parseInt(route.query.page.toString()) : 1)
 const params = computed(() => {
   let taxonomies__id_string, width, height, color, user
   const is_template = route.params.tax_id.toString() === 'pages'
@@ -55,7 +78,7 @@ const params = computed(() => {
   }
 
   return {
-    page_size: 12,
+    page_size: 10,
     status: 'public',
     taxonomies__id_string,
     width,
@@ -65,7 +88,14 @@ const params = computed(() => {
     is_template
   }
 })
-const {data: r2} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {params: params.value})
+
+const {data: r2} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
+  params: {
+    ...params.value,
+    page: page
+  },
+  watch: [page]
+})
 
 const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
@@ -110,14 +140,14 @@ const meta = computed(() => {
     defaultDesc = `Free download {name} made by many Pixel Artists`
   }
   if (variant.instance) {
-    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number": " Pixel Art")
+    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number" : " Pixel Art")
     return {
       title: title,
       desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
-    let title = route.params.tax_id === 'arts' ? 'Pixel Art': 'Coloring Pages';
+    let title = route.params.tax_id === 'arts' ? 'Pixel Art' : 'Coloring Pages';
     const id_string = route.params.id_string ? route.params.id_string.toString() : ''
     if (id_string) {
       const arr = id_string.split("-")
@@ -137,10 +167,15 @@ const meta = computed(() => {
 
 const set_title = computed(() => {
   if (route.params.id_string) {
-    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Art': ' - Coloring Pages')
+    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Art' : ' - Coloring Pages')
   }
   return meta.value.title
 })
+
+const pagination = computed(() => ({
+  n: r2.value?.links?.next ? `${route.path}?page=${page.value + 1}` : null,
+  p: r2.value?.links?.previous ? `${route.path}?page=${page.value - 1}` : null
+}))
 
 useHead({
   title: set_title.value,
@@ -158,5 +193,9 @@ useSeoMeta({
   ogTitle: meta.value.title,
   ogImage: meta.value.imgSrc + '?type=social',
   twitterCard: 'summary_large_image',
+})
+
+watch(() => route.query, () => {
+  page.value = route.query.page ? Number.parseInt(route.query.page.toString()) : 1
 })
 </script>
