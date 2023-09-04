@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ResponseSharedPage} from "~/interface";
-import {useAuthFetch} from "~/composables/useAuthFetch";
 import ColoringCard from "~/components/ColoringCard.vue";
 import {useUserStore} from "~/stores/user";
 import {useSeoMeta} from "#app";

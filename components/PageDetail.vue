@@ -4,6 +4,7 @@
     <div class="w-full pt-full relative bg-white">
       <div class="absolute inset-4">
         <img
+          id="mainImg"
           v-if="value.status == 'public' || !value.status"
           :src="meta.imgSrc"
           :alt="meta.title"
@@ -24,11 +25,11 @@
     </div>
     <div class="flex flex-row gap-4 justify-between">
       <div class="md:flex-1 flex gap-2 font-medium">
-        <div class="btn hover:shadow rounded border-gray-200" @click="print">
+        <div class="btn hover:shadow border-gray-200" @click="print">
           <div class="w-4 h-4 i-con-print"/>
           <span class="hidden md:block">Print</span>
         </div>
-        <a class="btn hover:shadow rounded border-gray-200" :href="meta.imgSrc" download target="_blank">
+        <a class="btn hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
           <div class="w-4 h-4 i-con-download"/>
           <span class="hidden md:block">Download</span>
         </a>
@@ -75,7 +76,7 @@
     </div>
     <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
       <nuxt-link
-        class="w-10 h-10 border"
+        class="w-10 h-10"
         v-for="item in value.colors" :key="item"
         :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
         :style="{background: item}"
@@ -232,7 +233,7 @@ const space = computed(() => {
 })
 
 const print = () => {
-
+  window.open(meta.value.imgSrc.replace(".png", ".pdf"), '_blank')
 }
 
 useHead({
