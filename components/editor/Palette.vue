@@ -56,39 +56,37 @@ const preSave = () => {
 <template>
   <div class="flex gap-2 text-sm flex-nowrap md:items-center" :class="{'flex-col md:flex-row': es.isEditor}">
     <!--Palette area-->
-    <div class="flex gap-2 flex-1">
-      <div
-        v-if="es.options.paletteFunc === 'adjust'"
-        class="btn hover:border-gray-2"
-      >
-        <div class="w-4 h-4 i-con-down"/>
-        <span>Palette</span>
-      </div>
-      <div class="flex-1 overflow-auto no-scrollbar">
-        <div class="flex flex-nowrap gap-2 w-full">
-          <template v-if="es.options.paletteFunc === 'adjust'">
-            <div
-              v-for="(_, i) in adjustColors" :key="i"
-              class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-10 h-10">
-              <input type="color" class="w-full h-full" v-model="adjustColors[i]">
-            </div>
-          </template>
-          <template v-else>
-            <div
-              v-for="(c, i) in es.workspace.colors"
-              :key="i"
-              class="flex-none cursor-pointer p-2.5 rounded-[2px] relative"
-              :class="{'text-white': !c.startsWith('#f')}"
-              :style="{backgroundColor: c}"
-              @click="onClickColor(i)"
-            >
-              <div v-if="checkColor(i)" class="absolute right-0.5 top-0.5 i-con-check w-4 h-4"/>
-              <div class="w-4 h-4">
-                <div>{{ i }}</div>
-              </div>
-            </div>
-          </template>
+    <div class="flex-1 overflow-auto no-scrollbar relative">
+      <div class="flex flex-nowrap gap-2 w-full">
+        <div
+          v-if="es.options.paletteFunc === 'adjust'"
+          class="btn hover:border-gray-2 sticky left-0 bg-white pr-4"
+        >
+          <div class="w-4 h-4 i-con-down"/>
+          <span>Palette</span>
         </div>
+        <template v-if="es.options.paletteFunc === 'adjust'">
+          <div
+            v-for="(_, i) in adjustColors" :key="i"
+            class="flex-none rounded-full overflow-hidden md:rounded-[2px] w-10 h-10">
+            <input type="color" class="w-full h-full" v-model="adjustColors[i]">
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="(c, i) in es.workspace.colors"
+            :key="i"
+            class="flex-none cursor-pointer p-2.5 rounded-[2px] relative"
+            :class="{'text-white': !c.startsWith('#f')}"
+            :style="{backgroundColor: c}"
+            @click="onClickColor(i)"
+          >
+            <div v-if="checkColor(i)" class="absolute right-0.5 top-0.5 i-con-check w-4 h-4"/>
+            <div class="w-4 h-4">
+              <div>{{ i }}</div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
     <div class="flex gap-2">
