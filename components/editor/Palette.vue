@@ -92,7 +92,7 @@ const preSave = () => {
         </template>
       </div>
     </div>
-    <div class="flex gap-2 border-t pt-2 md:border-t-0 md:pt-0 px-4">
+    <div class="flex gap-2 md:border-t-0 md:pt-0 px-4" :class="{'pt-2 border-t': es.isEditor}">
       <div
         v-if="!es.options.paletteFunc"
         class="btn hover:border-gray-2"
