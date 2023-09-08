@@ -36,11 +36,11 @@ const eStore = useEditor()
       </div>
       <div class="btn hover:shadow rounded" @click="eStore.handleZoom(true)">
         <div class="i-con-zoom-in w-4 h-4"/>
-        <span class="md:hidden">Z. In</span>
+        <span class="md:hidden">Z. Out</span>
       </div>
       <div class="btn hover:shadow rounded" @click="eStore.handleZoom(false)">
         <div class="i-con-zoom-out w-4 h-4"/>
-        <span class="md:hidden">Z. Out</span>
+        <span class="md:hidden">Z. In</span>
       </div>
       <div
         v-if="eStore.isEditor"

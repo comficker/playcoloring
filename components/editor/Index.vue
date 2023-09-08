@@ -6,7 +6,7 @@ const editorStore = useEditor()
 
 <template>
   <div id="editor" class="fill-available flex flex-col relative font-semibold -mx-4">
-    <div class="md:flex-1 w-full relative">
+    <div class="flex-1 w-full relative">
       <editor-board/>
     </div>
     <div id="control-area">
@@ -31,10 +31,8 @@ const editorStore = useEditor()
   @apply bg-white bottom-0 left-0 right-0 duration-200 z-10;
 }
 
-@media only screen and (min-width: 640px)  {
-  #editor {
-    min-height: calc(100vh - 54px);
-  }
+#editor {
+  min-height: calc(100vh - 54px);
 }
 
 @media only screen and (max-width: 640px)  {

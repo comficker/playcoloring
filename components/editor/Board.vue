@@ -174,12 +174,7 @@ onMounted(() => {
 </template>
 
 <style>
-@media only screen and (max-width: 640px) {
-  #wrapper {
-    padding-top: 100%;
-    position: relative;
-  }
-}
+
 
 #inner {
   display: flex;
