@@ -17,7 +17,7 @@ const editorStore = useEditor()
         <editor-palette/>
       </div>
     </div>
-    <div class="md:absolute top-4 left-4">
+    <div class="sticky left-0 bottom-0 md:absolute md:top-4 md:left-4">
       <editor-controller/>
     </div>
     <editor-modal/>
