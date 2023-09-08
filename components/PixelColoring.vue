@@ -929,8 +929,6 @@ onBeforeRouteUpdate(n => {
 
 #wrapper {
   @apply absolute overflow-auto;
-
-  inset: -1px;
 }
 
 #wrapper::-webkit-scrollbar {

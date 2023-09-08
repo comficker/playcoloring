@@ -22,3 +22,7 @@ input[type="color"]::-webkit-color-swatch {
 .no-scrollbar::-webkit-scrollbar {
   display: none;  /* Safari and Chrome */
 }
+
+.fill-available {
+  min-height: -webkit-fill-available;
+}

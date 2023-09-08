@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useSeoMeta, useRuntimeConfig} from "nuxt/app";
-import PixelColoring from "~/components/PixelColoring.vue";
+
 const router = useRouter()
 const config = useRuntimeConfig()
 const title = "Pixel Editor"
@@ -18,13 +18,15 @@ useSeoMeta({
 <template>
   <div class="space-y-6">
     <div class="w-full mx-auto">
-      <PixelColoring :is-editor="true"/>
+      <editor/>
     </div>
     <div class="space-y-4 max-w-xl mx-auto">
       <h1 class="text-5xl font-bold">Pixel Editor</h1>
       <p>Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel art!</p>
       <div class="grid gap-2 md:grid-cols-2">
-        <div class="border p-3 flex justify-between items-center cursor-pointer group" @click="router.replace('/pages')">
+        <div
+          class="border p-3 flex justify-between items-center cursor-pointer group"
+          @click="router.replace('/pages')">
           <div>
             <nuxt-link to="/pages" class="text-2xl font-bold group-hover:underline">Coloring Pages</nuxt-link>
             <p>You might want to try!</p>
@@ -40,7 +42,8 @@ useSeoMeta({
         </div>
       </div>
       <div>
-        <p>A powerful and minimum online pixel editor that empowers individuals to unleash their creativity and create stunning pixel art masterpieces.</p>
+        <p>A powerful and minimum online pixel editor that empowers individuals to unleash their creativity and create
+          stunning pixel art masterpieces.</p>
       </div>
     </div>
   </div>

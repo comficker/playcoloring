@@ -50,69 +50,123 @@ export function trimCanvas(canvas: HTMLCanvasElement) {
 }
 
 
-export function convertSteps({steps, colors, map_numbers}: SharedPage) {
+export function convertSteps({steps, colors, map_numbers, width, height}: SharedPage) {
   let currentColors = cloneDeep(colors)
   let results: { [key: string]: number } = {}
-  let color = null
-  steps.forEach((step) => {
-    if ((!step.t || step.t === 'fill') && step.c !== undefined && step.k !== undefined) {
-      if (typeof step.c === 'number' && step.c >= 0 && step.k) {
-        results[step.k] = step.c
-        color = currentColors[step.c]
-      } else if (step.k) {
-        delete results[step.k]
-        color = null
+  let currentCursorColor = null
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    if (!step.type && step.t) {
+      if (step.t === 'fill_all') {
+        step.type = 'bucket'
+      } else {
+        step.type = step.t
       }
-    } else if (step.t === 'merge' && step.v) {
-      const mergingList = cloneDeep(step.v)
-      const old = cloneDeep(currentColors)
-      const except = currentColors.indexOf(old[mergingList[0]])
-      mergingList.sort((x: number, y: number) => y - x).forEach((index: number) => {
-        if (index !== except)
-          currentColors.splice(index, 1)
-      })
-
-      Object.keys(results).forEach((key) => {
-        const newIndex = currentColors.indexOf(old[results[key]])
-        results[key] = newIndex >= 0 ? newIndex : currentColors.indexOf(old[except])
-      })
-
-      color = old[except]
-    } else if (step.t === 'init_colors' && step.v) {
-      currentColors = cloneDeep(step.v)
-      color = currentColors[0]
-    } else if (step.t === 'init_results' && step.v) {
-      results = cloneDeep(step.v)
-    } else if (step.t === 'teleport' && step.v) {
-      const newR: { [key: string]: number } = {}
-      const arr = step.v.split("_")
-      const p = arr[0] === 'v' ? 1 : 0
-      Object.keys(results).forEach((k) => {
-        const pa = k.split("_").map(x => Number.parseInt(x))
-        pa[p] = pa[p] + Number.parseInt(arr[1])
-        newR[pa.join("_")] = results[k]
-      })
-      results = newR
-    } else if (step.t === 'fill_all') {
-      const colorIndex = step.c
-      const valueIndex = step.k
-      const keys = Object.keys(map_numbers)
-      // @ts-ignore
-      color = currentColors[colorIndex]
-      Object.values(map_numbers).forEach((value: number, index: number) => {
-        if (valueIndex === value) {
-          if (typeof colorIndex === 'number') {
-            results[keys[index]] = colorIndex
-          } else {
-            delete results[keys[index]]
-          }
+      if (typeof step.k === 'string') {
+        step.value = {
+          key: step.k,
+          color: step.c === null ? -1 : step.c
         }
-      })
+      } else if (typeof step.k === 'undefined') {
+        step.value = step.v
+      } else {
+        continue
+      }
     }
-  })
+    switch (step.type) {
+      case 'init_results': {
+        results = cloneDeep(step.value)
+        break
+      }
+      case 'init_colors':
+      case 'adjust': {
+        currentColors = cloneDeep(step.value)
+        break
+      }
+      case 'add_color': {
+        currentColors.push('#ffffff')
+        currentCursorColor = '#ffffff'
+        break
+      }
+      case 'teleport': {
+        const newR: { [key: string]: number } = {}
+        const arr = step.value.split("_")
+        const p = arr[0] === 'v' ? 1 : 0
+        Object.keys(results).forEach((k) => {
+          const pa = k.split("_").map(x => Number.parseInt(x))
+          pa[p] = pa[p] + Number.parseInt(arr[1])
+          newR[pa.join("_")] = results[k]
+        })
+        results = newR
+        break
+      }
+      case 'fill': {
+        const {key, color} = step.value
+        if (color === -1) {
+          delete results[key]
+        } else {
+          results[key] = color
+          currentCursorColor = currentColors[color]
+        }
+        break
+      }
+      case 'bucket': {
+        const {key, color} = step.value
+        const keys = Object.keys(map_numbers)
+        currentCursorColor = currentColors[color]
+        Object.values(map_numbers).forEach((value: number, index: number) => {
+          if (key === value) {
+            if (color >= 0) {
+              results[keys[index]] = color
+            } else {
+              delete results[keys[index]]
+            }
+          }
+        })
+        break
+      }
+      case 'mirror': {
+        const {key, color} = step.value
+        const arr = key.split("_")
+        const x = Number.parseInt(arr[0]), y = Number.parseInt(arr[1])
+        const nx = width - 1 - x
+        if (color >= 0) {
+          results[key] = color
+          results[`${nx}_${y}`] = color
+        } else {
+          delete results[key]
+          delete results[`${nx}_${y}`]
+        }
+        break
+      }
+      case 'combine': {
+        const mergingList = cloneDeep(step.value)
+        const old = cloneDeep(currentColors)
+        const except = currentColors.indexOf(old[mergingList[0]])
+        mergingList.sort((x: number, y: number) => y - x).forEach((index: number) => {
+          if (index !== except)
+            currentColors.splice(index, 1)
+        })
+        Object.keys(results).forEach((key) => {
+          const newIndex = currentColors.indexOf(old[results[key]])
+          results[key] = newIndex >= 0 ? newIndex : currentColors.indexOf(old[except])
+        })
+        currentCursorColor = old[except]
+        break
+      }
+      case 'resize': {
+        width = step.value
+        height = step.value
+        break
+      }
+    }
+  }
   return {
-    results, color,
-    colors: currentColors
+    results: results,
+    color: currentCursorColor,
+    colors: currentColors,
+    width,
+    height
   }
 }
 

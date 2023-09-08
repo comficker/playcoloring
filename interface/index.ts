@@ -1,3 +1,5 @@
+import socialShareClient from "~/plugins/socialShare.client";
+
 export interface Links {
   next: string
   previous: any
@@ -31,10 +33,12 @@ export interface TagSchema {
 }
 
 export interface Step {
-  t: string,
-  c?: string | number | null,
-  k?: string | number | null,
-  v?: any
+  type: string,
+  value: any,
+  t?: string,
+  v?: any,
+  k?: string,
+  c?: number,
 }
 
 export interface Tax {
@@ -115,4 +119,15 @@ export interface IBreadcrumb {
   name: string
   icon?: string | null
   to: string
+}
+
+
+export interface Options {
+  color: number,
+  pointer: string,
+  zoom: number,
+  isMoving: boolean,
+  isPainting: boolean,
+  paletteFunc: string,
+  boardFunc: string,
 }

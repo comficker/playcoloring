@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 const route = useRoute()
-const showHead = computed(() => {
-  return !['index', 'editor'].includes(route.name?.toString() || 'index')
-})
-const { $pwa } = useNuxtApp()
+const {$pwa} = useNuxtApp()
 </script>
 
 <template>
   <main id="main" class="flex flex-col min-h-full px-4">
-    <Header v-if="showHead"/>
+    <Header/>
     <div class="flex-1 ">
       <slot class="w-full"/>
     </div>
