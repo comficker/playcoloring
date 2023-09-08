@@ -9,23 +9,37 @@ const editorStore = useEditor()
     <div class="flex-1 w-full relative px-4">
       <editor-board/>
     </div>
-    <div
-      v-if="!editorStore.isCompleted"
-      class="border-y bottom-0 left-0 right-0 duration-200 z-10 bg-white"
-      :class="{'sticky': !editorStore.modalShowing}">
-      <div class="max-w-xl py-2 w-full mx-auto">
-        <editor-palette/>
+    <div id="control-area">
+      <div
+        v-if="!editorStore.isCompleted"
+        class="border-y"
+      >
+        <div class="max-w-xl py-2 w-full mx-auto">
+          <editor-palette/>
+        </div>
       </div>
-    </div>
-    <div class="sticky left-0 bottom-0 md:absolute md:top-4 md:left-4">
-      <editor-controller/>
+      <div class="md:absolute md:top-4 md:left-4">
+        <editor-controller/>
+      </div>
     </div>
     <editor-modal/>
   </div>
 </template>
 
 <style>
-#editor {
-  min-height: calc(100vh - 54px);
+#control-area {
+  @apply bg-white bottom-0 left-0 right-0 duration-200 z-10;
+}
+
+@media only screen and (min-width: 640px)  {
+  #editor {
+    min-height: calc(100vh - 54px);
+  }
+}
+
+@media only screen and (max-width: 640px)  {
+  #control-area {
+    @apply sticky;
+  }
 }
 </style>

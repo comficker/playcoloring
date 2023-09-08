@@ -126,44 +126,46 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    id="wrapper"
-    style="--zoom-size: 1px 1px"
-    :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
-  >
-    <div>
-      <div
-        id="workload" class="relative cursor-crosshair mx-auto has-grid bg-white"
-        :style="workspaceStyle"
-      >
-        <canvas
-          id="workspace" class="absolute inset-0"
-          :width="pictureSize" :height="pictureSize"
-          :style="workspaceStyle"
-        />
+  <div id="wrapper">
+    <div
+      id="inner"
+      style="--zoom-size: 1px 1px"
+      :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
+    >
+      <div>
         <div
-          id="controller"
-          class="absolute inset-0 has-grid"
-          @mousedown="handleMouseDown"
-          @mouseup="handleMouseUp"
-          @mousemove="handleMouseHover"
-          @mouseover="handleMouseUp"
-        ></div>
-        <div v-if="editorStore.options.boardFunc === 'move'" class="absolute inset-0 z-10">
-          <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
-            <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', -1)">
-              <div class="w-4 h-4 i-con-arrow-left"/>
+          id="workload" class="relative cursor-crosshair mx-auto has-grid bg-white"
+          :style="workspaceStyle"
+        >
+          <canvas
+            id="workspace" class="absolute inset-0"
+            :width="pictureSize" :height="pictureSize"
+            :style="workspaceStyle"
+          />
+          <div
+            id="controller"
+            class="absolute inset-0 has-grid"
+            @mousedown="handleMouseDown"
+            @mouseup="handleMouseUp"
+            @mousemove="handleMouseHover"
+            @mouseover="handleMouseUp"
+          ></div>
+          <div v-if="editorStore.options.boardFunc === 'move'" class="absolute inset-0 z-10">
+            <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
+              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', -1)">
+                <div class="w-4 h-4 i-con-arrow-left"/>
+              </div>
+              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', 1)">
+                <div class="w-4 h-4 i-con-arrow-right"/>
+              </div>
             </div>
-            <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', 1)">
-              <div class="w-4 h-4 i-con-arrow-right"/>
-            </div>
-          </div>
-          <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
-            <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', -1)">
-              <div class="w-4 h-4 i-con-arrow-up"/>
-            </div>
-            <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', 1)">
-              <div class="w-4 h-4 i-con-arrow-down"/>
+            <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
+              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', -1)">
+                <div class="w-4 h-4 i-con-arrow-up"/>
+              </div>
+              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', 1)">
+                <div class="w-4 h-4 i-con-arrow-down"/>
+              </div>
             </div>
           </div>
         </div>
@@ -173,11 +175,18 @@ onMounted(() => {
 </template>
 
 <style>
-#wrapper {
+@media only screen and (max-width: 640px)  {
+  #wrapper {
+    padding-top: 100%;
+    margin: 16px;
+  }
+}
+
+#inner {
   @apply absolute overflow-auto bg-gray-50 flex flex-col items-center justify-center shrink-0 inset-0;
 }
 
-#wrapper::-webkit-scrollbar {
+#inner::-webkit-scrollbar {
   display: none;
 }
 
