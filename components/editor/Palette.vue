@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {useEditor} from "~/stores/editor";
-import {cloneDeep} from "lodash";
+import pkg from "lodash";
+
+const {cloneDeep} = pkg;
 
 const es = useEditor()
 
