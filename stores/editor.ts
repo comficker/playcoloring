@@ -87,7 +87,7 @@ export const useEditor = defineStore('editor', () => {
       workspace.id_string = ''
       workspace.steps = []
     }
-    options.color = response.colors[0]
+    options.color = 0
     const out = convertSteps(workspace)
     workspace.results = out.results as { [key: string]: number }
     workspace.colors = out.colors
@@ -117,7 +117,7 @@ export const useEditor = defineStore('editor', () => {
         value: cloneDeep(DEFAULT_COLORS)
       }]
     } else {
-      loadFromCloud('random').then(() => console.log("done"))
+      loadFromCloud('random').then(r => console.log)
     }
   }
 
@@ -214,9 +214,10 @@ export const useEditor = defineStore('editor', () => {
       }
       case 'bucket': {
         const {key, color} = step.value
+        const correctColor = workspace.map_numbers[key]
         const keys = Object.keys(workspace.map_numbers)
         Object.values(workspace.map_numbers).forEach((value: number, index: number) => {
-          if (key === value) {
+          if (correctColor === value) {
             results[keys[index]] = color
           }
         })

@@ -53,7 +53,7 @@ export function trimCanvas(canvas: HTMLCanvasElement) {
 export function convertSteps({steps, colors, map_numbers, width, height}: SharedPage) {
   let currentColors = cloneDeep(colors)
   let results: { [key: string]: number } = {}
-  let currentCursorColor = null
+  let currentCursorColor = 0
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     if (!step.type && step.t) {
@@ -85,7 +85,7 @@ export function convertSteps({steps, colors, map_numbers, width, height}: Shared
       }
       case 'add_color': {
         currentColors.push('#ffffff')
-        currentCursorColor = '#ffffff'
+        currentCursorColor = currentColors.length - 1
         break
       }
       case 'teleport': {
@@ -106,16 +106,17 @@ export function convertSteps({steps, colors, map_numbers, width, height}: Shared
           delete results[key]
         } else {
           results[key] = color
-          currentCursorColor = currentColors[color]
+          currentCursorColor = color
         }
         break
       }
       case 'bucket': {
         const {key, color} = step.value
+        const correctColor = map_numbers[key]
         const keys = Object.keys(map_numbers)
-        currentCursorColor = currentColors[color]
+        currentCursorColor = color
         Object.values(map_numbers).forEach((value: number, index: number) => {
-          if (key === value) {
+          if (correctColor === value) {
             if (color >= 0) {
               results[keys[index]] = color
             } else {
@@ -151,7 +152,7 @@ export function convertSteps({steps, colors, map_numbers, width, height}: Shared
           const newIndex = currentColors.indexOf(old[results[key]])
           results[key] = newIndex >= 0 ? newIndex : currentColors.indexOf(old[except])
         })
-        currentCursorColor = old[except]
+        currentCursorColor = except
         break
       }
       case 'resize': {

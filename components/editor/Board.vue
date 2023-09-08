@@ -35,6 +35,7 @@ const fill = (e: MouseEvent) => {
     }
   }
   if (editorStore.preCheckStep(step)) {
+    console.log(step);
     editorStore.addStep(step)
   }
 }
@@ -93,7 +94,9 @@ const draw = () => {
 }
 
 watch(() => editorStore.workspace, () => {
-  draw()
+  setTimeout(() => {
+    draw()
+  }, 100)
 }, {deep: true})
 
 watch(() => editorStore.options.zoom, () => {
