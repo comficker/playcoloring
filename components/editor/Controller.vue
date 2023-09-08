@@ -5,7 +5,7 @@ const eStore = useEditor()
 </script>
 
 <template>
-  <div class="controller">
+  <div class="controller palette">
     <div
       class="btn hover:shadow rounded" :class="{'border border-blue': eStore.options.boardFunc === ''}"
       @click="eStore.boardSetFunc('')">
