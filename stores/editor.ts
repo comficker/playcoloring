@@ -60,6 +60,32 @@ export const useEditor = defineStore('editor', () => {
     Object.keys(workspace.map_numbers).length &&
     isEqual(!isEditor && workspace.map_numbers, workspace.results)
   )
+
+  const progress = computed(() => {
+    const total = Object.keys(workspace.map_numbers).length
+    let result = 0
+    let detail: {[key: number]: { total: number, result: number, out: number }} = {}
+    Object.keys(workspace.map_numbers).forEach((key: string) => {
+      const colorIndex = workspace.map_numbers[key]
+      if (!detail[colorIndex]) {
+        detail[colorIndex] = {
+          total: 0,
+          result: 0,
+          out: 0
+        }
+      }
+      detail[colorIndex].total++
+      if (workspace.results && workspace.results[key] === workspace.map_numbers[key]) {
+        result++
+        detail[colorIndex].result++
+        detail[colorIndex].out = (detail[colorIndex].result / detail[colorIndex].total) * 100
+      }
+    })
+    return {
+      result: result / total,
+      detail: detail
+    }
+  })
   const loadFromFile = (fileElm: HTMLInputElement) => {
 
   }
@@ -250,6 +276,7 @@ export const useEditor = defineStore('editor', () => {
     options,
     isEditor,
     isCompleted,
+    progress,
     modalShowing,
     fetchingPercent,
     loadFromFile,

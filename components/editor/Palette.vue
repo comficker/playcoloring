@@ -96,6 +96,9 @@ const preSave = () => {
             <div class="w-4 h-4">
               <div>{{ i }}</div>
             </div>
+            <div v-if="es.progress.detail[i]" class="border border-white bg-white -mx-2 -mb-2 mt-2 rounded overflow-hidden">
+              <div class="h-1 w-4 bg-black" :style="{width: `${es.progress.detail[i].out}%`}"/>
+            </div>
           </div>
         </template>
       </div>
