@@ -126,13 +126,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="wrapper" class="overflow-auto no-scrollbar">
-    <div>
-      <div
-        id="inner"
-        style="--zoom-size: 1px 1px"
-        :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
-      >
+  <div id="wrapper">
+    <div
+      id="inner"
+      class="absolute inset-0 overflow-auto no-scrollbar"
+      style="--zoom-size: 1px 1px"
+      :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
+    >
+      <div class="m-auto">
         <div id="workload" :style="workspaceStyle" class="has-grid">
           <canvas
             id="workspace" class="absolute inset-0"
@@ -173,15 +174,15 @@ onMounted(() => {
 </template>
 
 <style>
-@media only screen and (max-width: 640px)  {
+@media only screen and (max-width: 640px) {
   #wrapper {
     padding-top: 100%;
-    margin: 16px;
+    position: relative;
   }
 }
 
 #inner {
-  @apply absolute overflow-auto bg-gray-50 flex flex-col items-center justify-center shrink-0 inset-0;
+  display: flex;
 }
 
 #inner::-webkit-scrollbar {
@@ -189,7 +190,7 @@ onMounted(() => {
 }
 
 #workload {
-  @apply relative cursor-crosshair mx-auto bg-white;
+  @apply relative cursor-crosshair bg-white;
 
   transform-origin: 0 0;
 }
