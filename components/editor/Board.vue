@@ -93,35 +93,15 @@ const draw = () => {
   })
 }
 
-watch(() => editorStore.workspace, () => {
+watch(() => editorStore.drawSignal, () => {
   setTimeout(() => {
     draw()
   }, 100)
 }, {deep: true})
 
-watch(() => editorStore.options.zoom, () => {
-  setTimeout(() => {
-    draw()
-  }, 100)
-})
-
 onMounted(() => {
   dpr.value = window.devicePixelRatio
   window.soundPop = new Audio('/brush.wav')
-  let key = 'random'
-  const es = useEditor()
-  const us = useUserStore()
-  const route = useRoute()
-  if (route.query.id) {
-    key = route.query.id.toString()
-  } else {
-    if (us.isLogged && us.logged?.meta?.coloring?.current) {
-      key = us.logged.meta.coloring.current
-    }
-  }
-  es.loadFromCloud(key).then(() => {
-    draw()
-  })
 })
 </script>
 

@@ -9,11 +9,8 @@ const editorStore = useEditor()
     <div class="flex-1 w-full relative">
       <editor-board/>
     </div>
-    <div id="control-area">
-      <div
-        v-if="!editorStore.isCompleted"
-        class="border-y"
-      >
+    <div v-if="!editorStore.isCompleted" id="control-area">
+      <div class="border-y">
         <div class="max-w-xl py-2 w-full mx-auto">
           <editor-palette/>
         </div>
@@ -23,6 +20,7 @@ const editorStore = useEditor()
       </div>
     </div>
     <editor-modal/>
+    <editor-complete/>
   </div>
 </template>
 

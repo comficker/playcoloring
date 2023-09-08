@@ -59,7 +59,7 @@ const preSave = () => {
     :class="{'flex-col md:flex-row': es.isEditor}"
   >
     <!--Palette area-->
-    <div class="flex-1 overflow-auto no-scrollbar relative px-4">
+    <div class="flex-1 overflow-auto no-scrollbar relative px-4" :class="{'pr-0': !es.isEditor}">
       <div class="flex flex-nowrap gap-2 w-full">
         <div
           v-if="es.options.paletteFunc === 'adjust'"
@@ -96,36 +96,33 @@ const preSave = () => {
             <div class="w-4 h-4">
               <div>{{ i }}</div>
             </div>
-            <div v-if="es.progress.detail[i]" class="border border-white bg-white -mx-2 -mb-2 mt-2 rounded overflow-hidden">
+            <div v-if="es.progress.detail[i]" class="border border-white bg-white -mx-2 -mb-2 mt-1 rounded overflow-hidden">
               <div class="h-1 w-4 bg-black" :style="{width: `${es.progress.detail[i].out}%`}"/>
             </div>
           </div>
         </template>
       </div>
     </div>
-    <div class="flex gap-2 md:border-t-0 md:pt-0 px-4" :class="{'pt-2 border-t': es.isEditor}">
+    <div v-if="es.isEditor" class="flex gap-2 md:border-t-0 md:pt-0 px-4" :class="{'pt-2 border-t': es.isEditor}">
       <div
-        v-if="es.isEditor"
         class="btn border-gray-100 hover:border-gray-200"
         @click="es.paletteAddColor()"
       >
         <div class="w-4 h-4 i-con-plus"/>
       </div>
       <!--Palette function control-->
-      <template v-if="es.isEditor">
-        <div
-          class="btn hover:border-gray-200" :class="{'border-blue': es.options.paletteFunc === 'adjust'}"
-          @click="preSelect('adjust')">
-          <div class="w-4 h-4 i-con-adjust"/>
-        </div>
-        <div
-          class="btn hover:border-gray-200" :class="{'border-blue': es.options.paletteFunc === 'combine'}"
-          @click="preSelect('combine')">
-          <div class="w-4 h-4 i-con-combine"/>
-        </div>
-      </template>
       <div
-        v-if="es.isEditor && es.options.paletteFunc"
+        class="btn hover:border-gray-200" :class="{'border-blue': es.options.paletteFunc === 'adjust'}"
+        @click="preSelect('adjust')">
+        <div class="w-4 h-4 i-con-adjust"/>
+      </div>
+      <div
+        class="btn hover:border-gray-200" :class="{'border-blue': es.options.paletteFunc === 'combine'}"
+        @click="preSelect('combine')">
+        <div class="w-4 h-4 i-con-combine"/>
+      </div>
+      <div
+        v-if="es.options.paletteFunc"
         class="btn hover:border-gray-2"
         @click="preSave"
       >

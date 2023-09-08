@@ -3,6 +3,7 @@ import {Options, SaveForm, SharedPage, Step} from "~/interface";
 import pkg from "lodash";
 import {convertSteps} from "~/helper/canvas";
 import {useUserStore} from "~/stores/user";
+import {useRoute} from "#app";
 
 const {debounce, cloneDeep, isEqual} = pkg
 const DEFAULT_COLORS = [
@@ -49,16 +50,18 @@ const DEFAULT_OPTION: Options = {
 export const useEditor = defineStore('editor', () => {
   const {$touch} = useNuxtApp()
   const userStore = useUserStore()
-  const isEditor = computed(() => useRoute().name == 'editor')
+  const route = useRoute()
+  const isEditor = ref(route.name == 'editor')
 
   const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
   const options = reactive<Options>(DEFAULT_OPTION)
   const modalShowing = ref<string>('')
   const fetchingPercent = ref(101)
+  const drawSignal = ref(false)
 
   const isCompleted = computed(() =>
     Object.keys(workspace.map_numbers).length &&
-    isEqual(!isEditor && workspace.map_numbers, workspace.results)
+    isEqual(!isEditor.value && workspace.map_numbers, workspace.results)
   )
 
   const progress = computed(() => {
@@ -78,8 +81,10 @@ export const useEditor = defineStore('editor', () => {
       if (workspace.results && workspace.results[key] === workspace.map_numbers[key]) {
         result++
         detail[colorIndex].result++
-        detail[colorIndex].out = (detail[colorIndex].result / detail[colorIndex].total) * 100
       }
+    })
+    Object.keys(detail).forEach((key) => {
+      detail[Number.parseInt(key)].out = (detail[Number.parseInt(key)].result / detail[Number.parseInt(key)].total) * 100
     })
     return {
       result: result / total,
@@ -114,11 +119,7 @@ export const useEditor = defineStore('editor', () => {
       workspace.steps = []
     }
     options.color = 0
-    const out = convertSteps(workspace)
-    workspace.results = out.results as { [key: string]: number }
-    workspace.colors = out.colors
-    workspace.width = out.width
-    workspace.height = out.height
+    steps2Result()
     workspace.steps = [{
       type: 'init_colors',
       value: workspace.colors
@@ -130,6 +131,7 @@ export const useEditor = defineStore('editor', () => {
     fetchingPercent.value = 100
     setTimeout(() => {
       fetchingPercent.value = 101
+      draw()
     }, 300)
     document.body.scrollTop = document.documentElement.scrollTop = 0;
   }
@@ -143,17 +145,29 @@ export const useEditor = defineStore('editor', () => {
         value: cloneDeep(DEFAULT_COLORS)
       }]
     } else {
-      loadFromCloud('random').then(r => console.log)
+      workspace.steps = []
+      steps2Result()
+      draw()
+      saveLate()
     }
   }
 
-  const addStep = (step: Step) => {
-    workspace.steps.push(step)
+  const draw = () => {
+    drawSignal.value = !drawSignal.value
+  }
+
+  const steps2Result = () => {
     const out = convertSteps(workspace)
     workspace.results = out.results as { [key: string]: number }
     workspace.colors = out.colors
     workspace.width = out.width
     workspace.height = out.height
+  }
+
+  const addStep = (step: Step) => {
+    workspace.steps.push(step)
+    steps2Result()
+    draw()
     saveLate()
   }
 
@@ -209,6 +223,7 @@ export const useEditor = defineStore('editor', () => {
     } else {
       options.zoom -= 0.5
     }
+    draw()
   }
 
   const handleTeleport = (direction: string, value: number) => {
@@ -271,6 +286,29 @@ export const useEditor = defineStore('editor', () => {
     return false
   }
 
+  const load = () => {
+    let key = 'random'
+    if (route.query.id) {
+      key = route.query.id.toString()
+    } else if (userStore.isLogged) {
+      if (!isEditor.value && userStore.logged?.meta?.coloring?.current) {
+        key = userStore.logged.meta.coloring.current
+      } else if (isEditor.value && userStore.logged?.meta?.coloring?.editor) {
+        key = userStore.logged.meta.coloring.editor
+      }
+    }
+    loadFromCloud(key).then(console.log)
+  }
+
+  watch(() => route.path, () => {
+    isEditor.value = route.name == 'editor'
+    load()
+  })
+
+  onMounted(() => {
+    load()
+  })
+
   return {
     workspace,
     options,
@@ -279,6 +317,7 @@ export const useEditor = defineStore('editor', () => {
     progress,
     modalShowing,
     fetchingPercent,
+    drawSignal,
     loadFromFile,
     loadFromCloud,
     addStep,
