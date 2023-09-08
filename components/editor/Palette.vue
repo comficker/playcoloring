@@ -68,6 +68,14 @@ const preSave = () => {
           <div class="w-4 h-4 i-con-down"/>
           <span>Palette</span>
         </div>
+        <div
+          v-if="!es.options.paletteFunc"
+          class="btn hover:border-gray-2"
+          :class="{'border-blue': es.options.color == -1}"
+          @click="es.paletteSetColor(-1)"
+        >
+          <div class="w-4 h-4 i-con-eraser"/>
+        </div>
         <template v-if="es.options.paletteFunc === 'adjust'">
           <div
             v-for="(_, i) in adjustColors" :key="i"
@@ -93,14 +101,6 @@ const preSave = () => {
       </div>
     </div>
     <div class="flex gap-2 md:border-t-0 md:pt-0 px-4" :class="{'pt-2 border-t': es.isEditor}">
-      <div
-        v-if="!es.options.paletteFunc"
-        class="btn hover:border-gray-2"
-        :class="{'border-blue': es.options.color == -1}"
-        @click="es.paletteSetColor(-1)"
-      >
-        <div class="w-4 h-4 i-con-eraser"/>
-      </div>
       <div
         v-if="es.isEditor"
         class="btn border-gray-100 hover:border-gray-200"
