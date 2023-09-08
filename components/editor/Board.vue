@@ -126,17 +126,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="wrapper">
-    <div
-      id="inner"
-      style="--zoom-size: 1px 1px"
-      :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
-    >
-      <div>
-        <div
-          id="workload" class="relative cursor-crosshair mx-auto has-grid bg-white"
-          :style="workspaceStyle"
-        >
+  <div id="wrapper" class="overflow-auto no-scrollbar">
+    <div>
+      <div
+        id="inner"
+        style="--zoom-size: 1px 1px"
+        :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
+      >
+        <div id="workload" :style="workspaceStyle" class="has-grid">
           <canvas
             id="workspace" class="absolute inset-0"
             :width="pictureSize" :height="pictureSize"
@@ -144,7 +141,8 @@ onMounted(() => {
           />
           <div
             id="controller"
-            class="absolute inset-0 has-grid"
+            class="absolute inset-0"
+            :class="{'has-grid': editorStore.isEditor}"
             @mousedown="handleMouseDown"
             @mouseup="handleMouseUp"
             @mousemove="handleMouseHover"
@@ -191,6 +189,8 @@ onMounted(() => {
 }
 
 #workload {
+  @apply relative cursor-crosshair mx-auto bg-white;
+
   transform-origin: 0 0;
 }
 
