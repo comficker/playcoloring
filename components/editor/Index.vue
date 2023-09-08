@@ -6,7 +6,7 @@ const editorStore = useEditor()
 
 <template>
   <div id="editor" class="fill-available flex flex-col relative font-semibold -mx-4">
-    <div class="flex-1 w-full relative px-4">
+    <div class="md:flex-1 w-full relative px-4">
       <editor-board/>
     </div>
     <div id="control-area">
