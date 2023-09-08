@@ -54,9 +54,12 @@ const preSave = () => {
 </script>
 
 <template>
-  <div class="flex gap-2 text-sm flex-nowrap md:items-center" :class="{'flex-col md:flex-row': es.isEditor}">
+  <div
+    class="palette flex gap-2 text-sm flex-nowrap md:items-center md:-mx-4"
+    :class="{'flex-col md:flex-row': es.isEditor}"
+  >
     <!--Palette area-->
-    <div class="flex-1 overflow-auto no-scrollbar relative">
+    <div class="flex-1 overflow-auto no-scrollbar relative px-4">
       <div class="flex flex-nowrap gap-2 w-full">
         <div
           v-if="es.options.paletteFunc === 'adjust'"
@@ -89,7 +92,7 @@ const preSave = () => {
         </template>
       </div>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-2 border-t pt-2 md:border-t-0 md:pt-0 px-4">
       <div
         v-if="!es.options.paletteFunc"
         class="btn hover:border-gray-2"
@@ -129,3 +132,10 @@ const preSave = () => {
     </div>
   </div>
 </template>
+
+<style>
+.palette .p-2\.5,
+.palette .btn {
+  @apply p-4 md:p-3;
+}
+</style>

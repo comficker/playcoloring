@@ -5,7 +5,7 @@ const eStore = useEditor()
 </script>
 
 <template>
-  <div class="flex md:flex-col gap-1.5 items-center rounded justify-center p-1 bg-white border">
+  <div class="controller">
     <div
       class="btn hover:shadow rounded" :class="{'border border-blue': eStore.options.boardFunc === ''}"
       @click="eStore.boardSetFunc('')">
@@ -57,3 +57,9 @@ const eStore = useEditor()
     </div>
   </div>
 </template>
+
+<style>
+.controller {
+  @apply flex gap-1.5 px-4 p-2 bg-white border-b md:px-1 md:flex-col md:rounded md:border md:items-center md:justify-center;
+}
+</style>
