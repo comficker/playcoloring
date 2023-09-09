@@ -59,7 +59,7 @@ const preSave = () => {
     :class="{'flex-col md:flex-row': es.isEditor}"
   >
     <!--Palette area-->
-    <div class="flex-1 overflow-auto no-scrollbar relative px-4" :class="{'pr-0': !es.isEditor}">
+    <div class="flex-1 overflow-auto no-scrollbar relative px-4">
       <div class="flex flex-nowrap gap-2 w-full">
         <div
           v-if="es.options.paletteFunc === 'adjust'"
@@ -101,6 +101,9 @@ const preSave = () => {
             </div>
           </div>
         </template>
+        <div class="flex-none">
+          <div class="w-2 pt-full"></div>
+        </div>
       </div>
     </div>
     <div v-if="es.isEditor" class="flex gap-2 md:border-t-0 md:pt-0 px-4" :class="{'pt-2 border-t': es.isEditor}">

@@ -24,7 +24,7 @@
       <p>{{ meta.desc }}</p>
     </div>
     <div class="flex flex-row gap-4 justify-between">
-      <div class="md:flex-1 flex gap-2 font-medium">
+      <div class="flex-1 flex gap-2 font-medium">
         <div class="btn hover:shadow border-gray-200" @click="print">
           <div class="w-4 h-4 i-con-print"/>
           <span class="hidden md:block">Print</span>
