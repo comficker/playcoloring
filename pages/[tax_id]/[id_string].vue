@@ -1,7 +1,6 @@
 <template>
   <page-detail v-if="isDetail"/>
   <page-author v-else-if="isAuthor"/>
-  <page-list-index v-else-if="route.path == '/pages'"/>
   <page-list v-else/>
 </template>
 

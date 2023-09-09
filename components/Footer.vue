@@ -10,7 +10,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-4 p-4 py-2">
+  <div class="mt-4 py-4">
     <div class="w-full max-w-xl mx-auto">
       <p>Copyright © 2023 playcoloring.com.</p>
     </div>

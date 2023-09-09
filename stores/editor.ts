@@ -50,9 +50,9 @@ const DEFAULT_OPTION: Options = {
 export const useEditor = defineStore('editor', () => {
   const {$touch} = useNuxtApp()
   const userStore = useUserStore()
-  const route = useRoute()
-  const isEditor = ref(route.name == 'editor')
+  const isEditor = ref(false)
 
+  const itv = ref<NodeJS.Timer | null>(null)
   const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
   const options = reactive<Options>(DEFAULT_OPTION)
   const modalShowing = ref<string>('')
@@ -60,7 +60,7 @@ export const useEditor = defineStore('editor', () => {
   const drawSignal = ref(false)
 
   const isCompleted = computed(() =>
-    Object.keys(workspace.map_numbers).length &&
+    workspace.results && Object.keys(workspace.map_numbers).length && Object.keys(workspace.results).length &&
     isEqual(!isEditor.value && workspace.map_numbers, workspace.results)
   )
 
@@ -98,13 +98,15 @@ export const useEditor = defineStore('editor', () => {
   const loadFromCloud = async (id: string) => {
     Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
     modalShowing.value = ''
-    if (fetchingPercent.value < 101) return
-    fetchingPercent.value = 0
-    let timeLeft = 50
-    const itv = setInterval(() => {
-      fetchingPercent.value = fetchingPercent.value + timeLeft / 2
-      timeLeft = timeLeft / 2
-    }, 100)
+    if (process.client) {
+      if (fetchingPercent.value < 101) return
+      fetchingPercent.value = 0
+      let timeLeft = 50
+      itv.value = setInterval(() => {
+        fetchingPercent.value = fetchingPercent.value + timeLeft / 2
+        timeLeft = timeLeft / 2
+      }, 100)
+    }
     const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`)
     if (!response) return
     Object.assign(workspace, response)
@@ -127,13 +129,15 @@ export const useEditor = defineStore('editor', () => {
       type: 'init_results',
       value: workspace.results
     }]
-    clearInterval(itv)
-    fetchingPercent.value = 100
-    setTimeout(() => {
-      fetchingPercent.value = 101
-      draw()
-    }, 300)
-    document.body.scrollTop = document.documentElement.scrollTop = 0;
+    if (process.client) {
+      if (itv.value) clearInterval(itv.value)
+      fetchingPercent.value = 100
+      setTimeout(() => {
+        fetchingPercent.value = 101
+        draw()
+      }, 300)
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
   }
 
   const clear = () => {
@@ -286,33 +290,17 @@ export const useEditor = defineStore('editor', () => {
     return false
   }
 
-  const load = () => {
-    let key = 'random'
-    if (route.query.id) {
-      key = route.query.id.toString()
-    } else if (userStore.isLogged) {
+  const load = async (id: string) => {
+    let key = id || 'random'
+    if (userStore.isLogged && key === 'random') {
       if (!isEditor.value && userStore.logged?.meta?.coloring?.current) {
         key = userStore.logged.meta.coloring.current
       } else if (isEditor.value && userStore.logged?.meta?.coloring?.editor) {
         key = userStore.logged.meta.coloring.editor
       }
     }
-    loadFromCloud(key).then()
+    await loadFromCloud(key)
   }
-
-  watch(() => route.path, () => {
-    if (route.name && ['editor', 'index'].includes(route.name.toString())) {
-      isEditor.value = route.name == 'editor'
-      load()
-    }
-  })
-
-  onMounted(() => {
-    if (route.name && ['editor', 'index'].includes(route.name.toString())) {
-      isEditor.value = route.name == 'editor'
-      load()
-    }
-  })
 
   return {
     workspace,
@@ -336,6 +324,7 @@ export const useEditor = defineStore('editor', () => {
     handleTeleport,
     toggleModal,
     updateWorkspace,
-    preCheckStep
+    preCheckStep,
+    load
   }
 })

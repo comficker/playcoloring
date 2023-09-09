@@ -41,7 +41,6 @@ const fetch = function () {
       full_schema: true
     }
   }).then(r => {
-    console.log(r);
     response.value = r
   })
 }

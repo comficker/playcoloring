@@ -102,6 +102,7 @@ watch(() => editorStore.drawSignal, () => {
 onMounted(() => {
   dpr.value = window.devicePixelRatio
   window.soundPop = new Audio('/brush.wav')
+  draw()
 })
 </script>
 
@@ -114,7 +115,7 @@ onMounted(() => {
       :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
     >
       <div class="m-auto">
-        <div id="workload" :style="workspaceStyle" class="has-grid">
+        <div id="workload" :style="workspaceStyle" :class="{'has-grid': editorStore.fetchingPercent === 101}">
           <canvas
             id="workspace" class="absolute inset-0"
             :width="pictureSize" :height="pictureSize"
@@ -147,6 +148,7 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <img v-if="editorStore.fetchingPercent < 101" class="absolute inset-0" src="/loading.svg" alt="" :style="workspaceStyle">
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ export default defineNuxtPlugin(async(NuxtApp) => {
   }}
 
   async function fetchUser() {
-    if (userStore.logged.id) return
+    if (userStore.logged.id) return null
 
     if (!cookieToken.value) await loginAnonymous()
     if (cookieToken.value) {
@@ -72,7 +72,9 @@ export default defineNuxtPlugin(async(NuxtApp) => {
         cookieTokenRefresh.value = ''
         cookieToken.value = ''
       }
+      return userRes
     }
+    return null
   }
 
   return {
