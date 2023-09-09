@@ -78,7 +78,7 @@ const params = computed(() => {
   }
 
   return {
-    page_size: 10,
+    page_size: 12,
     status: 'public',
     taxonomies__id_string,
     width,

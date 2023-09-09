@@ -4,22 +4,62 @@
     <h1 class="text-4xl md:text-5xl font-bold">Coloring pages</h1>
     <p class="text-lg">Free Coloring Pages that you can play online or print out and color.</p>
   </div>
-  <div class="max-w-xl mx-auto my-4 space-y-6">
+  <div v-if="r1.count" class="max-w-xl mx-auto my-6 space-y-2">
+    <div class="flex gap-2 items-center">
+      <div class="flex gap-1">
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+      </div>
+      <h2 class="font-bold text-xl">8x8</h2>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
       <coloring-card v-for="item in r1.results" :value="item" :key="item.id" show-author/>
     </div>
   </div>
-  <div class="max-w-xl mx-auto my-4 space-y-6">
+  <div v-if="r2.count" class="max-w-xl mx-auto my-6 space-y-2">
+    <div class="flex gap-2 items-center">
+      <div class="flex gap-1">
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+      </div>
+      <h2 class="font-bold text-xl">16x16</h2>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
       <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
     </div>
   </div>
-  <div class="max-w-xl mx-auto my-4 space-y-6">
+  <div v-if="r3.count" class="max-w-xl mx-auto my-6 space-y-2">
+    <div class="flex gap-2 items-center">
+      <div class="flex gap-1">
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+      </div>
+      <h2 class="font-bold text-xl">24x24</h2>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
       <coloring-card v-for="item in r3.results" :value="item" :key="item.id" show-author/>
     </div>
   </div>
-  <div class="max-w-xl mx-auto my-4 space-y-6">
+  <div v-if="r4.count" class="max-w-xl mx-auto my-6 space-y-2">
+    <div class="flex gap-2 items-center">
+      <div class="flex gap-1">
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star text-yellow-500"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+        <div class="w-5 h-5 i-con-star-outline"/>
+      </div>
+      <h2 class="font-bold text-xl">32x32</h2>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
       <coloring-card v-for="item in r4.results" :value="item" :key="item.id" show-author/>
     </div>
@@ -27,8 +67,6 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
-import {IBreadcrumb} from "~/interface";
 import {useHead, useRoute, useRuntimeConfig} from "#app";
 import {ResponseSharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
@@ -42,10 +80,10 @@ const userStore = useUserStore()
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const sizes = ref([8, 16, 32, 64])
+
 const params = {
   page: 1,
-  page_size: 10,
+  page_size: 6,
   status: 'public',
   is_template: true
 }
