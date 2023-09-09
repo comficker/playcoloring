@@ -150,6 +150,7 @@ export const useEditor = defineStore('editor', () => {
         type: 'init_colors',
         value: cloneDeep(DEFAULT_COLORS)
       }]
+      workspace.results = {}
     } else {
       workspace.steps = []
       steps2Result()
@@ -198,6 +199,7 @@ export const useEditor = defineStore('editor', () => {
     })
     Object.assign(workspace, response)
     workspace.tags = workspace.taxonomies.map(x => x.name)
+    userStore.setEditorKey(isEditor.value ? 'editor' : 'current', response.id_string)
   }, 800)
 
   const paletteAddColor = () => {

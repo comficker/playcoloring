@@ -19,12 +19,25 @@ export const useUserStore = defineStore('user', () => {
     breadcrumbs.value = bc
   }
 
+  function setEditorKey(key: 'editor' | 'current', value: string) {
+    if (!logged.value.meta) {
+      logged.value.meta = {
+        coloring: {}
+      }
+    }
+    if (!logged.value.meta.coloring){
+      logged.value.meta.coloring = {}
+    }
+    logged.value.meta.coloring[key] = value
+  }
+
   return {
     logged,
     setLogged,
     isLogged,
     breadcrumbs,
-    setBC
+    setBC,
+    setEditorKey
   }
 })
 

@@ -85,7 +85,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">
-              <nuxt-link to="/arts/size-8x8">8x8</nuxt-link>
+              <nuxt-link title="8x8 Coloring" to="/arts/size-8x8">8x8</nuxt-link>
             </h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
@@ -116,7 +116,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
               <div class="w-5 h-5 i-con-star-outline"/>
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
-            <h2 class="font-bold text-xl"><nuxt-link to="/arts/size-24x24">24x24</nuxt-link></h2>
+            <h2 class="font-bold text-xl"><nuxt-link title="24x24 Coloring" to="/arts/size-24x24">24x24</nuxt-link></h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r3.results" :value="item" :key="item.id" show-author/>
@@ -131,7 +131,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
               <div class="w-5 h-5 i-con-star-outline"/>
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
-            <h2 class="font-bold text-xl"><nuxt-link to="/arts/size-32x32">32x32</nuxt-link></h2>
+            <h2 class="font-bold text-xl"><nuxt-link title="32x32 Coloring" to="/arts/size-32x32">32x32</nuxt-link></h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r4.results" :value="item" :key="item.id" show-author/>

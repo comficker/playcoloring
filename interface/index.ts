@@ -101,8 +101,8 @@ export interface User {
   username: string,
   meta: {
     coloring: {
-      current: string,
-      editor: string
+      current?: string,
+      editor?: string
     }
   }
 }

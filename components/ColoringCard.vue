@@ -22,7 +22,7 @@
           >
             <div class="w-4 h-4 i-con-expand"/>
           </div>
-          <nuxt-link :to="`/?id=${value.id_string}`" class="cursor-pointer p-2 rounded bg-yellow-300">
+          <nuxt-link :to="`/?id=${value.id_string}`" :title="`Coloring ${value.name}`" class="cursor-pointer p-2 rounded bg-yellow-300">
             <div class="w-4 h-4 i-con-color"/>
           </nuxt-link>
         </div>
@@ -33,6 +33,7 @@
         <div class="i-con-picture w-4 h-4"></div>
         <nuxt-link
           :to="to"
+          :title="value.name"
           class="font-semibold hover:underline whitespace-nowrap truncate">{{ value.name || value.id_string }}
         </nuxt-link>
       </div>
