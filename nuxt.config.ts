@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     'nuxt-lazy-load',
     '@nuxtjs/partytown',
-    'nuxt-delay-hydration',
+    // 'nuxt-delay-hydration',
   ],
   experimental: {
     payloadExtraction: false,

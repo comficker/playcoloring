@@ -101,8 +101,8 @@ watch(() => editorStore.drawSignal, () => {
 
 onMounted(() => {
   dpr.value = window.devicePixelRatio
+  setTimeout(() => draw(), 1)
   window.soundPop = new Audio('/brush.wav')
-  draw()
 })
 </script>
 

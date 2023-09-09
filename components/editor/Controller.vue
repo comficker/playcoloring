@@ -77,6 +77,6 @@ const eStore = useEditor()
 }
 
 .controller .btn {
-  @apply flex-none justify-center;
+  @apply flex-none justify-center border-gray-200 md:border-transparent;
 }
 </style>
