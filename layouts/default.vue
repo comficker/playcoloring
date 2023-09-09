@@ -4,7 +4,7 @@ const {$pwa} = useNuxtApp()
 </script>
 
 <template>
-  <main id="main" class="flex flex-col min-h-full px-4" :class="{'fixed inset-0 overflow-auto': $pwa && $pwa.isInstalled}">
+  <main id="main" class="flex flex-col min-h-full px-4">
     <Header/>
     <div class="flex-1 ">
       <slot class="w-full"/>
