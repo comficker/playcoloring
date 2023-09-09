@@ -13,12 +13,12 @@ const es = useEditor()
       v-if="es.isCompleted && !es.modalShowing"
       class="absolute inset-0 flex flex-col items-center justify-center"
     >
-      <div class="text-center">
-        <div class="text-4xl font-extrabold text-white opacity-75">
+      <div class="flex-1 text-center flex">
+        <div class="text-4xl font-extrabold text-white opacity-75 mx-auto">
           <span class="block bg-yellow-500 p-2 px-4">Completed!</span>
         </div>
       </div>
-      <div class="flex flex-row justify-center gap-3 absolute bottom-4 left-0 right-0">
+      <div class="flex flex-row justify-center gap-3 sticky bottom-4 left-0 right-0">
         <div
           class="btn bg-green-500 text-white"
           @click="es.loadFromCloud('random')"

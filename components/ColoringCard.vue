@@ -36,14 +36,6 @@
           class="font-semibold hover:underline whitespace-nowrap truncate">{{ value.name || value.id_string }}
         </nuxt-link>
       </div>
-      <div v-if="showAuthor" class="flex gap-1 items-center text-sm">
-        <div class="i-con-user w-4 h-4"></div>
-        <nuxt-link
-          :to="`/${value.is_template ? 'pages': 'arts'}/author-anonymous`"
-          class="font-semibold hover:underline">
-          <span>Anonymous</span>
-        </nuxt-link>
-      </div>
     </div>
   </div>
 </template>

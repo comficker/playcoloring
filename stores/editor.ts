@@ -297,16 +297,21 @@ export const useEditor = defineStore('editor', () => {
         key = userStore.logged.meta.coloring.editor
       }
     }
-    loadFromCloud(key).then(console.log)
+    loadFromCloud(key).then()
   }
 
   watch(() => route.path, () => {
-    isEditor.value = route.name == 'editor'
-    load()
+    if (route.name && ['editor', 'index'].includes(route.name.toString())) {
+      isEditor.value = route.name == 'editor'
+      load()
+    }
   })
 
   onMounted(() => {
-    load()
+    if (route.name && ['editor', 'index'].includes(route.name.toString())) {
+      isEditor.value = route.name == 'editor'
+      load()
+    }
   })
 
   return {

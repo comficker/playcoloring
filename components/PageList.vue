@@ -11,7 +11,7 @@
     </p>
   </div>
   <div class="max-w-xl mx-auto my-4 space-y-6">
-    <div class="grid grid-cols-2 gap-2 md:gap-3">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
       <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
     </div>
     <div class="flex font-semibold">

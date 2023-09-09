@@ -1,12 +1,11 @@
 <template>
-  <PageDetail v-if="isDetail"/>
-  <PageAuthor v-else-if="isAuthor"/>
-  <PageList v-else/>
+  <page-detail v-if="isDetail"/>
+  <page-author v-else-if="isAuthor"/>
+  <page-list-index v-else-if="route.path == '/pages'"/>
+  <page-list v-else/>
 </template>
 
 <script setup lang="ts">
-import PageAuthor from "~/components/PageAuthor.vue";
-
 const route = useRoute()
 
 const isDetail = computed(() => {
