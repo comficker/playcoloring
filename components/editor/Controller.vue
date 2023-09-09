@@ -73,7 +73,7 @@ const eStore = useEditor()
 
 <style>
 .controller {
-  @apply px-4 p-2 bg-white border-b md:px-1 md:rounded md:border grid gap-1.5 text-sm;
+  @apply p-4 bg-white border-b md:px-1 md:rounded md:border grid gap-1.5 text-sm;
 }
 
 .controller .btn {

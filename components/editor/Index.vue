@@ -10,7 +10,15 @@ const editorStore = useEditor()
       <editor-board/>
     </div>
     <div id="control-area">
-      <div v-if="editorStore.isCompleted" class="py-2 border-y flex flex-row justify-center gap-3">
+      <div v-if="!editorStore.isCompleted" class="border-y">
+        <div class="max-w-xl py-4 md:py-2 w-full mx-auto">
+          <editor-palette/>
+        </div>
+      </div>
+      <div class="md:absolute md:top-4 md:left-4">
+        <editor-controller/>
+      </div>
+      <div v-if="editorStore.isCompleted" class="palette py-4 border-y flex flex-row justify-center gap-3">
         <div
           class="btn bg-green-500 text-white"
           @click="editorStore.loadFromCloud('random')"
@@ -33,16 +41,8 @@ const editorStore = useEditor()
           <span class="uppercase text-xs font-bold">Replay</span>
         </div>
       </div>
-      <div v-if="!editorStore.isCompleted" class="border-y">
-        <div class="max-w-xl py-2 w-full mx-auto">
-          <editor-palette/>
-        </div>
-      </div>
-      <div class="md:absolute md:top-4 md:left-4">
-        <editor-controller/>
-      </div>
       <div v-if="editorStore.isCompleted" class="text-center text-3xl font-bold text-white opacity-50 mx-auto">
-        <span class="block bg-yellow-500 uppercase p-2 px-4">Completed!</span>
+        <span class="block bg-yellow-500 uppercase p-4">Completed!</span>
       </div>
     </div>
     <editor-modal/>

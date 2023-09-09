@@ -12,3 +12,11 @@ const {$pwa} = useNuxtApp()
     <Footer v-if="!$pwa || !$pwa.isInstalled"/>
   </main>
 </template>
+
+<style>
+@supports (-webkit-touch-callout: none) {
+  #main {
+    margin-bottom: 10px;
+  }
+}
+</style>
