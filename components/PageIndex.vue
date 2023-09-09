@@ -72,7 +72,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
     <editor/>
     <template v-if="!$pwa || !$pwa.isInstalled">
       <div class="max-w-xl mx-auto space-y-4">
-        <h1 class="text-5xl font-bold">Play Coloring, Hi!</h1>
+        <h1 class="text-3xl md:text-5xl font-bold">Play Coloring, Hi!</h1>
         <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an enjoyable and accessible way.
           <a href="/about" target="_blank" class="underline">About us!</a></p>
         <div v-if="r1.count" class="max-w-xl mx-auto my-4 space-y-2">
@@ -88,7 +88,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
               <nuxt-link to="/arts/size-8x8">8x8</nuxt-link>
             </h2>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+          <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r1.results" :value="item" :key="item.id" show-author/>
           </div>
         </div>
@@ -103,7 +103,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
             </div>
             <h2 class="font-bold text-xl"><nuxt-link to="/arts/size-16x16">16x16</nuxt-link></h2>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+          <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
           </div>
         </div>
@@ -118,7 +118,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
             </div>
             <h2 class="font-bold text-xl"><nuxt-link to="/arts/size-24x24">24x24</nuxt-link></h2>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+          <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r3.results" :value="item" :key="item.id" show-author/>
           </div>
         </div>
@@ -133,7 +133,7 @@ const [{data: r1}, {data: r2}, {data: r3}, {data: r4}] = await Promise.all([
             </div>
             <h2 class="font-bold text-xl"><nuxt-link to="/arts/size-32x32">32x32</nuxt-link></h2>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+          <div class="grid grid-cols-3 gap-2 md:gap-3">
             <coloring-card v-for="item in r4.results" :value="item" :key="item.id" show-author/>
           </div>
         </div>

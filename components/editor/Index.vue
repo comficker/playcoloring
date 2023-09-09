@@ -9,8 +9,41 @@ const editorStore = useEditor()
     <div class="flex-1 w-full relative">
       <editor-board/>
     </div>
-    <div v-if="!editorStore.isCompleted" id="control-area">
-      <div class="border-y">
+    <div id="control-area">
+      <Transition
+        enter-active-class="animated animated-faster animated-fade-in"
+        leave-active-class="animated animated-faster animated-fade-out-down"
+      >
+        <div v-if="editorStore.isCompleted && !editorStore.modalShowing" class="">
+          <div class="text-center text-3xl font-bold text-white opacity-50 mx-auto">
+            <span class="block bg-yellow-500 uppercase p-2 px-4">Completed!</span>
+          </div>
+          <div class="py-2 border-y flex flex-row justify-center gap-3">
+            <div
+              class="btn bg-green-500 text-white"
+              @click="es.loadFromCloud('random')"
+            >
+              <div class="i-con-pad w-4 h-4"/>
+              <span class="uppercase text-xs font-bold">Continue</span>
+            </div>
+            <div
+              class="btn bg-green-500 text-white"
+              @click="es.toggleModal('save')"
+            >
+              <div class="i-con-share w-4 h-4"/>
+              <span class="uppercase text-xs font-bold">Share</span>
+            </div>
+            <div
+              class="btn bg-gray-200"
+              @click="es.clear()"
+            >
+              <div class="i-con-refresh w-4 h-4"/>
+              <span class="uppercase text-xs font-bold">Replay</span>
+            </div>
+          </div>
+        </div>
+      </Transition>
+      <div v-if="!editorStore.isCompleted" class="border-y">
         <div class="max-w-xl py-2 w-full mx-auto">
           <editor-palette/>
         </div>
@@ -20,7 +53,6 @@ const editorStore = useEditor()
       </div>
     </div>
     <editor-modal/>
-    <editor-complete/>
   </div>
 </template>
 

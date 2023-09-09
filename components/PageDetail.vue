@@ -39,8 +39,8 @@
           class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
         >
           <div class="w-4 h-4 i-con-gamepad"/>
-          <span v-if="isOwner">Continue</span>
-          <span v-else>Play</span>
+          <span class="hidden md:block" v-if="isOwner">Continue</span>
+          <span class="hidden md:block" v-else>Play</span>
         </nuxt-link>
       </div>
       <div class="flex gap-2">
