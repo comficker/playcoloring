@@ -142,6 +142,8 @@ export const useEditor = defineStore('editor', () => {
 
   const clear = () => {
     if (isEditor.value) {
+      workspace.id = 0
+      workspace.id_string = ''
       workspace.map_numbers = {}
       workspace.colors = cloneDeep(DEFAULT_COLORS)
       workspace.steps = [{
@@ -290,16 +292,25 @@ export const useEditor = defineStore('editor', () => {
     return false
   }
 
-  const load = async (id: string) => {
-    let key = id || 'random'
+  const load = async (key: string = 'random') => {
     if (userStore.isLogged && key === 'random') {
       if (!isEditor.value && userStore.logged?.meta?.coloring?.current) {
         key = userStore.logged.meta.coloring.current
       } else if (isEditor.value && userStore.logged?.meta?.coloring?.editor) {
         key = userStore.logged.meta.coloring.editor
+      } else if (isEditor.value) {
+        key = ''
       }
     }
-    await loadFromCloud(key)
+    if (key.length) {
+      await loadFromCloud(key)
+    } else {
+      clear()
+    }
+  }
+
+  const setIsEditor = (v: boolean) => {
+    isEditor.value = v
   }
 
   return {
@@ -325,6 +336,7 @@ export const useEditor = defineStore('editor', () => {
     toggleModal,
     updateWorkspace,
     preCheckStep,
-    load
+    load,
+    setIsEditor
   }
 })
