@@ -35,7 +35,6 @@ const fill = (e: MouseEvent) => {
     }
   }
   if (editorStore.preCheckStep(step)) {
-    console.log(step);
     editorStore.addStep(step)
   }
 }
@@ -75,9 +74,12 @@ const draw = () => {
       const arr = index.split("_").map(x => Number.parseInt(x))
       ctx.fillText(
         editorStore.workspace.map_numbers[index].toString(),
-        pixelSize.value * (+arr[0] + 0.5),
-        pixelSize.value * (+arr[1] + 0.5)
+        pixelSize.value * (arr[0] + 0.5),
+        pixelSize.value * (arr[1] + 0.5)
       );
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = "gray";
+      ctx.strokeRect(pixelSize.value * arr[0], pixelSize.value * arr[1], pixelSize.value, pixelSize.value)
     })
   }
   const colors = editorStore.workspace.results || {}
@@ -115,7 +117,10 @@ onMounted(() => {
       :style="{'--zoom-size': `${pixelSize / dpr}px ${pixelSize / dpr}px`,}"
     >
       <div class="m-auto">
-        <div id="workload" :style="workspaceStyle" :class="{'has-grid': editorStore.fetchingPercent === 101}">
+        <div
+          id="workload" :style="workspaceStyle"
+          :class="{'has-grid': editorStore.isEditor && editorStore.fetchingPercent === 101}"
+        >
           <canvas
             id="workspace" class="absolute inset-0"
             :width="pictureSize" :height="pictureSize"
