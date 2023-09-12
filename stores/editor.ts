@@ -3,7 +3,7 @@ import {Options, SaveForm, SharedPage, Step} from "~/interface";
 import pkg from "lodash";
 import {convertSteps} from "~/helper/canvas";
 import {useUserStore} from "~/stores/user";
-import {useRoute} from "#app";
+import {rgbToHex, isSameColor} from "~/helper/color";
 
 const {debounce, cloneDeep, isEqual} = pkg
 const DEFAULT_COLORS = [
@@ -67,7 +67,7 @@ export const useEditor = defineStore('editor', () => {
   const progress = computed(() => {
     const total = Object.keys(workspace.map_numbers).length
     let result = 0
-    let detail: {[key: number]: { total: number, result: number, out: number }} = {}
+    let detail: { [key: number]: { total: number, result: number, out: number } } = {}
     Object.keys(workspace.map_numbers).forEach((key: string) => {
       const colorIndex = workspace.map_numbers[key]
       if (!detail[colorIndex]) {
@@ -91,8 +91,42 @@ export const useEditor = defineStore('editor', () => {
       detail: detail
     }
   })
-  const loadFromFile = (fileElm: HTMLInputElement) => {
+  const loadFromFile = (pxColor: number[][][], ignoreColor: number[] | null) => {
+    const maps_results: { [key: string]: number } = {}
+    const colors: string[] = []
+    let size = pxColor.length
+    for (let y = 0; y < pxColor.length; y++) {
+      for (let x = 0; x < pxColor[y].length; x++) {
+        if (pxColor[y].length > size) size = pxColor[y].length;
 
+        const key = `${x}_${y}`
+        let hex = rgbToHex(pxColor[y][x][0], pxColor[y][x][1], pxColor[y][x][2])
+        for (let i = 0; i < colors.length; i++) {
+          if (isSameColor(colors[i].replace("#", ""), hex.replace("#", ""))) {
+            hex = colors[i]
+          }
+        }
+        if (hex !== '#ffffff' && !isSameColor('ffffff', hex.replace("#", ""))) {
+          if (!colors.includes(hex)) {
+            colors.push(hex)
+          }
+          maps_results[key] = colors.indexOf(hex)
+        }
+      }
+    }
+    clear()
+    workspace.steps = [{
+      type: 'init_colors',
+      value: colors
+    }, {
+      type: 'init_results',
+      value: maps_results
+    }, {
+      type: 'resize',
+      value: size + 1
+    }]
+    steps2Result()
+    draw()
   }
 
   const loadFromCloud = async (id: string) => {
@@ -251,6 +285,7 @@ export const useEditor = defineStore('editor', () => {
 
   const updateWorkspace = (form: SaveForm) => {
     Object.assign(workspace, form)
+    saveLate()
   }
 
   const preCheckStep = (step: Step): boolean => {
