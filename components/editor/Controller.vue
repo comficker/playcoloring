@@ -31,10 +31,10 @@ const eStore = useEditor()
           <div class="i-con-move w-4 h-4"/>
         </div>
       </template>
-      <div class="btn" @click="eStore.handleZoom(true)">
+      <div class="btn" @click="eStore.handleZoom(true)" :class="{'flex-1': eStore.isCompleted}">
         <div class="i-con-zoom-in w-4 h-4"/>
       </div>
-      <div class="btn" @click="eStore.handleZoom(false)">
+      <div class="btn" @click="eStore.handleZoom(false)" :class="{'flex-1': eStore.isCompleted}">
         <div class="i-con-zoom-out w-4 h-4"/>
       </div>
       <div
@@ -69,6 +69,10 @@ const eStore = useEditor()
 
 .controller .btn {
   @apply border flex-none justify-center hover:shadow;
+}
+
+.controller .btn.flex-1 {
+  flex: 1;
 }
 
 .controller .btn:hover,

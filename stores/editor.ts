@@ -142,8 +142,16 @@ export const useEditor = defineStore('editor', () => {
         timeLeft = timeLeft / 2
       }, 100)
     }
-    const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`)
-    if (!response) return
+    const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`).catch(() => null)
+    if (!response) {
+      fetchingPercent.value = 101
+      if (isEditor.value) {
+        clear(true)
+      } else {
+        await loadFromCloud('random')
+      }
+      return
+    }
     Object.assign(workspace, response)
     workspace.tags = workspace.taxonomies.map(x => x.name)
     if (!isEditor.value && response.is_template) {
@@ -175,7 +183,7 @@ export const useEditor = defineStore('editor', () => {
     }
   }
 
-  const clear = () => {
+  const clear = (force: boolean = false) => {
     if (isEditor.value) {
       workspace.name = ''
       workspace.desc = ''
@@ -187,6 +195,10 @@ export const useEditor = defineStore('editor', () => {
         value: cloneDeep(DEFAULT_COLORS)
       }]
       workspace.results = {}
+      if (force) {
+        workspace.id = 0
+        workspace.id_string = ''
+      }
       draw()
     } else {
       workspace.steps = []

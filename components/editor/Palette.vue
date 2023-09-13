@@ -139,6 +139,6 @@ const preSave = () => {
 <style>
 .palette .p-2\.5,
 .palette .btn {
-  @apply p-4 md:p-3 bg-white;
+  @apply p-4 md:p-3;
 }
 </style>
