@@ -59,6 +59,7 @@ export interface SharedPage {
   is_template: boolean
   name: string
   id_string: string
+  new_id_string?: string,
   desc: any
   meta: any
   colors: any[]
@@ -113,6 +114,7 @@ export interface SaveForm {
   name: string
   desc: string
   status: string
+  new_id_string: string
 }
 
 export interface IBreadcrumb {

@@ -231,7 +231,8 @@ export const useEditor = defineStore('editor', () => {
       body: {
         ...workspace,
         user: undefined,
-        taxonomies: undefined
+        taxonomies: undefined,
+        id_string: workspace.new_id_string ? workspace.new_id_string: undefined
       }
     })
     Object.assign(workspace, response)
