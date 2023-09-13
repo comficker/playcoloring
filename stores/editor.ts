@@ -60,7 +60,8 @@ export const useEditor = defineStore('editor', () => {
   const drawSignal = ref(false)
 
   const isCompleted = computed(() =>
-    workspace.results && Object.keys(workspace.map_numbers).length && Object.keys(workspace.results).length &&
+    fetchingPercent.value === 101 && workspace.results &&
+    Object.keys(workspace.map_numbers).length && Object.keys(workspace.results).length &&
     isEqual(!isEditor.value && workspace.map_numbers, workspace.results)
   )
 
@@ -176,11 +177,9 @@ export const useEditor = defineStore('editor', () => {
 
   const clear = () => {
     if (isEditor.value) {
-      workspace.id = 0
       workspace.name = ''
       workspace.desc = ''
       workspace.tags = []
-      workspace.id_string = ''
       workspace.map_numbers = {}
       workspace.colors = cloneDeep(DEFAULT_COLORS)
       workspace.steps = [{

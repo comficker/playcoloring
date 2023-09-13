@@ -10,15 +10,15 @@ const editorStore = useEditor()
       <editor-board/>
     </div>
     <div id="control-area">
-      <div v-if="!editorStore.isCompleted" class="border-y">
-        <div class="max-w-xl py-4 md:py-2 w-full mx-auto">
+      <div class="md:absolute border-t md:border-t-0 md:top-4 md:left-4">
+        <editor-controller/>
+      </div>
+      <div v-if="!editorStore.isCompleted" class="md:border-y bg-gray-50">
+        <div class="max-w-xl py-2 w-full mx-auto">
           <editor-palette/>
         </div>
       </div>
-      <div class="md:absolute md:top-4 md:left-4">
-        <editor-controller/>
-      </div>
-      <div v-if="editorStore.isCompleted" class="palette py-4 border-y flex flex-row justify-center gap-3">
+      <div v-if="editorStore.isCompleted" class="palette py-4 flex flex-row justify-center gap-3">
         <div
           class="btn bg-green-500 text-white"
           @click="editorStore.loadFromCloud('random')"

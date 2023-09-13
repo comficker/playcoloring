@@ -150,35 +150,34 @@ onMounted(() => {
             @mousemove="handleMouseHover"
             @mouseover="handleMouseUp"
           ></div>
-          <div v-if="editorStore.options.boardFunc === 'move'" class="absolute inset-0 z-10">
-            <div class="absolute bottom-4 left-0 right-0 flex gap-4 justify-center">
-              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', -1)">
-                <div class="w-4 h-4 i-con-arrow-left"/>
-              </div>
-              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('h', 1)">
-                <div class="w-4 h-4 i-con-arrow-right"/>
-              </div>
-            </div>
-            <div class="absolute right-4 top-0 bottom-0 flex flex-col gap-4 justify-center">
-              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', -1)">
-                <div class="w-4 h-4 i-con-arrow-up"/>
-              </div>
-              <div class="btn bg-white border-gray-200" @click="editorStore.handleTeleport('v', 1)">
-                <div class="w-4 h-4 i-con-arrow-down"/>
-              </div>
-            </div>
-          </div>
-          <img v-if="editorStore.fetchingPercent < 101" class="absolute inset-0" src="/loading.svg" alt=""
-               :style="workspaceStyle">
         </div>
+      </div>
+      <div v-if="editorStore.options.boardFunc === 'move'" class="absolute inset-0 z-10">
+        <div class="absolute bottom-2 left-0 right-0 flex gap-2 justify-center">
+          <div class="btn rounded bg-white border-gray-200" @click="editorStore.handleTeleport('h', -1)">
+            <div class="w-4 h-4 i-con-arrow-left"/>
+          </div>
+          <div class="btn rounded bg-white border-gray-200" @click="editorStore.handleTeleport('h', 1)">
+            <div class="w-4 h-4 i-con-arrow-right"/>
+          </div>
+        </div>
+        <div class="absolute right-2 top-0 bottom-0 flex flex-col gap-2 justify-center">
+          <div class="btn rounded bg-white border-gray-200" @click="editorStore.handleTeleport('v', -1)">
+            <div class="w-4 h-4 i-con-arrow-up"/>
+          </div>
+          <div class="btn rounded bg-white border-gray-200" @click="editorStore.handleTeleport('v', 1)">
+            <div class="w-4 h-4 i-con-arrow-down"/>
+          </div>
+        </div>
+      </div>
+      <div v-if="editorStore.fetchingPercent < 101" class="absolute inset-0 flex items-center bg-white">
+        <img class="w-64 h-64 mx-auto" src="/loading.svg" alt="Loading">
       </div>
     </div>
   </div>
 </template>
 
 <style>
-
-
 #inner {
   display: flex;
 }

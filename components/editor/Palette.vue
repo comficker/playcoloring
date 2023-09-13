@@ -70,7 +70,7 @@ const preSave = () => {
         </div>
         <div
           v-if="!es.options.paletteFunc"
-          class="btn hover:border-gray-2"
+          class="btn md:hover:border-gray-2"
           :class="{'border-blue': es.options.color == -1}"
           @click="es.paletteSetColor(-1)"
         >
@@ -101,7 +101,7 @@ const preSave = () => {
             </div>
           </div>
         </template>
-        <div class="flex-none">
+        <div class="md:hidden flex-none">
           <div class="w-2 pt-full"></div>
         </div>
       </div>
@@ -139,6 +139,6 @@ const preSave = () => {
 <style>
 .palette .p-2\.5,
 .palette .btn {
-  @apply p-4 md:p-3;
+  @apply p-4 md:p-3 bg-white border-gray-300;
 }
 </style>
