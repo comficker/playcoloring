@@ -64,11 +64,11 @@ const eStore = useEditor()
 
 <style>
 .controller {
-  @apply py-2 p-4 bg-gray-50 md:bg-white border-b md:px-1 md:rounded md:border flex gap-1.5 text-sm;
+  @apply py-2 p-4 border-b md:px-1 md:rounded md:border flex gap-1.5 text-sm;
 }
 
 .controller .btn {
-  @apply border flex-none justify-center hover:shadow border-gray-300 md:border-transparent;
+  @apply border flex-none justify-center hover:shadow;
 }
 
 .controller .btn:hover,

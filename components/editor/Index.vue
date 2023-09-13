@@ -13,7 +13,7 @@ const editorStore = useEditor()
       <div class="md:absolute border-t md:border-t-0 md:top-4 md:left-4">
         <editor-controller/>
       </div>
-      <div v-if="!editorStore.isCompleted" class="md:border-y bg-gray-50">
+      <div v-if="!editorStore.isCompleted" class="md:border-y border-b">
         <div class="max-w-xl py-2 w-full mx-auto">
           <editor-palette/>
         </div>
