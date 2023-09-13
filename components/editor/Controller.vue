@@ -21,7 +21,6 @@ const eStore = useEditor()
           <span class="md:hidden">Mirror</span>
         </div>
         <div
-          v-if="!eStore.isEditor"
           class="btn" :class="{'active': eStore.options.boardFunc === 'bucket'}"
           @click="eStore.boardSetFunc('bucket')"
         >

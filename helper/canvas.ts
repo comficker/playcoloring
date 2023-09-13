@@ -51,7 +51,7 @@ export function trimCanvas(canvas: HTMLCanvasElement) {
 }
 
 
-export function convertSteps({steps, colors, map_numbers, width, height}: SharedPage) {
+export function convertSteps({steps, colors, map_numbers, width, height, is_template}: SharedPage) {
   let currentColors = cloneDeep(colors)
   let results: { [key: string]: number } = {}
   let currentCursorColor = 0
@@ -113,10 +113,10 @@ export function convertSteps({steps, colors, map_numbers, width, height}: Shared
       }
       case 'bucket': {
         const {key, color} = step.value
-        const correctColor = map_numbers[key]
-        const keys = Object.keys(map_numbers)
+        const correctColor = is_template ? results[key] : map_numbers[key]
+        const keys = Object.keys(is_template ? results : map_numbers)
         currentCursorColor = color
-        Object.values(map_numbers).forEach((value: number, index: number) => {
+        Object.values(is_template ? results : map_numbers).forEach((value: number, index: number) => {
           if (correctColor === value) {
             if (color >= 0) {
               results[keys[index]] = color
