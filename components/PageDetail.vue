@@ -1,135 +1,137 @@
 <template>
-  <breadcrumb/>
-  <div v-if="value" class="max-w-xl mx-auto space-y-4">
-    <div class="w-full pt-full relative bg-white">
-      <div class="absolute inset-4">
-        <img
-          id="mainImg"
-          v-if="value.status == 'public' || !value.status"
-          :src="meta.imgSrc"
-          :alt="meta.title"
-          class="object-contain w-full md:max-w-sm mx-auto h-full"
-        >
-        <canvas
-          v-else
-          :id="`canvas_${value.id}`"
-          class="duration-300 w-full h-full"
-          width="200"
-          height="200"
-        />
-      </div>
-    </div>
-    <div>
-      <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
-      <p>{{ meta.desc }}</p>
-    </div>
-    <div class="flex flex-row gap-4 justify-between">
-      <div class="flex-1 flex gap-2 font-medium">
-        <div class="btn hover:shadow border-gray-200" @click="print">
-          <div class="w-4 h-4 i-con-print"/>
-          <span class="hidden md:block">Print</span>
+  <div>
+    <breadcrumb/>
+    <div v-if="value" class="max-w-xl mx-auto space-y-4">
+      <div class="w-full pt-full relative bg-white">
+        <div class="absolute inset-4">
+          <img
+            id="mainImg"
+            v-if="value.status == 'public' || !value.status"
+            :src="meta.imgSrc"
+            :alt="meta.title"
+            class="object-contain w-full md:max-w-sm mx-auto h-full"
+          >
+          <canvas
+            v-else
+            :id="`canvas_${value.id}`"
+            class="duration-300 w-full h-full"
+            width="200"
+            height="200"
+          />
         </div>
-        <a class="btn hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
-          <div class="w-4 h-4 i-con-download"/>
-          <span class="hidden md:block">Download</span>
-        </a>
+      </div>
+      <div>
+        <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
+        <p>{{ meta.desc }}</p>
+      </div>
+      <div class="flex flex-row gap-4 justify-between">
+        <div class="flex-1 flex gap-2 font-medium">
+          <div class="btn hover:shadow border-gray-200" @click="print">
+            <div class="w-4 h-4 i-con-print"/>
+            <span class="hidden md:block">Print</span>
+          </div>
+          <a class="btn hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
+            <div class="w-4 h-4 i-con-download"/>
+            <span class="hidden md:block">Download</span>
+          </a>
+          <nuxt-link
+            v-if="value.is_template || isOwner"
+            :to="`/?id=${value.id_string}`"
+            class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
+          >
+            <div class="w-4 h-4 i-con-gamepad"/>
+            <span class="hidden md:block" v-if="isOwner">Continue</span>
+            <span class="hidden md:block" v-else>Play</span>
+          </nuxt-link>
+        </div>
+        <div class="flex gap-2">
+          <client-only>
+            <ShareNetwork
+              v-for="item in networks"
+              :key="item"
+              :network="item"
+              :url="meta.url"
+              :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
+              :description="meta.desc"
+              :quote="meta.desc"
+              :hashtags="value.taxonomies.map(x => x.title).join(',')"
+              :media="meta.imgSrc"
+              class="btn border"
+            >
+              <div class="w-4 h-4" :class="`i-con-${item}`"/>
+            </ShareNetwork>
+          </client-only>
+        </div>
+      </div>
+      <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+        <div class="text-sm flex gap-2 flex-wrap items-center">
+          <div class="w-5 h-5 i-con-tags"/>
+        </div>
         <nuxt-link
-          v-if="value.is_template || isOwner"
-          :to="`/?id=${value.id_string}`"
-          class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
+          class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
+          v-for="item in value.taxonomies" :key="item.id"
+          :to="`/${space}/${item.id_string}`"
         >
-          <div class="w-4 h-4 i-con-gamepad"/>
-          <span class="hidden md:block" v-if="isOwner">Continue</span>
-          <span class="hidden md:block" v-else>Play</span>
+          <span>{{ item.title }}</span>
         </nuxt-link>
       </div>
-      <div class="flex gap-2">
-        <client-only>
-          <ShareNetwork
-            v-for="item in networks"
-            :key="item"
-            :network="item"
-            :url="meta.url"
-            :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
-            :description="meta.desc"
-            :quote="meta.desc"
-            :hashtags="value.taxonomies.map(x => x.title).join(',')"
-            :media="meta.imgSrc"
-            class="btn border"
-          >
-            <div class="w-4 h-4" :class="`i-con-${item}`"/>
-          </ShareNetwork>
-        </client-only>
+      <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+        <nuxt-link
+          class="w-10 h-10"
+          v-for="item in value.colors" :key="item"
+          :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
+          :style="{background: item}"
+        >
+          <span class="hidden">{{ item }}</span>
+        </nuxt-link>
       </div>
-    </div>
-    <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
-      <div class="text-sm flex gap-2 flex-wrap items-center">
-        <div class="w-5 h-5 i-con-tags"/>
-      </div>
-      <nuxt-link
-        class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
-        v-for="item in value.taxonomies" :key="item.id"
-        :to="`/${space}/${item.id_string}`"
-      >
-        <span>{{ item.title }}</span>
-      </nuxt-link>
-    </div>
-    <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
-      <nuxt-link
-        class="w-10 h-10"
-        v-for="item in value.colors" :key="item"
-        :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
-        :style="{background: item}"
-      >
-        <span class="hidden">{{ item }}</span>
-      </nuxt-link>
-    </div>
-    <div class="grid md:grid-cols-2 gap-3">
-      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
-        <div class="w-8 h-8 i-con-ruler"/>
-        <div class="block">
-          <div class="text-sm text-gray-500">Length</div>
-          <div class="font-bold">{{ Object.keys(value.map_numbers).length }}</div>
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+          <div class="w-8 h-8 i-con-ruler"/>
+          <div class="block">
+            <div class="text-sm text-gray-500">Length</div>
+            <div class="font-bold">{{ Object.keys(value.map_numbers).length }}</div>
+          </div>
         </div>
-      </div>
-      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
-        <div class="w-8 h-8 i-con-ruler"/>
-        <div>
-          <div class="text-sm text-gray-500">Size</div>
-          <div class="flex gap-4">
-            <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
-              <div class="font-bold">{{ value.width }}x{{ value.height }}</div>
+        <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+          <div class="w-8 h-8 i-con-ruler"/>
+          <div>
+            <div class="text-sm text-gray-500">Size</div>
+            <div class="flex gap-4">
+              <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
+                <div class="font-bold">{{ value.width }}x{{ value.height }}</div>
+              </nuxt-link>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+          <div class="w-8 h-8 i-con-user"/>
+          <div>
+            <div class="text-sm text-gray-500">Creator</div>
+            <nuxt-link
+              :to="`/author/${value.user?.username || 'anonymous'}`"
+              class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
             </nuxt-link>
           </div>
         </div>
-      </div>
-      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
-        <div class="w-8 h-8 i-con-user"/>
-        <div>
-          <div class="text-sm text-gray-500">Creator</div>
-          <nuxt-link
-            :to="`/author/${value.user?.username || 'anonymous'}`"
-            class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
-          </nuxt-link>
+        <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
+          <div class="w-8 h-8 i-con-sign"/>
+          <div>
+            <div class="text-sm text-gray-500">Owner</div>
+            <div class="font-bold">__</div>
+          </div>
         </div>
       </div>
-      <div class="flex gap-2 items-center p-2 py-1 bg-white border-b md:border border-gray-100">
-        <div class="w-8 h-8 i-con-sign"/>
-        <div>
-          <div class="text-sm text-gray-500">Owner</div>
-          <div class="font-bold">__</div>
+      <div class="space-y-2">
+        <h2 class="uppercase text-xs font-bold">Variants</h2>
+        <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <coloring-card v-for="item in variant.results" :value="item" show-author/>
         </div>
+        <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 border text-sm">
+          Don't have any variant,
+          <nuxt-link class="underline" :to="`/?id=${value.id_string}`">Play and create one</nuxt-link>
+        </p>
       </div>
-    </div>
-    <div class="space-y-2">
-      <h2 class="uppercase text-xs font-bold">Variants</h2>
-      <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <coloring-card v-for="item in variant.results" :value="item" show-author/>
-      </div>
-      <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 border text-sm">
-        Don't have any variant,
-        <nuxt-link class="underline" :to="`/?id=${value.id_string}`">Play and create one</nuxt-link>
-      </p>
     </div>
   </div>
 </template>

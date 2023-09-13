@@ -1,36 +1,38 @@
 <template>
-  <breadcrumb/>
-  <div class="max-w-xl mx-auto space-y-2">
-    <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
-    <p class="text-lg">
-      {{ meta.desc }}
-      <template v-if="route.params.tax_id === 'arts'">
-        using
-        <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
-      </template>
-    </p>
-  </div>
-  <div class="max-w-xl mx-auto my-4 space-y-6">
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-      <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
+  <div>
+    <breadcrumb/>
+    <div class="max-w-xl mx-auto space-y-2">
+      <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
+      <p class="text-lg">
+        {{ meta.desc }}
+        <template v-if="route.params.tax_id === 'arts'">
+          using
+          <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
+        </template>
+      </p>
     </div>
-    <div class="flex font-semibold">
-      <nuxt-link v-if="pagination.p" class="btn hover:shadow" :to="pagination.p">
-        <div class="i-con-left w-6 h-6"/>
-        <span>Previous</span>
-      </nuxt-link>
-      <div class="flex-1 flex justify-center gap-3">
-        <div class="btn hover:shadow">
-          <span>Current:</span>
-          <span>{{ page }}</span>
-          <span>/</span>
-          <span>{{ r2.num_pages }}</span>
-        </div>
+    <div class="max-w-xl mx-auto my-4 space-y-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+        <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
       </div>
-      <nuxt-link v-if="pagination.n" class="btn hover:shadow" :to="pagination.n">
-        <span>Next</span>
-        <div class="i-con-right w-6 h-6"/>
-      </nuxt-link>
+      <div class="flex font-semibold">
+        <nuxt-link v-if="pagination.p" class="btn hover:shadow" :to="pagination.p">
+          <div class="i-con-left w-6 h-6"/>
+          <span>Previous</span>
+        </nuxt-link>
+        <div class="flex-1 flex justify-center gap-3">
+          <div class="btn hover:shadow">
+            <span>Current:</span>
+            <span>{{ page }}</span>
+            <span>/</span>
+            <span>{{ r2.num_pages }}</span>
+          </div>
+        </div>
+        <nuxt-link v-if="pagination.n" class="btn hover:shadow" :to="pagination.n">
+          <span>Next</span>
+          <div class="i-con-right w-6 h-6"/>
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </template>

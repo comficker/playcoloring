@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { appName } from '~/constants'
+import {appName} from '~/constants'
 
 useHead({
   title: appName,
@@ -7,14 +7,17 @@ useHead({
 </script>
 
 <template>
-  <VitePwaManifest />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div>
+    <VitePwaManifest/>
+    <NuxtLayout>
+      <NuxtLoadingIndicator/>
+      <NuxtPage :page-key="route => route.fullPath"/>
+    </NuxtLayout>
+  </div>
 </template>
 
 <style>
-html, body , #__nuxt{
+html, body, #__nuxt {
   height: 100vh;
   margin: 0;
   padding: 0;

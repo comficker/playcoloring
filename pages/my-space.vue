@@ -57,27 +57,29 @@ watch(() => userStore.logged, () => {
 </script>
 
 <template>
-  <breadcrumb/>
-  <div v-if="response" class="max-w-xl mx-auto space-y-4">
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <coloring-card v-for="item in response.results" :value="item"/>
-    </div>
-    <div class="flex font-semibold">
-      <div v-if="response.links.previous" class="btn hover:shadow" @click="handlePaging(page--)">
-        <div class="i-con-left w-6 h-6"/>
-        <span>Previous</span>
+  <div>
+    <breadcrumb/>
+    <div v-if="response" class="max-w-xl mx-auto space-y-4">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <coloring-card v-for="item in response.results" :value="item"/>
       </div>
-      <div class="flex-1 flex justify-center gap-3">
-        <div class="btn hover:shadow">
-          <span>Current:</span>
-          <span>{{ page }}</span>
-          <span>/</span>
-          <span>{{ response.num_pages }}</span>
+      <div class="flex font-semibold">
+        <div v-if="response.links.previous" class="btn hover:shadow" @click="handlePaging(page--)">
+          <div class="i-con-left w-6 h-6"/>
+          <span>Previous</span>
         </div>
-      </div>
-      <div v-if="response.links.next" class="btn hover:shadow" @click="handlePaging(page++)">
-        <span>Next</span>
-        <div class="i-con-right w-6 h-6"/>
+        <div class="flex-1 flex justify-center gap-3">
+          <div class="btn hover:shadow">
+            <span>Current:</span>
+            <span>{{ page }}</span>
+            <span>/</span>
+            <span>{{ response.num_pages }}</span>
+          </div>
+        </div>
+        <div v-if="response.links.next" class="btn hover:shadow" @click="handlePaging(page++)">
+          <span>Next</span>
+          <div class="i-con-right w-6 h-6"/>
+        </div>
       </div>
     </div>
   </div>

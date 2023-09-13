@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
+    // pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       viewport: 'width=device-width,initial-scale=1',
       titleTemplate: '%s - playcoloring.com',
@@ -66,7 +67,7 @@ export default defineNuxtConfig({
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-5PJSPNJ');`,
-          body: true
+          // body: true
         },
       ],
     },
@@ -87,6 +88,7 @@ export default defineNuxtConfig({
     iframes: true,
     native: false,
     directiveOnly: false,
+    //@ts-ignore
     defaultImage: '/loading.svg',
   },
 })
