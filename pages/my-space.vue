@@ -4,7 +4,7 @@ import ColoringCard from "~/components/ColoringCard.vue";
 import {useUserStore} from "~/stores/user";
 import {useSeoMeta} from "#app";
 import Breadcrumb from "~/components/Breadcrumb.vue";
-const {$touch} = useNuxtApp()
+
 const userStore = useUserStore()
 userStore.setBC([
   {
@@ -14,8 +14,6 @@ userStore.setBC([
   }
 ])
 const page = ref(1)
-
-const response = ref<ResponseSharedPage | null >(null)
 
 useSeoMeta({
   title: "My Space",
@@ -28,31 +26,22 @@ useHead({
   ]
 })
 
-onMounted(() => {
-  fetch()
+const {data: response} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
+  params: {
+    page: page,
+    page_size: 9,
+    user: userStore.logged.username,
+    full_schema: true
+  },
+  watch: [page]
 })
-
-const fetch = function () {
-  $touch(`/coloring/shared-pages/`, {
-    params: {
-      page: page.value,
-      page_size: 32,
-      user: userStore.logged.username,
-      full_schema: true
-    }
-  }).then(r => {
-    response.value = r
-  })
-}
 
 function handlePaging(p: number) {
   page.value = p
-  fetch()
 }
 
 watch(() => userStore.logged, () => {
   page.value = 1
-  fetch()
 }, {deep: true})
 </script>
 
@@ -64,7 +53,7 @@ watch(() => userStore.logged, () => {
         <coloring-card v-for="item in response.results" :value="item"/>
       </div>
       <div class="flex font-semibold">
-        <div v-if="response.links.previous" class="btn hover:shadow" @click="handlePaging(page--)">
+        <div v-if="response.links.previous" class="btn hover:shadow" @click="handlePaging(page-1)">
           <div class="i-con-left w-6 h-6"/>
           <span>Previous</span>
         </div>
@@ -76,7 +65,7 @@ watch(() => userStore.logged, () => {
             <span>{{ response.num_pages }}</span>
           </div>
         </div>
-        <div v-if="response.links.next" class="btn hover:shadow" @click="handlePaging(page++)">
+        <div v-if="response.links.next" class="btn hover:shadow" @click="handlePaging(page+1)">
           <span>Next</span>
           <div class="i-con-right w-6 h-6"/>
         </div>

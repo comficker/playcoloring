@@ -15,7 +15,7 @@ const editorStore = useEditor()
           <editor-palette/>
         </div>
       </div>
-      <div class="md:absolute border-t md:border-t-0 md:top-4 md:left-4">
+      <div class="md:absolute md:top-4 md:left-4">
         <editor-controller/>
       </div>
       <div v-if="editorStore.isCompleted" class="palette py-2 flex flex-row justify-center gap-2">
@@ -51,7 +51,7 @@ const editorStore = useEditor()
 
 <style>
 #control-area {
-  @apply bg-white bottom-0 left-0 right-0 duration-200 z-10;
+  @apply bg-gray-50 bottom-0 left-0 right-0 duration-200 z-10;
 }
 
 #editor {
