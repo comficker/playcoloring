@@ -69,6 +69,9 @@ const draw = () => {
   ctx.textBaseline = 'middle'
   ctx.textAlign = 'center'
   ctx.fillStyle = '#957777'
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "gray";
+  ctx.beginPath()
   if (!editorStore.isEditor) {
     Object.keys(editorStore.workspace.map_numbers).forEach((index: string) => {
       const arr = index.split("_").map(x => Number.parseInt(x))
@@ -77,11 +80,23 @@ const draw = () => {
         pixelSize.value * (arr[0] + 0.5),
         pixelSize.value * (arr[1] + 0.5)
       );
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = "gray";
-      ctx.strokeRect(pixelSize.value * arr[0], pixelSize.value * arr[1], pixelSize.value, pixelSize.value)
+      const x = pixelSize.value * arr[0]
+      const y = pixelSize.value * arr[1]
+      ctx.moveTo(x, y)
+      ctx.lineTo(x + pixelSize.value, y)
+      ctx.moveTo(x, y)
+      ctx.lineTo(x, y + pixelSize.value)
+      if (typeof editorStore.workspace.map_numbers[`${arr[0] + 1}_${arr[1]}`] == 'undefined') {
+        ctx.moveTo(x + pixelSize.value, y)
+        ctx.lineTo(x + pixelSize.value, y + pixelSize.value)
+      }
+      if (typeof editorStore.workspace.map_numbers[`${arr[0]}_${arr[1] + 1}`] == 'undefined') {
+        ctx.moveTo(x, y + pixelSize.value)
+        ctx.lineTo(x + pixelSize.value, y + pixelSize.value)
+      }
     })
   }
+  ctx.stroke()
   const colors = editorStore.workspace.results || {}
   Object.keys(colors).forEach((k: string) => {
     const arr = k.split("_").map(x => Number.parseInt(x))
@@ -153,7 +168,8 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <img v-if="editorStore.fetchingPercent < 101" class="absolute inset-0" src="/loading.svg" alt="" :style="workspaceStyle">
+          <img v-if="editorStore.fetchingPercent < 101" class="absolute inset-0" src="/loading.svg" alt=""
+               :style="workspaceStyle">
         </div>
       </div>
     </div>

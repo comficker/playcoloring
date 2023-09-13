@@ -2,7 +2,7 @@
 import {useEditor} from "~/stores/editor";
 
 const editorStore = useEditor()
-const newSize = ref(16)
+const newSize = ref(editorStore.workspace.width)
 const suggestSizes = [8, 16, 24, 32]
 
 const preSave = () => {

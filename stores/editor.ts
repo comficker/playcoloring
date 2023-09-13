@@ -177,6 +177,9 @@ export const useEditor = defineStore('editor', () => {
   const clear = () => {
     if (isEditor.value) {
       workspace.id = 0
+      workspace.name = ''
+      workspace.desc = ''
+      workspace.tags = []
       workspace.id_string = ''
       workspace.map_numbers = {}
       workspace.colors = cloneDeep(DEFAULT_COLORS)
@@ -185,6 +188,7 @@ export const useEditor = defineStore('editor', () => {
         value: cloneDeep(DEFAULT_COLORS)
       }]
       workspace.results = {}
+      draw()
     } else {
       workspace.steps = []
       steps2Result()

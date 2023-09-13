@@ -5,7 +5,6 @@ import {useRuntimeConfig} from "#app";
 import {useEditor} from "~/stores/editor";
 
 const editorStore = useEditor()
-const {workspace} = editorStore
 const config = useRuntimeConfig()
 const networks = ["facebook", "twitter", "telegram", "pinterest"]
 const cursor = ref<string | null>(null)
@@ -21,13 +20,13 @@ const privacy = [
 ]
 const meta = computed(() => {
   const defaultDesc = ''
-  const url = `https://www.playcoloring.com/post/${workspace.id_string}`
-  let src = `${config.public.apiBase}/coloring/files/${workspace.id_string}.png`
-  if (workspace) {
+  const url = `https://www.playcoloring.com/post/${editorStore.workspace.id_string}`
+  let src = `${config.public.apiBase}/coloring/files/${editorStore.workspace.id_string}.png`
+  if (editorStore.workspace) {
     return {
       url: url,
-      title: `${workspace.name || workspace.id_string}`,
-      desc: workspace.desc || defaultDesc,
+      title: `${editorStore.workspace.name || editorStore.workspace.id_string}`,
+      desc: editorStore.workspace.desc || defaultDesc,
       imgSrc: src
     }
   } else {
@@ -58,10 +57,10 @@ function copy() {
 }
 
 const form = ref<SaveForm>({
-  is_template: workspace.is_template,
-  tags: workspace.tags || [],
-  name: workspace.name || `Untitled #${workspace.id}`,
-  desc: workspace.desc,
+  is_template: editorStore.workspace.is_template,
+  tags: editorStore.workspace.tags || [],
+  name: editorStore.workspace.name || `Untitled #${editorStore.workspace.id}`,
+  desc: editorStore.workspace.desc,
   status: 'draft'
 })
 
@@ -78,6 +77,16 @@ const onAddTag = (e: KeyboardEvent) => {
 watch(form, () => {
   editorStore.updateWorkspace(form.value)
 }, {deep: true})
+
+watch(() => editorStore.drawSignal, () => {
+  form.value = {
+    is_template: editorStore.workspace.is_template,
+    tags: editorStore.workspace.tags || [],
+    name: editorStore.workspace.name || `Untitled #${editorStore.workspace.id}`,
+    desc: editorStore.workspace.desc,
+    status: 'draft'
+  }
+})
 </script>
 
 <template>
@@ -173,7 +182,7 @@ watch(form, () => {
               :title="`${meta.title} - Pixel Coloring - Coloring by Number - playcoloring.com`"
               :description="meta.desc"
               :quote="meta.desc"
-              :hashtags="workspace.taxonomies.map(x => x.title).join(',')"
+              :hashtags="editorStore.workspace.taxonomies.map(x => x.title).join(',')"
               :media="meta.imgSrc"
               class="p-4 hover:bg-gray-50 space-y-4 rounded text-center"
             >
