@@ -90,7 +90,7 @@ const faqs = ref([
             <div class="flex gap-1">
               <div class="w-5 h-5 i-con-star text-yellow-500"/>
               <div class="w-5 h-5 i-con-star text-yellow-500"/>
-              <div class="w-5 h-5 i-con-star-outline"/>
+              <div class="w-5 h-5 i-con-star text-yellow-500"/>
               <div class="w-5 h-5 i-con-star-outline"/>
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
@@ -107,8 +107,8 @@ const faqs = ref([
             <div class="flex gap-1">
               <div class="w-5 h-5 i-con-star text-yellow-500"/>
               <div class="w-5 h-5 i-con-star text-yellow-500"/>
-              <div class="w-5 h-5 i-con-star-outline"/>
-              <div class="w-5 h-5 i-con-star-outline"/>
+              <div class="w-5 h-5 i-con-star text-yellow-500"/>
+              <div class="w-5 h-5 i-con-star text-yellow-500"/>
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">

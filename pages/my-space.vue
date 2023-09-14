@@ -50,7 +50,7 @@ watch(() => userStore.logged, () => {
     <breadcrumb/>
     <div v-if="response" class="max-w-xl mx-auto space-y-4">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <coloring-card v-for="item in response.results" :value="item" is-draw/>
+        <coloring-card v-for="item in response.results" :value="item" :key="item.id" is-draw/>
       </div>
       <div class="flex font-semibold">
         <div v-if="response.links.previous" class="btn hover:shadow" @click="handlePaging(page-1)">

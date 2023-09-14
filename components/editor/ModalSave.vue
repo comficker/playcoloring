@@ -57,7 +57,7 @@ function copy() {
 }
 
 const form = ref<SaveForm>({
-  is_template: editorStore.workspace.is_template,
+  is_template: editorStore.isEditor,
   tags: editorStore.workspace.tags || [],
   name: editorStore.workspace.name || `${editorStore.workspace.is_template ? 'Page' : 'Art'} #${editorStore.workspace.id}`,
   desc: editorStore.workspace.desc,
@@ -82,7 +82,7 @@ watch(form, () => {
 watch(() => editorStore.drawSignal, () => {
   const name = editorStore.workspace.name || `${editorStore.workspace.is_template ? 'Page' : 'Art'} #${editorStore.workspace.id}`
   form.value = {
-    is_template: editorStore.workspace.is_template,
+    is_template: editorStore.isEditor,
     tags: editorStore.workspace.tags || [],
     name: name,
     desc: editorStore.workspace.desc,

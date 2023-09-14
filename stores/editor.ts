@@ -254,7 +254,10 @@ export const useEditor = defineStore('editor', () => {
         id_string: workspace.new_id_string ? workspace.new_id_string: undefined
       }
     })
-    Object.assign(workspace, response)
+    Object.assign(workspace, {
+      ...response,
+      steps: workspace.steps
+    })
     workspace.tags = workspace.taxonomies.map(x => x.name)
     userStore.setEditorKey(isEditor.value ? 'editor' : 'current', response.id_string)
   }, 800)
