@@ -15,7 +15,6 @@ const loadFile = () => {
       reader.onload = async (e: any) => {
         let dataUrl = e.target.result;
         let {rgbSamplesGrid, colorThatRepresentsTransparent} = await dataUrlToSamplesGrid(dataUrl);
-        console.log(rgbSamplesGrid);
         if (rgbSamplesGrid) {
           editorStore.loadFromFile(rgbSamplesGrid, colorThatRepresentsTransparent);
         }

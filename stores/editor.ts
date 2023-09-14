@@ -53,7 +53,7 @@ export const useEditor = defineStore('editor', () => {
   const isEditor = ref(false)
 
   const itv = ref<NodeJS.Timer | null>(null)
-  const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
+  const workspace: SharedPage = reactive<SharedPage>(cloneDeep(DEFAULT_WORKSPACE))
   const options = reactive<Options>(DEFAULT_OPTION)
   const modalShowing = ref<string>('')
   const modalParams = ref<any>(null)
@@ -158,7 +158,7 @@ export const useEditor = defineStore('editor', () => {
       }
       return
     }
-    Object.assign(workspace, response)
+    Object.assign(workspace, cloneDeep(response))
     workspace.tags = workspace.taxonomies.map(x => x.name)
     if (!isEditor.value && response.is_template) {
       workspace.name = ''
@@ -193,32 +193,26 @@ export const useEditor = defineStore('editor', () => {
 
   const clear = (force: boolean = false) => {
     if (isEditor.value) {
-      workspace.map_numbers = {}
-      workspace.results = {}
-      workspace.steps = [{
-        type: 'init_results',
-        value: {}
-      }]
-      workspace.is_template = true
       if (force) {
-        workspace.id = 0
-        workspace.id_string = ''
-        workspace.name = ''
-        workspace.desc = ''
-        workspace.tags = []
-        workspace.colors = cloneDeep(DEFAULT_COLORS)
+        console.log(workspace.id_string);
+        console.log(DEFAULT_WORKSPACE.id_string);
+        Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
+        console.log(workspace.id_string);
+      } else {
+        workspace.map_numbers = {}
+        workspace.results = {}
         workspace.steps = [{
-          type: 'init_colors',
-          value: cloneDeep(DEFAULT_COLORS)
+          type: 'init_results',
+          value: {}
         }]
       }
-      draw()
+      workspace.is_template = true
     } else {
       workspace.steps = []
       steps2Result()
-      draw()
       saveLate()
     }
+    draw()
   }
 
   const draw = () => {
@@ -257,13 +251,13 @@ export const useEditor = defineStore('editor', () => {
         ...workspace,
         user: undefined,
         taxonomies: undefined,
-        id_string: workspace.new_id_string ? workspace.new_id_string: undefined
+        id_string: workspace.new_id_string && method == "PUT" ? workspace.new_id_string: undefined
       }
     })
-    Object.assign(workspace, {
+    Object.assign(workspace, cloneDeep({
       ...response,
       steps: workspace.steps
-    })
+    }))
     workspace.tags = workspace.taxonomies.map(x => x.name)
     userStore.setEditorKey(isEditor.value ? 'editor' : 'current', response.id_string)
   }, 800)
@@ -317,7 +311,7 @@ export const useEditor = defineStore('editor', () => {
   }
 
   const updateWorkspace = (form: SaveForm) => {
-    Object.assign(workspace, form)
+    Object.assign(workspace, cloneDeep(form))
     saveLate()
   }
 

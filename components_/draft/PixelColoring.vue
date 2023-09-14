@@ -336,7 +336,7 @@ import {onMounted, watch} from "@vue/runtime-core";
 import {computed, ref} from "vue";
 import {onBeforeRouteUpdate, useRoute} from "#app";
 import {SaveForm, SharedPage, Step} from "~/interface";
-import ModalSave from "~/components/ModalSave.vue";
+import ModalSave from "~/components_/ModalSave.vue";
 import {trimCanvas, convertSteps} from "~/helper/canvas";
 import {rgbToHex} from "~/helper/color";
 import {useUserStore} from "~/stores/user";

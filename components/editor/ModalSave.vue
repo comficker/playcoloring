@@ -3,7 +3,9 @@ import {ref} from "vue";
 import {SaveForm} from "~/interface";
 import {useRuntimeConfig} from "#app";
 import {useEditor} from "~/stores/editor";
+import pkg from "lodash";
 
+const {debounce} = pkg
 const editorStore = useEditor()
 const config = useRuntimeConfig()
 const networks = ["facebook", "twitter", "telegram", "pinterest"]
@@ -51,7 +53,6 @@ function slugify(text: string) {
     .replace(/--+/g, '-')
 }
 
-
 function copy() {
 
 }
@@ -75,8 +76,20 @@ const onAddTag = (e: KeyboardEvent) => {
   }
 }
 
-watch(form, () => {
+const onInputName = debounce(() => {
+  form.value.new_id_string = slugify(form.value.name)
+}, 800)
+
+const onInputIdString = debounce(() => {
+  form.value.new_id_string = slugify(form.value.new_id_string)
+}, 800)
+
+const x = debounce(() => {
   editorStore.updateWorkspace(form.value)
+}, 800)
+
+watch(form, () => {
+  x()
 }, {deep: true})
 
 watch(() => editorStore.drawSignal, () => {
@@ -106,7 +119,7 @@ watch(() => editorStore.drawSignal, () => {
     <div class="p-4 py-2 space-y-3">
       <div>
         <div class="text-xs text-gray-500">Title</div>
-        <input v-model="form.name" type="text" class="w-full outline-none" placeholder="Title">
+        <input v-model="form.name" type="text" class="w-full outline-none" placeholder="Title" @input="onInputName">
       </div>
       <div>
         <div class="text-xs text-gray-500">Description</div>
@@ -114,7 +127,7 @@ watch(() => editorStore.drawSignal, () => {
       </div>
       <div>
         <div class="text-xs text-gray-500">Permalink</div>
-        <input v-model="form.new_id_string" type="text" class="w-full outline-none" placeholder="Permalink">
+        <input v-model="form.new_id_string" type="text" class="w-full outline-none" placeholder="Permalink" @input="onInputIdString">
       </div>
       <div>
         <div class="text-xs text-gray-500">Tag</div>
