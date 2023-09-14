@@ -56,6 +56,7 @@ export const useEditor = defineStore('editor', () => {
   const workspace: SharedPage = reactive<SharedPage>(DEFAULT_WORKSPACE)
   const options = reactive<Options>(DEFAULT_OPTION)
   const modalShowing = ref<string>('')
+  const modalParams = ref<any>(null)
   const fetchingPercent = ref(101)
   const drawSignal = ref(false)
 
@@ -173,7 +174,9 @@ export const useEditor = defineStore('editor', () => {
       value: workspace.results
     }]
     if (process.client) {
-      if (itv.value) clearInterval(itv.value)
+      if (itv.value) { // @ts-ignore
+        clearInterval(itv.value)
+      }
       fetchingPercent.value = 100
       setTimeout(() => {
         fetchingPercent.value = 101
@@ -185,19 +188,23 @@ export const useEditor = defineStore('editor', () => {
 
   const clear = (force: boolean = false) => {
     if (isEditor.value) {
-      workspace.name = ''
-      workspace.desc = ''
-      workspace.tags = []
       workspace.map_numbers = {}
-      workspace.colors = cloneDeep(DEFAULT_COLORS)
-      workspace.steps = [{
-        type: 'init_colors',
-        value: cloneDeep(DEFAULT_COLORS)
-      }]
       workspace.results = {}
+      workspace.steps = [{
+        type: 'init_results',
+        value: {}
+      }]
       if (force) {
         workspace.id = 0
         workspace.id_string = ''
+        workspace.name = ''
+        workspace.desc = ''
+        workspace.tags = []
+        workspace.colors = cloneDeep(DEFAULT_COLORS)
+        workspace.steps = [{
+          type: 'init_colors',
+          value: cloneDeep(DEFAULT_COLORS)
+        }]
       }
       draw()
     } else {
@@ -291,12 +298,13 @@ export const useEditor = defineStore('editor', () => {
     })
   }
 
-  const toggleModal = (m: string) => {
+  const toggleModal = (m: string, params: any = null) => {
     if (modalShowing.value == m) {
       modalShowing.value = ''
     } else {
       modalShowing.value = m
     }
+    modalParams.value = params
   }
 
   const updateWorkspace = (form: SaveForm) => {
@@ -314,9 +322,12 @@ export const useEditor = defineStore('editor', () => {
       }
       case 'bucket': {
         const {key, color} = step.value
-        const correctColor = workspace.map_numbers[key]
-        const keys = Object.keys(workspace.map_numbers)
-        Object.values(workspace.map_numbers).forEach((value: number, index: number) => {
+        if (!workspace.results) {
+          workspace.results = {}
+        }
+        const correctColor = isEditor.value ? workspace.results[key] : workspace.map_numbers[key]
+        const keys = Object.keys(isEditor.value ? workspace.results : workspace.map_numbers)
+        Object.values(isEditor.value ? workspace.results : workspace.map_numbers).forEach((value: number, index: number) => {
           if (correctColor === value) {
             results[keys[index]] = color
           }
@@ -373,6 +384,7 @@ export const useEditor = defineStore('editor', () => {
     isCompleted,
     progress,
     modalShowing,
+    modalParams,
     fetchingPercent,
     drawSignal,
     loadFromFile,

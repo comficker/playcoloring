@@ -15,7 +15,7 @@ const preSave = () => {
   <div class="p-4 py-3 space-y-3">
     <div class="flex justify-between items-center text-xs">
       <div class="text-2xl font-bold">Resize</div>
-      <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="showModal = null"/>
+      <div class="i-con-minimize w-4 h-4 cursor-pointer" @click="editorStore.toggleModal('resize')"/>
     </div>
     <div class="flex gap-4 text-xs font-bold">
       <div

@@ -21,6 +21,7 @@ const editorStore = useEditor()
         <editor-modal-save v-if="editorStore.modalShowing == 'save'"/>
         <editor-modal-resize v-else-if="editorStore.modalShowing == 'resize'"/>
         <editor-modal-import v-else-if="editorStore.modalShowing == 'import'"/>
+        <editor-modal-confirm v-else-if="editorStore.modalShowing.startsWith('confirm_')"/>
       </div>
     </div>
   </Transition>

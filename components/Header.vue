@@ -2,7 +2,7 @@
 import {useUserStore} from "~/stores/user";
 import MainNavigator from "~/components/MainNavigator.vue";
 import {useEditor} from "~/stores/editor";
-
+const route = useRoute()
 const userStore = useUserStore()
 const editorStore = useEditor()
 </script>
@@ -20,7 +20,11 @@ const editorStore = useEditor()
           <main-navigator/>
         </div>
         <div class="flex gap-2 items-center">
-          <div class="btn hover:shadow rounded" @click="editorStore.toggleModal('save')">
+          <div
+            v-if="['index', 'editor'].includes(route.name.toString())"
+            class="btn hover:shadow rounded"
+            @click="editorStore.toggleModal('save')"
+          >
             <div class="i-con-save w-4 h-4"/>
             <span class="hidden md:block">Share</span>
           </div>

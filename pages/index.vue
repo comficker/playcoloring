@@ -61,7 +61,7 @@ const faqs = ref([
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">
-              <nuxt-link title="8x8 Coloring" to="/arts/size-8x8">8x8</nuxt-link>
+              <nuxt-link title="8x8 Coloring" to="/pages/size-8x8">8x8</nuxt-link>
             </h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
@@ -78,7 +78,7 @@ const faqs = ref([
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">
-              <nuxt-link to="/arts/size-16x16">16x16</nuxt-link>
+              <nuxt-link to="/pages/size-16x16">16x16</nuxt-link>
             </h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
@@ -95,7 +95,7 @@ const faqs = ref([
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">
-              <nuxt-link title="24x24 Coloring" to="/arts/size-24x24">24x24</nuxt-link>
+              <nuxt-link title="24x24 Coloring" to="/pages/size-24x24">24x24</nuxt-link>
             </h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">
@@ -112,7 +112,7 @@ const faqs = ref([
               <div class="w-5 h-5 i-con-star-outline"/>
             </div>
             <h2 class="font-bold text-xl">
-              <nuxt-link title="32x32 Coloring" to="/arts/size-32x32">32x32</nuxt-link>
+              <nuxt-link title="32x32 Coloring" to="/pages/size-32x32">32x32</nuxt-link>
             </h2>
           </div>
           <div class="grid grid-cols-3 gap-2 md:gap-3">

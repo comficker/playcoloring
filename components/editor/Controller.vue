@@ -44,18 +44,19 @@ const eStore = useEditor()
       >
         <div class="i-con-ruler w-4 h-4"/>
       </div>
-      <div v-if="!eStore.isCompleted" class="btn relative" @click="eStore.clear()">
-        <div class="i-con-refresh w-4 h-4"/>
+      <div v-if="!eStore.isCompleted" class="btn relative" @click="eStore.toggleModal('confirm_clear')">
+        <div class="i-con-broom w-4 h-4"/>
         <div
           v-if="eStore.fetchingPercent < 101"
           class="absolute top-0 bottom-0 left-0 bg-gray-100 opacity-75 duration-75 rounded-[2px]"
           :style="{width: `${eStore.fetchingPercent}%`}"
         />
       </div>
-      <div
-        v-if="eStore.isEditor"
-        class="btn" @click="eStore.toggleModal('import')">
+      <div v-if="eStore.isEditor" class="btn" @click="eStore.toggleModal('import')">
         <div class="i-con-import w-4 h-4"/>
+      </div>
+      <div v-if="eStore.isEditor" class="btn" @click="eStore.toggleModal('confirm_clear', true)">
+        <div class="i-con-file-plus w-4 h-4"/>
       </div>
       <div class="md:hidden w-2 h-4 h-full flex-none"/>
     </div>

@@ -3,7 +3,7 @@
     <div class="pt-full relative bg-white">
       <div class="absolute inset-4 group">
         <img
-          v-if="value.status == 'public' || !value.status"
+          v-if="!isDraw"
           :src="src" :alt="value.name"
           class="group-hover:blur-sm duration-300 w-full h-full"
         />
@@ -48,7 +48,7 @@ import {drawThumbnail} from "~/helper/canvas";
 import {computed} from "vue";
 
 const route = useRoute()
-const {value, showAuthor} = defineProps<{value: SharedPage, showAuthor?: boolean}>()
+const {value, isDraw} = defineProps<{value: SharedPage, isDraw?: boolean}>()
 const config = useRuntimeConfig()
 
 const src = computed(() => {
@@ -64,7 +64,7 @@ const to = computed(() => {
 })
 
 onMounted(() => {
-  if (!(value.status == 'public' || !value.status)) {
+  if (isDraw) {
     drawThumbnail(value)
   }
 })
