@@ -45,8 +45,8 @@ export default defineNuxtConfig({
       titleTemplate: '%s - playcoloring.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },
-        // { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', href: '/favicon.svg' },
       ],
       htmlAttrs: {
         lang: "en",

@@ -89,7 +89,7 @@ export const useEditor = defineStore('editor', () => {
       detail[Number.parseInt(key)].out = (detail[Number.parseInt(key)].result / detail[Number.parseInt(key)].total) * 100
     })
     return {
-      result: result / total,
+      result: total ? result / total : 0,
       detail: detail
     }
   })
@@ -145,7 +145,12 @@ export const useEditor = defineStore('editor', () => {
     }
     const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`).catch(() => null)
     if (!response) {
-      fetchingPercent.value = 101
+      if (process.client) {
+        if (itv.value) { // @ts-ignore
+          clearInterval(itv.value)
+          fetchingPercent.value = 101
+        }
+      }
       if (isEditor.value) {
         clear(true)
       } else {
@@ -194,6 +199,7 @@ export const useEditor = defineStore('editor', () => {
         type: 'init_results',
         value: {}
       }]
+      workspace.is_template = true
       if (force) {
         workspace.id = 0
         workspace.id_string = ''
