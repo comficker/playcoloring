@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   typescript: {
     strict: true
   },
-  // _generate: false,
+  _generate: false,
   // @ts-ignore
   modules: [
     '@vueuse/nuxt',
@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     'nuxt-lazy-load',
     '@nuxtjs/partytown',
-    // 'nuxt-delay-hydration',
+    'nuxt-delay-hydration',
   ],
   experimental: {
     payloadExtraction: false,
@@ -92,9 +92,8 @@ export default defineNuxtConfig({
     //@ts-ignore
     defaultImage: '/loading.svg',
   },
-  vite: {
-    build: {
-      sourcemap: true,
-    },
-  }
+  sourcemap: {
+    server: true,
+    client: true,
+  },
 })
