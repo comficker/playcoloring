@@ -5,7 +5,7 @@
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">
         {{ meta.desc }}
-        <template v-if="route.params.tax_id === 'arts'">
+        <template v-if="!is_template">
           using
           <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
         </template>
@@ -60,9 +60,9 @@ const route = useRoute()
 const config = useRuntimeConfig()
 
 const page = ref(route.query.page ? Number.parseInt(route.query.page.toString()) : 1)
+const is_template = computed(() => route.path.includes('/pages'))
 const params = computed(() => {
   let taxonomies__id_string, width, height, color, user
-  const is_template = route.params.tax_id.toString() === 'pages'
   const id_string = route.params.id_string ? route.params.id_string.toString() : ''
   if (id_string) {
     const test = id_string.split("-")
@@ -103,31 +103,27 @@ const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 
 const crumbs = computed<IBreadcrumb[]>(() => {
   let icon
-  const tax_id = route.params.tax_id.toString()
   let name = ''
-  if (tax_id.startsWith('size')) {
-    name = "Size"
-    icon = 'i-con-ruler'
-  } else if (tax_id.startsWith('color')) {
-    name = "Color"
-    icon = 'i-con-color'
-  } else if (route.params.tax_id === 'pages') {
+  let path = '/'
+  if (is_template.value) {
     name = "Coloring Pages"
     icon = 'i-con-color'
-  } else if (route.params.tax_id === 'arts') {
+    path = '/pages'
+  } else if (route.path.includes('arts')) {
     name = "Pixel Art"
     icon = 'i-con-color'
+    path = '/arts'
   }
   const arr: IBreadcrumb[] = [{
     name,
-    to: `/${route.params.tax_id}`,
+    to: path,
     icon: icon
   }]
   if (route.params.id_string) {
     const temp = route.params.id_string.toString().split("-")
     arr.push({
       name: variant.instance?.name || `${capitalize(temp[0])}: ${temp[1]}`,
-      to: `/${route.params.tax_id}/${route.params.id_string}`,
+      to: `${path}/${route.params.id_string}`,
       icon: undefined
     })
   }
@@ -138,18 +134,18 @@ userStore.setBC(crumbs.value)
 
 const meta = computed(() => {
   let defaultDesc = `Free {name} that you can play online or print out and color.`
-  if (route.params.tax_id !== 'pages') {
+  if (!is_template.value) {
     defaultDesc = `Free download {name} made by many Pixel Artists`
   }
   if (variant.instance) {
-    const title = variant.instance.title + (route.params.tax_id === 'pages' ? " Coloring Pages by Number" : " Pixel Art")
+    const title = variant.instance.title + (is_template.value ? " Coloring Pages by Number" : " Pixel Art")
     return {
       title: title,
       desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),
       imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
-    let title = route.params.tax_id === 'arts' ? 'Pixel Art' : 'Coloring Pages';
+    let title = is_template.value ? 'Coloring Pages': 'Pixel Art';
     const id_string = route.params.id_string ? route.params.id_string.toString() : ''
     if (id_string) {
       const arr = id_string.split("-")
@@ -169,7 +165,7 @@ const meta = computed(() => {
 
 const set_title = computed(() => {
   if (route.params.id_string) {
-    return meta.value.title + (route.params.tax_id === 'arts' ? ' - Pixel Art' : ' - Coloring Pages')
+    return meta.value.title + (is_template.value ? ' - Coloring Pages' : ' - Pixel Art')
   }
   return meta.value.title
 })

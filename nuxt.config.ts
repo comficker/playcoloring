@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   typescript: {
     strict: true
   },
-  _generate: false,
+  // _generate: false,
   // @ts-ignore
   modules: [
     '@vueuse/nuxt',
@@ -92,4 +92,9 @@ export default defineNuxtConfig({
     //@ts-ignore
     defaultImage: '/loading.svg',
   },
+  vite: {
+    build: {
+      sourcemap: true,
+    },
+  }
 })

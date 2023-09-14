@@ -4,7 +4,7 @@ import {useSeoMeta, useRuntimeConfig} from "nuxt/app";
 const router = useRouter()
 const config = useRuntimeConfig()
 const title = "Pixel Editor"
-const desc = 'Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel art!'
+const desc = 'Simple Pixel Editor for artists of all ages and skill levels who want to create and share pixel arts!'
 useSeoMeta({
   title: title,
   description: desc,

@@ -647,7 +647,7 @@ const loadFile = () => {
         height = img.height / greater
       }
       if (width > 128 || height > 128) {
-        loadErrs.value.push('Your pixel art must less than or equal 64x64 pixels')
+        loadErrs.value.push('Your pixel arts must less than or equal 64x64 pixels')
         return
       }
       ctx?.drawImage(img, 0, 0, width, height)
