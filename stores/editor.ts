@@ -116,7 +116,7 @@ export const useEditor = defineStore('editor', () => {
         }
       }
     }
-    clear()
+    clear(true)
     workspace.steps = [{
       type: 'init_colors',
       value: colors
