@@ -31,7 +31,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
   meta: undefined,
   user: null,
   taxonomies: [],
-
+  template: 0,
   tags: [],
   results: {},
   status: 'draft'
@@ -164,7 +164,7 @@ export const useEditor = defineStore('editor', () => {
       workspace.name = ''
       workspace.desc = ''
       workspace.is_template = false
-      workspace.template = workspace.template ? workspace.template : workspace.id
+      workspace.template = response.id
       workspace.id = 0
       workspace.id_string = ''
       workspace.steps = []
