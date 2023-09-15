@@ -251,7 +251,7 @@ export const useEditor = defineStore('editor', () => {
         ...workspace,
         user: undefined,
         taxonomies: undefined,
-        id_string: workspace.new_id_string && method == "PUT" ? workspace.new_id_string: undefined
+        id_string: workspace.new_id_string && method == "PUT" ? workspace.new_id_string: undefined,
       }
     })
     Object.assign(workspace, cloneDeep({
