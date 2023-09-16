@@ -40,15 +40,29 @@ const faqs = ref([
     aws: ["Use various coloring tools such as pencils, crayons, or markers to fill the outlined areas with different shades and colors, producing a completed image."]
   }
 ])
+
+const isPWA = computed(() => Boolean($pwa && $pwa.isInstalled))
 </script>
 
 <template>
-  <div class="space-y-6 py-6">
+  <div class="space-y-6 md:py-6">
     <div class="max-w-xl mx-auto space-y-4">
-      <h1 class="text-5xl font-bold">Play Coloring</h1>
-      <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an
-        enjoyable and accessible way.
-        <a href="/about" target="_blank" class="underline">About us!</a></p>
+      <div class="space-y-2 hidden md:block" v-if="!isPWA">
+        <h1 class="text-5xl font-bold">Play Coloring</h1>
+        <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an
+          enjoyable and accessible way.
+          <a href="/about" target="_blank" class="underline">About us!</a></p>
+      </div>
+      <nuxt-link
+        to="/pages" title="Coloring Pages"
+        class="bg-gray-50 border p-3 flex justify-between items-center cursor-pointer group rounded-[2px]"
+      >
+        <div>
+          <h2 class="text-2xl font-bold group-hover:underline">Coloring Pages</h2>
+          <p>You might want to try!</p>
+        </div>
+        <div class="i-con-right w-6 h-6"/>
+      </nuxt-link>
       <div v-if="hs.r1.count" class="max-w-xl mx-auto my-4 space-y-2">
         <div class="flex gap-2 items-center">
           <div class="flex gap-1">
@@ -58,7 +72,7 @@ const faqs = ref([
             <div class="w-5 h-5 i-con-star-outline"/>
             <div class="w-5 h-5 i-con-star-outline"/>
           </div>
-          <h2 class="font-bold text-xl">
+          <h2 class="font-bold md:text-xl">
             <nuxt-link title="8x8 Coloring" to="/pages/size-8x8">8x8</nuxt-link>
           </h2>
         </div>
@@ -75,7 +89,7 @@ const faqs = ref([
             <div class="w-5 h-5 i-con-star-outline"/>
             <div class="w-5 h-5 i-con-star-outline"/>
           </div>
-          <h2 class="font-bold text-xl">
+          <h2 class="font-bold md:text-xl">
             <nuxt-link to="/pages/size-16x16">16x16</nuxt-link>
           </h2>
         </div>
@@ -92,7 +106,7 @@ const faqs = ref([
             <div class="w-5 h-5 i-con-star-outline"/>
             <div class="w-5 h-5 i-con-star-outline"/>
           </div>
-          <h2 class="font-bold text-xl">
+          <h2 class="font-bold md:text-xl">
             <nuxt-link title="24x24 Coloring" to="/pages/size-24x24">24x24</nuxt-link>
           </h2>
         </div>
@@ -109,7 +123,7 @@ const faqs = ref([
             <div class="w-5 h-5 i-con-star text-yellow-500"/>
             <div class="w-5 h-5 i-con-star-outline"/>
           </div>
-          <h2 class="font-bold text-xl">
+          <h2 class="font-bold md:text-xl">
             <nuxt-link title="32x32 Coloring" to="/pages/size-32x32">32x32</nuxt-link>
           </h2>
         </div>
@@ -117,17 +131,8 @@ const faqs = ref([
           <coloring-card v-for="item in hs.r4.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>
-      <nuxt-link
-        to="/pages" title="Coloring Pages"
-        class="bg-gray-50 border p-3 flex justify-between items-center cursor-pointer group rounded-[2px]">
-        <div>
-          <div class="text-2xl font-bold group-hover:underline">Coloring Pages</div>
-          <p>You might want to try!</p>
-        </div>
-        <div class="i-con-right w-6 h-6"/>
-      </nuxt-link>
     </div>
-    <div v-if="!$pwa || !$pwa.isInstalled" class="max-w-xl mx-auto space-y-4">
+    <div v-if="!isPWA" class="max-w-xl mx-auto space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
       <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
         <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">

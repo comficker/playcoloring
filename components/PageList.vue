@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb/>
-    <div class="max-w-xl mx-auto space-y-2">
+    <div v-if="!isPWA" class="hidden md:block max-w-xl mx-auto space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
       <p class="text-lg">{{ meta.desc }}</p>
     </div>
@@ -44,6 +44,7 @@ import Breadcrumb from "~/components/Breadcrumb.vue";
 import {useUserStore} from "~/stores/user";
 
 const userStore = useUserStore()
+const {$pwa} = useNuxtApp()
 
 function capitalize(word: string) {
   const lower = word.toLowerCase();
@@ -84,6 +85,7 @@ const params = computed(() => {
     is_template
   }
 })
+const isPWA = computed(() => Boolean($pwa && $pwa.isInstalled))
 
 const {data: r2} = await useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
   params: {

@@ -55,7 +55,7 @@ const editorStore = useEditor()
 }
 
 #editor {
-  min-height: calc(100vh - 54px);
+  min-height: calc(100vh - 55px);
 }
 
 @media only screen and (max-width: 640px)  {

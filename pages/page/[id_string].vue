@@ -21,7 +21,7 @@
         </div>
       </div>
       <div>
-        <h1 class="text-4xl font-bold">{{ meta.title }}</h1>
+        <h1 class="text-xl md:text-4xl font-bold">{{ meta.title }}</h1>
         <p>{{ meta.desc }}</p>
       </div>
       <div class="flex flex-row gap-4 justify-between">
@@ -36,7 +36,7 @@
           </a>
           <nuxt-link
             v-if="value.is_template || isOwner"
-            :to="`/?id=${value.id_string}`"
+            :to="`/game?id=${value.id_string}`"
             class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
           >
             <div class="w-4 h-4 i-con-gamepad"/>
