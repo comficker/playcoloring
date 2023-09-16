@@ -127,9 +127,9 @@
         <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <coloring-card v-for="item in variant.results" :value="item" show-author/>
         </div>
-        <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 border text-sm">
+        <p v-if="variant.results.length === 0" class="p-4 py-2 bg-yellow-100 font-semibold border">
           Don't have any variant,
-          <nuxt-link class="underline" :to="`/?id=${value.id_string}`">Play and create one</nuxt-link>
+          <nuxt-link class="underline" :to="`/game?id=${value.id_string}`">Play and create one</nuxt-link>
         </p>
       </div>
     </div>
@@ -138,7 +138,7 @@
 
 <script setup lang="ts">
 import {useHead, useRoute, useRuntimeConfig, useSeoMeta} from "#app";
-import {IBreadcrumb, ResponseSharedPage, SharedPage} from "~/interface";
+import {ResponseSharedPage, SharedPage} from "~/interface";
 import {useAuthFetch} from "~/composables/useAuthFetch";
 import {onMounted} from "@vue/runtime-core";
 import ColoringCard from "~/components/ColoringCard.vue";
@@ -171,28 +171,6 @@ const value: SharedPage = r1.value as SharedPage
 const variant: ResponseSharedPage = r2.value as ResponseSharedPage
 const networks = ["facebook", "twitter", "telegram", "pinterest"]
 
-const render = () => {
-  if (!value) return;
-  const canvas: HTMLCanvasElement | null = document.getElementById(`thumb_${value.id}`) as HTMLCanvasElement
-  if (canvas) {
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-    const ratio = canvas.width / value.width
-    for (let x = 0; x < value.width; x++) {
-      for (let y = 0; y < value.height; y++) {
-        const index = `${x}-${y}`
-        if (value.map_numbers[index] >= 0) {
-          ctx.fillStyle = value.colors[value.map_numbers[index]]
-          ctx.fillRect(x * ratio, y * ratio, ratio, ratio);
-        }
-      }
-    }
-  }
-}
-
-onMounted(() => {
-  render()
-})
-
 const meta = computed(() => {
   const defaultDesc = ''
   const url = `https://www.playcoloring.com/post/${value.id_string}`
@@ -218,25 +196,19 @@ const isOwner = computed(() => {
   return value.user && userStore.isLogged && value.user.id === userStore.logged.id
 })
 
-if (process.server) {
-  userStore.setBC([{
-    name: value.is_template ? 'Coloring Pages' : 'Arts',
-    to: value.is_template ? '/pages' : '/arts',
-    icon: value.is_template ? 'i-con-template' : 'i-con-shared',
-  }, {
-    name: meta.value.title,
-    to: '/post/' + value.id_string,
-    icon: 'i-con-picture',
-  }])
-}
-
 const space = computed(() => {
   return value.is_template ? 'pages' : 'arts'
 })
 
-const print = () => {
-  window.open(meta.value.imgSrc.replace(".png", ".pdf"), '_blank')
-}
+userStore.setBC([{
+  name: "Coloring Pages",
+  to: "/pages",
+  icon: "i-con-template",
+}, {
+  name: meta.value.title,
+  to: '/post/' + value.id_string,
+  icon: 'i-con-picture',
+}])
 
 useHead({
   title: meta.value.title + ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number' : 'Pixel Arts'}`,
@@ -261,20 +233,28 @@ onMounted(() => {
   if (!(value.status == 'public' || !value.status)) {
     drawThumbnail(value)
   }
+  render()
 })
-</script>
 
-<style>
-.bg-grid {
-  @apply border;
-
-  background-color: #FFFFFF;
-  background-size: 3.12500% 3.12500%;
-  background-image: linear-gradient(to right, #F0F0F0 1px, transparent 1px), linear-gradient(to bottom, #F0F0F0 1px, transparent 1px);
-  background-position-x: -1px;
-  background-position-y: -1px;
-  border-color: #F0F0F0;
-  width: 100%;
-  height: 100%;
+const print = () => {
+  window.open(meta.value.imgSrc.replace(".png", ".pdf"), '_blank')
 }
-</style>
+
+const render = () => {
+  if (!value) return;
+  const canvas: HTMLCanvasElement | null = document.getElementById(`thumb_${value.id}`) as HTMLCanvasElement
+  if (canvas) {
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    const ratio = canvas.width / value.width
+    for (let x = 0; x < value.width; x++) {
+      for (let y = 0; y < value.height; y++) {
+        const index = `${x}-${y}`
+        if (value.map_numbers[index] >= 0) {
+          ctx.fillStyle = value.colors[value.map_numbers[index]]
+          ctx.fillRect(x * ratio, y * ratio, ratio, ratio);
+        }
+      }
+    }
+  }
+}
+</script>

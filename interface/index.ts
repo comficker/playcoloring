@@ -68,7 +68,7 @@ export interface SharedPage {
   status: string
 
   user: User | null
-  template?: number
+  template?: number | null
   taxonomies: Tax[]
 
   tags?: string[]

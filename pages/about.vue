@@ -8,7 +8,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="space-y-4 max-w-xl mx-auto">
+  <div class="space-y-4 py-6 max-w-xl mx-auto">
     <h1 class="text-3xl md:text-5xl font-bold">About</h1>
     <div class="space-y-3">
       <blockquote>

@@ -3,13 +3,7 @@
     <breadcrumb/>
     <div class="max-w-xl mx-auto space-y-2">
       <h1 class="text-4xl md:text-5xl font-bold">{{ meta.title }}</h1>
-      <p class="text-lg">
-        {{ meta.desc }}
-        <template v-if="!is_template">
-          using
-          <nuxt-link class="underline" to="/editor">Pixel Editor</nuxt-link>
-        </template>
-      </p>
+      <p class="text-lg">{{ meta.desc }}</p>
     </div>
     <div class="max-w-xl mx-auto my-4 space-y-6">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">

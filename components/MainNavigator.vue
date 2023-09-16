@@ -38,17 +38,12 @@ watch(() => route.fullPath, () => {
         </div>
         <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/pages">
           <div class="w-4 h-4 i-con-color"/>
-          <span>Coloring Pages</span>
+          <span>Pages</span>
           <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
         </nuxt-link>
         <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/arts">
           <div class="w-4 h-4 i-con-picture"/>
-          <span>Pixel Arts</span>
-          <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
-        </nuxt-link>
-        <nuxt-link class="flex gap-2 items-center p-4 md:py-3 hover:text-blue-500" to="/editor">
-          <div class="w-4 h-4 i-con-design"/>
-          <span>Pixel editor</span>
+          <span>Discovery</span>
           <div class="ml-auto w-4 h-4 i-con-arrow-right"/>
         </nuxt-link>
       </div>

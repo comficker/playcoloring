@@ -16,14 +16,10 @@
         />
         <div
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
-          <div
-            class="cursor-pointer p-2 rounded bg-yellow-300"
-            @click="useRouter().replace(to)"
-          >
-            <div class="w-4 h-4 i-con-expand"/>
-          </div>
-          <nuxt-link :to="`/?id=${value.id_string}`" :title="`Coloring ${value.name}`" class="cursor-pointer p-2 rounded bg-yellow-300">
-            <div class="w-4 h-4 i-con-color"/>
+          <nuxt-link
+            :to="`/game?id=${value.id_string}`" :title="`Coloring ${value.name}`"
+            class="cursor-pointer p-4 py-2 rounded bg-yellow-300">
+            <div class="text-sm uppercase font-bold">Play</div>
           </nuxt-link>
         </div>
       </div>
@@ -48,19 +44,14 @@ import {drawThumbnail} from "~/helper/canvas";
 import {computed} from "vue";
 
 const route = useRoute()
-const {value, isDraw} = defineProps<{value: SharedPage, isDraw?: boolean}>()
+const {value, isDraw} = defineProps<{ value: SharedPage, isDraw?: boolean }>()
 const config = useRuntimeConfig()
 
 const src = computed(() => {
   return `${config.public.apiBase}/coloring/files/${value.id_string}.png?type=thumbnail`
 })
 const to = computed(() => {
-  if (route.fullPath !== '/my-space') {
-    return `/post/${value.id_string}`
-  } else {
-    const p = value.is_template ? 'editor' : ''
-    return `/${p}?id=${value.id_string}`
-  }
+  return `/${value.is_template ? 'page': 'post'}/${value.id_string}`
 })
 
 onMounted(() => {

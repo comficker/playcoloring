@@ -9,7 +9,7 @@ const {$pwa} = useNuxtApp()
     <div class="flex-1 ">
       <slot class="w-full"/>
     </div>
-    <Footer v-if="!$pwa || !$pwa.isInstalled"/>
+    <Footer v-if="route.name !== 'game'"/>
   </main>
 </template>
 

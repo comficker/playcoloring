@@ -31,7 +31,8 @@ const {data: response} = await useAuthFetch<ResponseSharedPage>(`/coloring/share
     page: page,
     page_size: 9,
     user: userStore.logged.username,
-    full_schema: true
+    full_schema: true,
+    is_template: false
   },
   watch: [page]
 })

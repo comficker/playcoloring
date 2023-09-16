@@ -17,11 +17,14 @@ const editorStore = useEditor()
               <img class="hidden md:block w-auto h-6" src="/logo.png" alt="Play Coloring">
             </nuxt-link>
           </h1>
-          <main-navigator/>
+          <nuxt-link class="flex gap-2 items-center hover:text-blue-500" to="/pages">
+            <div class="w-4 h-4 i-con-color"/>
+            <span>Browser</span>
+          </nuxt-link>
         </div>
         <div class="flex gap-2 items-center">
           <div
-            v-if="['index', 'editor'].includes(route.name.toString())"
+            v-if="['editor'].includes(route.name.toString())"
             class="btn hover:shadow rounded"
             @click="editorStore.toggleModal('save')"
           >
@@ -30,7 +33,7 @@ const editorStore = useEditor()
           </div>
           <nuxt-link v-if="userStore.isLogged" :immediate="true" to="/my-space" title="My space" class="btn hover:shadow rounded">
             <div class="i-con-user w-4 h-4"/>
-            <span class="hidden md:block">My space</span>
+            <span class="hidden md:block">Mine</span>
           </nuxt-link>
         </div>
       </div>

@@ -31,7 +31,7 @@ const DEFAULT_WORKSPACE: SharedPage = {
   meta: undefined,
   user: null,
   taxonomies: [],
-  template: 0,
+  template: null,
   tags: [],
   results: {},
   status: 'draft'
@@ -50,8 +50,8 @@ const DEFAULT_OPTION: Options = {
 export const useEditor = defineStore('editor', () => {
   const {$touch} = useNuxtApp()
   const userStore = useUserStore()
-  const isEditor = ref(false)
 
+  const isEditor = ref(false)
   const itv = ref<NodeJS.Timer | null>(null)
   const workspace: SharedPage = reactive<SharedPage>(cloneDeep(DEFAULT_WORKSPACE))
   const options = reactive<Options>(DEFAULT_OPTION)
@@ -65,7 +65,6 @@ export const useEditor = defineStore('editor', () => {
     Object.keys(workspace.map_numbers).length && Object.keys(workspace.results).length &&
     isEqual(!isEditor.value && workspace.map_numbers, workspace.results)
   )
-
   const progress = computed(() => {
     const total = Object.keys(workspace.map_numbers).length
     let result = 0
@@ -93,6 +92,7 @@ export const useEditor = defineStore('editor', () => {
       detail: detail
     }
   })
+
   const loadFromFile = (pxColor: number[][][], ignoreColor: number[] | null) => {
     const maps_results: { [key: string]: number } = {}
     const colors: string[] = []
@@ -130,27 +130,40 @@ export const useEditor = defineStore('editor', () => {
     steps2Result()
     draw()
   }
-
-  const loadFromCloud = async (id: string) => {
-    Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
-    modalShowing.value = ''
+  const handleLoading = (isStart: Boolean, force: Boolean = false) => {
     if (process.client) {
-      if (fetchingPercent.value < 101) return
-      fetchingPercent.value = 0
-      let timeLeft = 50
-      itv.value = setInterval(() => {
-        fetchingPercent.value = fetchingPercent.value + timeLeft / 2
-        timeLeft = timeLeft / 2
-      }, 100)
+     if (isStart) {
+       fetchingPercent.value = 0
+       let timeLeft = 50
+       itv.value = setInterval(() => {
+         fetchingPercent.value = fetchingPercent.value + timeLeft / 2
+         timeLeft = timeLeft / 2
+       }, 100)
+     } else {
+       if (itv.value) { // @ts-ignore
+         clearInterval(itv.value)
+       }
+       if (force) {
+         fetchingPercent.value = 101
+       } else {
+         fetchingPercent.value = 100
+         setTimeout(() => {
+           fetchingPercent.value = 101
+           draw()
+         }, 300)
+         document.body.scrollTop = document.documentElement.scrollTop = 0;
+       }
+     }
     }
+  }
+  const loadFromCloud = async (id: string) => {
+    resetWorkspace(true)
+    modalShowing.value = ''
+    if (fetchingPercent.value < 101) return
+    handleLoading(true)
     const response: SharedPage = await $touch(`/coloring/shared-pages/${id}/`).catch(() => null)
     if (!response) {
-      if (process.client) {
-        if (itv.value) { // @ts-ignore
-          clearInterval(itv.value)
-          fetchingPercent.value = 101
-        }
-      }
+      handleLoading(false, true)
       if (isEditor.value) {
         clear(true)
       } else {
@@ -159,45 +172,35 @@ export const useEditor = defineStore('editor', () => {
       return
     }
     Object.assign(workspace, cloneDeep(response))
-    workspace.tags = workspace.taxonomies.map(x => x.name)
     if (!isEditor.value && response.is_template) {
+      resetWorkspace(false)
+      workspace.template = response.id
+      workspace.name = `${response.name} by ${userStore.logged.username}`
+    } else if (isEditor.value) {
+      workspace.template = null
+    }
+    workspace.is_template = isEditor.value
+    workspace.tags = workspace.taxonomies.map(x => x.name)
+    options.color = 0
+    steps2Result()
+    handleLoading(false)
+  }
+  const resetWorkspace = function (isHard = false) {
+    if (isHard) {
+      Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
+    } else {
       workspace.name = ''
       workspace.desc = ''
-      workspace.is_template = false
-      workspace.template = response.id
       workspace.id = 0
       workspace.id_string = ''
       workspace.steps = []
     }
-    options.color = 0
-    steps2Result()
-    workspace.steps = [{
-      type: 'init_colors',
-      value: workspace.colors
-    }, {
-      type: 'init_results',
-      value: workspace.results
-    }]
-    if (process.client) {
-      if (itv.value) { // @ts-ignore
-        clearInterval(itv.value)
-      }
-      fetchingPercent.value = 100
-      setTimeout(() => {
-        fetchingPercent.value = 101
-        draw()
-      }, 300)
-      document.body.scrollTop = document.documentElement.scrollTop = 0;
-    }
+    workspace.is_template = isEditor.value
   }
-
   const clear = (force: boolean = false) => {
     if (isEditor.value) {
       if (force) {
-        console.log(workspace.id_string);
-        console.log(DEFAULT_WORKSPACE.id_string);
-        Object.assign(workspace, cloneDeep(DEFAULT_WORKSPACE))
-        console.log(workspace.id_string);
+        resetWorkspace(true)
       } else {
         workspace.map_numbers = {}
         workspace.results = {}
@@ -214,11 +217,9 @@ export const useEditor = defineStore('editor', () => {
     }
     draw()
   }
-
   const draw = () => {
     drawSignal.value = !drawSignal.value
   }
-
   const steps2Result = () => {
     const out = convertSteps(workspace)
     workspace.results = out.results as { [key: string]: number }
@@ -226,14 +227,12 @@ export const useEditor = defineStore('editor', () => {
     workspace.width = out.width
     workspace.height = out.height
   }
-
   const addStep = (step: Step) => {
     workspace.steps.push(step)
     steps2Result()
     draw()
     saveLate()
   }
-
   const saveLate = debounce(async () => {
     if (!!workspace.id && (!workspace.user || !userStore.isLogged || workspace.user.id !== userStore.logged.id)) return
     let uri = '/coloring/shared-pages/'
@@ -261,18 +260,15 @@ export const useEditor = defineStore('editor', () => {
     workspace.tags = workspace.taxonomies.map(x => x.name)
     userStore.setEditorKey(isEditor.value ? 'editor' : 'current', response.id_string)
   }, 800)
-
   const paletteAddColor = () => {
     addStep({
       type: 'add_color',
       value: '#ffffff'
     })
   }
-
   const paletteSetColor = (c: number) => {
     options.color = c
   }
-
   const paletteSetFunc = (f: string) => {
     if (options.paletteFunc === f) {
       options.paletteFunc = ''
@@ -280,11 +276,9 @@ export const useEditor = defineStore('editor', () => {
       options.paletteFunc = f
     }
   }
-
   const boardSetFunc = (f: string) => {
     options.boardFunc = f
   }
-
   const handleZoom = (increase: boolean) => {
     if (increase) {
       options.zoom += 0.5
@@ -293,14 +287,12 @@ export const useEditor = defineStore('editor', () => {
     }
     draw()
   }
-
   const handleTeleport = (direction: string, value: number) => {
     addStep({
       type: 'teleport',
       value: `${direction}_${value}`
     })
   }
-
   const toggleModal = (m: string, params: any = null) => {
     if (modalShowing.value == m) {
       modalShowing.value = ''
@@ -309,12 +301,10 @@ export const useEditor = defineStore('editor', () => {
     }
     modalParams.value = params
   }
-
   const updateWorkspace = (form: SaveForm) => {
     Object.assign(workspace, cloneDeep(form))
     saveLate()
   }
-
   const preCheckStep = (step: Step): boolean => {
     const results: { [key: string]: number } = {}
     switch (step.type) {
@@ -358,7 +348,6 @@ export const useEditor = defineStore('editor', () => {
     }
     return false
   }
-
   const load = async (key: string = 'random') => {
     if (userStore.isLogged && key === 'random') {
       if (!isEditor.value && userStore.logged?.meta?.coloring?.current) {
@@ -375,7 +364,6 @@ export const useEditor = defineStore('editor', () => {
       clear()
     }
   }
-
   const setIsEditor = (v: boolean) => {
     isEditor.value = v
   }

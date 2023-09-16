@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const es = useEditor()
   const hs = useHomeStore()
-  const hasEditor = Boolean(to.name && ['editor', 'index'].includes(to.name.toString()))
+  const hasEditor = Boolean(to.name && ['editor', 'game'].includes(to.name.toString()))
   const isEditor = to.name === 'editor'
   es.setIsEditor(isEditor)
   let key = to.query.id ? to.query.id.toString() : 'random'
