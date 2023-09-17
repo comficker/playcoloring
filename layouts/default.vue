@@ -11,7 +11,7 @@ const isPWA = computed(() => process.client && window.isPWA)
       <slot class="w-full"/>
     </div>
     <Header v-if="isPWA" class="sticky bottom-0 border-t mt-4 pb-8"/>
-    <Footer v-if="!isPWA && route.name !== 'game'"/>
+    <Footer v-else-if="route.name !== 'game'"/>
   </main>
 </template>
 
