@@ -37,11 +37,13 @@
           <nuxt-link
             v-if="value.is_template || isOwner"
             :to="`/game?id=${value.id_string}`"
-            class="btn flex-1 justify-center uppercase font-semibold text-sm bg-blue-500 text-white"
+            class="btn flex-1 justify-center uppercase font-semibold text-xs bg-blue-500 text-white"
           >
-            <div class="w-4 h-4 i-con-gamepad"/>
-            <span class="hidden md:block" v-if="isOwner && !value.is_template">Continue</span>
-            <span class="hidden md:block" v-else>Play</span>
+            <div class="hidden md:block">
+              <div class="w-4 h-4 i-con-gamepad"/>
+            </div>
+            <span v-if="isOwner && !value.is_template">Continue</span>
+            <span v-else>Play</span>
           </nuxt-link>
         </div>
         <div class="flex gap-2">

@@ -18,7 +18,7 @@ const editorStore = useEditor()
             </nuxt-link>
           </h1>
           <nuxt-link class="flex gap-2 items-center hover:text-blue-500" to="/pages">
-            <div class="w-4 h-4 i-con-color"/>
+            <div class="w-5 h-5 i-con-color"/>
             <span>Browser</span>
           </nuxt-link>
         </div>
@@ -28,11 +28,11 @@ const editorStore = useEditor()
             class="btn hover:shadow rounded"
             @click="editorStore.toggleModal('save')"
           >
-            <div class="i-con-save w-4 h-4"/>
+            <div class="i-con-save w-5 h-5"/>
             <span class="hidden md:block">Share</span>
           </div>
           <nuxt-link v-if="userStore.isLogged" :immediate="true" to="/my-space" title="My space" class="btn hover:shadow rounded">
-            <div class="i-con-user w-4 h-4"/>
+            <div class="i-con-user w-5 h-5"/>
             <span class="hidden md:block">Mine</span>
           </nuxt-link>
         </div>

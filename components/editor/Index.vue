@@ -2,10 +2,15 @@
 import {useEditor} from "~/stores/editor";
 
 const editorStore = useEditor()
+const isPWA = computed(() => process.client && window.isPWA)
 </script>
 
 <template>
-  <div id="editor" class="fill-available flex flex-col relative font-semibold -mx-4">
+  <div
+    id="editor"
+    class="fill-available flex flex-col relative font-semibold -mx-4"
+    :style="{minHeight: `calc(100vh - ${isPWA ? '75': '55'}px)`}"
+  >
     <div class="flex-1 w-full relative">
       <editor-board/>
     </div>
@@ -48,19 +53,3 @@ const editorStore = useEditor()
     <editor-modal/>
   </div>
 </template>
-
-<style>
-#control-area {
-  @apply bg-gray-50 bottom-0 left-0 right-0 duration-200 z-10;
-}
-
-#editor {
-  min-height: calc(100vh - 55px);
-}
-
-@media only screen and (max-width: 640px)  {
-  #control-area {
-    @apply sticky;
-  }
-}
-</style>

@@ -21,25 +21,16 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 .no-scrollbar {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
+
 .no-scrollbar::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none; /* Safari and Chrome */
 }
 
 .fill-available {
   min-height: -webkit-fill-available;
-}
-
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.4s;
-}
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
-  filter: blur(1rem);
 }
 
 .bg-grid {
@@ -57,4 +48,14 @@ input[type="color"]::-webkit-color-swatch {
 
 main {
   min-height: 100vh;
+}
+
+#control-area {
+  @apply bg-gray-50 bottom-0 left-0 right-0 duration-200 z-10;
+}
+
+@media only screen and (max-width: 640px) {
+  #control-area {
+    @apply sticky;
+  }
 }

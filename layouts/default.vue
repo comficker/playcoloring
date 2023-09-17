@@ -10,7 +10,10 @@ const isPWA = computed(() => process.client && window.isPWA)
     <div class="flex-1">
       <slot class="w-full"/>
     </div>
-    <Header v-if="isPWA" class="sticky bottom-0 border-t mt-4 pb-8"/>
+    <Header
+      v-if="isPWA" class="sticky bottom-0 pb-4"
+      :class="{'mt-4 border-t': !['game', 'editor'].includes(route.name.toString())}"
+    />
     <Footer v-else-if="route.name !== 'game'"/>
   </main>
 </template>
