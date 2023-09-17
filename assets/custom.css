@@ -60,3 +60,7 @@ main {
     @apply sticky;
   }
 }
+
+header .router-link-exact-active {
+  color: #3e71e7;
+}

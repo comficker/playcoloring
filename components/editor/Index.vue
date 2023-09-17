@@ -9,7 +9,7 @@ const isPWA = computed(() => process.client && window.isPWA)
   <div
     id="editor"
     class="fill-available flex flex-col relative font-semibold -mx-4"
-    :style="{minHeight: `calc(100vh - ${isPWA ? '75': '55'}px)`}"
+    :style="{minHeight: `calc(100vh - ${isPWA ? '95': '75'}px)`}"
   >
     <div class="flex-1 w-full relative">
       <editor-board/>
