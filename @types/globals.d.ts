@@ -2,6 +2,7 @@ export {};
 
 declare global {
   interface Window {
-    soundPop: any
+    soundPop: any,
+    isPWA: boolean
   }
 }

@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 const route = useRoute()
-const {$isPWA} = useNuxtApp()
+
+const isPWA = computed(() => process.client && window.isPWA)
+
+onMounted(() => {
+  const {$pwa} = useNuxtApp()
+  window.isPWA = $pwa && $pwa.isInstalled
+})
 </script>
 
 <template>
   <main id="main" class="flex flex-col px-4">
-    <Header class="border-b" v-if="!$isPWA()"/>
+    <Header class="border-b" v-if="!isPWA"/>
     <div class="flex-1">
       <slot class="w-full"/>
     </div>
-    <Header v-if="$isPWA()" class="sticky bottom-0 border-t mt-4 pb-8"/>
-    <Footer v-if="!$isPWA() && route.name !== 'game'"/>
+    <Header v-if="isPWA" class="sticky bottom-0 border-t mt-4 pb-8"/>
+    <Footer v-if="!isPWA && route.name !== 'game'"/>
   </main>
 </template>
 

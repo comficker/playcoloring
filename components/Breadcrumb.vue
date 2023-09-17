@@ -3,11 +3,15 @@ import {useUserStore} from "~/stores/user";
 
 const userStore = useUserStore()
 const crumbs = computed(() => userStore.breadcrumbs)
-
+const isPWA = computed(() => process.client && window.isPWA)
 </script>
 
 <template>
-  <div v-if="crumbs.length" class="py-2 mb-4 border-b -mx-4 bg-gray-100 overflow-auto no-scrollbar relative z-10">
+  <div
+    v-if="crumbs.length"
+    class="py-2 mb-4 -mx-4 overflow-auto no-scrollbar relative z-10"
+    :class="{'border-b bg-gray-100': !isPWA}"
+  >
     <div class="mx-auto max-w-xl flex flex-nowrap gap-1 font-semibold items-center">
       <nuxt-link class="z-10 bg-gray-100 sticky left-0 flex-none flex gap-1 items-center px-2 pl-4 md:pl-0 w-fit" to="/">
         <div class="w-4 h-4 i-con-home"/>
