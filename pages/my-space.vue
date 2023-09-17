@@ -47,7 +47,7 @@ watch(() => userStore.logged, () => {
 </script>
 
 <template>
-  <div>
+  <div class="space-y-4">
     <breadcrumb/>
     <div v-if="response" class="max-w-xl mx-auto space-y-4">
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3">

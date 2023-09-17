@@ -64,7 +64,7 @@ const faqs = ref([
             <nuxt-link title="8x8 Coloring" to="/pages/size-8x8">8x8</nuxt-link>
           </h2>
         </div>
-        <div class="grid grid-cols-3 gap-2 md:gap-3">
+        <div class="grid grid-cols-3 gap-3">
           <coloring-card v-for="item in hs.r1.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>
@@ -81,7 +81,7 @@ const faqs = ref([
             <nuxt-link to="/pages/size-16x16">16x16</nuxt-link>
           </h2>
         </div>
-        <div class="grid grid-cols-3 gap-2 md:gap-3">
+        <div class="grid grid-cols-3 gap-3">
           <coloring-card v-for="item in hs.r2.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>
@@ -98,7 +98,7 @@ const faqs = ref([
             <nuxt-link title="24x24 Coloring" to="/pages/size-24x24">24x24</nuxt-link>
           </h2>
         </div>
-        <div class="grid grid-cols-3 gap-2 md:gap-3">
+        <div class="grid grid-cols-3 gap-3">
           <coloring-card v-for="item in hs.r3.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>
@@ -115,7 +115,7 @@ const faqs = ref([
             <nuxt-link title="32x32 Coloring" to="/pages/size-32x32">32x32</nuxt-link>
           </h2>
         </div>
-        <div class="grid grid-cols-3 gap-2 md:gap-3">
+        <div class="grid grid-cols-3 gap-3">
           <coloring-card v-for="item in hs.r4.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>

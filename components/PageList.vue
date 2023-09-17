@@ -6,7 +6,7 @@
       <p class="text-lg">{{ meta.desc }}</p>
     </div>
     <div class="max-w-xl mx-auto space-y-4">
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <coloring-card v-for="item in r2.results" :value="item" :key="item.id" show-author/>
       </div>
       <div class="flex font-semibold">
