@@ -26,22 +26,20 @@
       </div>
       <div class="flex flex-col md:flex-row gap-4 justify-between">
         <div class="flex-1 flex gap-2 font-medium">
-          <div class="btn hover:shadow border-gray-200" @click="print">
+          <div class="btn p-3 hover:shadow border-gray-200" @click="print">
             <div class="w-4 h-4 i-con-print"/>
             <span class="hidden md:block">Print</span>
           </div>
-          <a class="btn hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
+          <a class="btn p-3 hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
             <div class="w-4 h-4 i-con-download"/>
             <span class="hidden md:block">Download</span>
           </a>
           <nuxt-link
             v-if="value.is_template || isOwner"
             :to="`/game?id=${value.id_string}`"
-            class="btn flex-1 justify-center uppercase font-semibold text-xs bg-blue-500 text-white"
+            class="btn p-3 flex-1 justify-center uppercase font-semibold text-xs bg-blue-500 text-white"
           >
-            <div class="hidden md:block">
-              <div class="w-4 h-4 i-con-gamepad"/>
-            </div>
+            <div class="w-4 h-4 i-con-gamepad"/>
             <span v-if="isOwner && !value.is_template">Continue</span>
             <span v-else>Play</span>
           </nuxt-link>
@@ -58,7 +56,7 @@
               :quote="meta.desc"
               :hashtags="value.taxonomies.map(x => x.title).join(',')"
               :media="meta.imgSrc"
-              class="btn border-gray-200 md:border-transparent"
+              class="btn p-3 border-gray-200 md:border-transparent"
             >
               <div class="w-5 h-5" :class="`i-con-${item}`"/>
               <span class="md:hidden">{{item}}</span>
@@ -66,67 +64,79 @@
           </client-only>
         </div>
       </div>
-      <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
-        <div class="text-sm flex gap-2 flex-wrap items-center">
-          <div class="w-5 h-5 i-con-tags"/>
+      <div v-if="value.colors.length" class="space-y-2">
+        <h2 class="uppercase font-bold text-xs text-gray-600 flex gap-2 items-center">
+          <span class="w-4 h-4 i-con-color"/>
+          <span>Color</span>
+        </h2>
+        <div class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+          <nuxt-link
+            class="w-10 h-10"
+            v-for="item in value.colors" :key="item"
+            :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
+            :style="{background: item}"
+          >
+            <span class="hidden">{{ item }}</span>
+          </nuxt-link>
         </div>
-        <nuxt-link
-          class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
-          v-for="item in value.taxonomies" :key="item.id"
-          :to="`/${space}/${item.id_string}`"
-        >
-          <span>{{ item.title }}</span>
-        </nuxt-link>
       </div>
-      <div v-if="value.colors.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
-        <nuxt-link
-          class="w-10 h-10"
-          v-for="item in value.colors" :key="item"
-          :to="`/${space}/color-${item.toUpperCase().replace('#', '')}`"
-          :style="{background: item}"
-        >
-          <span class="hidden">{{ item }}</span>
-        </nuxt-link>
+      <div class="space-y-2">
+        <h2 class="uppercase font-bold text-xs text-gray-600 flex gap-2 items-center">
+          <span class="w-4 h-4 i-con-tags"/>
+          <span>Tags</span>
+        </h2>
+        <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
+          <nuxt-link
+            class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
+            v-for="item in value.taxonomies" :key="item.id"
+            :to="`/${space}/${item.id_string}`"
+          >
+            <span>{{ item.title }}</span>
+          </nuxt-link>
+        </div>
       </div>
-      <div class="grid md:grid-cols-2 gap-3">
-        <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
-          <div class="w-8 h-8 i-con-ruler"/>
-          <div class="block">
-            <div class="text-sm text-gray-500">Length</div>
-            <div class="font-bold">{{ Object.keys(value.map_numbers).length }}</div>
+      <div class="space-y-2">
+        <h2 class="uppercase text-xs font-bold text-gray-600">Stats</h2>
+        <div class="grid md:grid-cols-2 gap-3">
+          <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
+            <div class="w-8 h-8 i-con-ruler"/>
+            <div class="block">
+              <div class="text-sm text-gray-500">Length</div>
+              <div class="font-bold">{{ Object.keys(value.map_numbers).length }}</div>
+            </div>
           </div>
-        </div>
-        <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
-          <div class="w-8 h-8 i-con-ruler"/>
-          <div>
-            <div class="text-sm text-gray-500">Size</div>
-            <div class="flex gap-4">
-              <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
-                <div class="font-bold">{{ value.width }}x{{ value.height }}</div>
+          <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
+            <div class="w-8 h-8 i-con-ruler"/>
+            <div>
+              <div class="text-sm text-gray-500">Size</div>
+              <div class="flex gap-4">
+                <nuxt-link :to="`/${space}/size-${value.width}x${value.height}`" class="flex gap-1 hover:underline">
+                  <div class="font-bold">{{ value.width }}x{{ value.height }}</div>
+                </nuxt-link>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
+            <div class="w-8 h-8 i-con-user"/>
+            <div>
+              <div class="text-sm text-gray-500">Creator</div>
+              <nuxt-link
+                :to="`/author/${value.user?.username || 'anonymous'}`"
+                class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
               </nuxt-link>
             </div>
           </div>
-        </div>
-        <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
-          <div class="w-8 h-8 i-con-user"/>
-          <div>
-            <div class="text-sm text-gray-500">Creator</div>
-            <nuxt-link
-              :to="`/author/${value.user?.username || 'anonymous'}`"
-              class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
-            </nuxt-link>
-          </div>
-        </div>
-        <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
-          <div class="w-8 h-8 i-con-sign"/>
-          <div>
-            <div class="text-sm text-gray-500">Owner</div>
-            <div class="font-bold">__</div>
+          <div class="flex gap-3 items-center md:p-2 py-1 bg-white border-b md:border border-gray-100">
+            <div class="w-8 h-8 i-con-sign"/>
+            <div>
+              <div class="text-sm text-gray-500">Owner</div>
+              <div class="font-bold">__</div>
+            </div>
           </div>
         </div>
       </div>
       <div class="space-y-2">
-        <h2 class="uppercase text-xs font-bold">Variants</h2>
+        <h2 class="uppercase text-xs font-bold text-gray-600">Variants</h2>
         <div v-if="variant.results.length" class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <coloring-card v-for="item in variant.results" :value="item" show-author/>
         </div>
