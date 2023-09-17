@@ -45,7 +45,7 @@ const isPWA = computed(() => Boolean($pwa && $pwa.isInstalled))
 </script>
 
 <template>
-  <div class="space-y-6 md:py-6">
+  <div class="space-y-6 md:py-6" :class="{'py-4': isPWA}">
     <div class="max-w-xl mx-auto space-y-4">
       <div class="space-y-2 hidden md:block" v-if="!isPWA">
         <h1 class="text-5xl font-bold">Play Coloring</h1>
