@@ -39,9 +39,9 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    // pageTransition: { name: 'page', mode: 'out-in' },
+    keepalive: true,
     head: {
-      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover',
+      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1.0',
       titleTemplate: '%s - playcoloring.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },

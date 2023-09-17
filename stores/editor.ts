@@ -175,7 +175,7 @@ export const useEditor = defineStore('editor', () => {
     if (!isEditor.value && response.is_template) {
       resetWorkspace(false)
       workspace.template = response.id
-      workspace.name = `${response.name} by ${userStore.logged.username}`
+      workspace.name = response.name
     } else if (isEditor.value) {
       workspace.template = null
     }

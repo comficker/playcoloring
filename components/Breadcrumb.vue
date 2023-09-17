@@ -12,7 +12,7 @@ const isPWA = computed(() => process.client && window.isPWA)
     class="-mx-4 overflow-auto no-scrollbar relative z-10"
     :class="{'border-b bg-gray-100': !isPWA, 'p-4 pb-0': isPWA}"
   >
-    <div class="mx-auto max-w-xl flex flex-nowrap md:gap-1 font-semibold items-center md:px-0 px-4">
+    <div class="mx-auto max-w-xl flex flex-nowrap md:gap-1 font-semibold items-center md:px-0 px-1">
       <nuxt-link class="flex-none z-10 bg-gray-100 sticky left-0 flex gap-1 items-center p-3 md:p-2 rounded md:-ml-2" to="/">
         <div class="w-4 h-4 i-con-home"/>
         <span class="hidden md:block">Home</span>
