@@ -2,11 +2,6 @@
 const route = useRoute()
 
 const isPWA = computed(() => process.client && window.isPWA)
-
-onMounted(() => {
-  const {$pwa} = useNuxtApp()
-  window.isPWA = $pwa && $pwa.isInstalled
-})
 </script>
 
 <template>

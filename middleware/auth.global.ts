@@ -70,4 +70,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       response[1][3].data.value
     ])
   }
+  if (process.client) {
+    const {$pwa} = useNuxtApp()
+    window.isPWA = $pwa && $pwa.isInstalled
+  }
 })
