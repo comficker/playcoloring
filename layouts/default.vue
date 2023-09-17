@@ -9,8 +9,8 @@ const {$isPWA} = useNuxtApp()
     <div class="flex-1">
       <slot class="w-full"/>
     </div>
-    <Header v-if="$isPWA()" class="sticky bottom-0 border-t mt-4"/>
-    <Footer v-if="!(route.name === 'game' || $isPWA())"/>
+    <Header v-if="$isPWA()" class="sticky bottom-0 border-t mt-4 pb-8"/>
+    <Footer v-if="!$isPWA() && route.name !== 'game'"/>
   </main>
 </template>
 
