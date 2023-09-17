@@ -41,7 +41,7 @@ export default defineNuxtConfig({
   app: {
     keepalive: true,
     head: {
-      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1.0',
+      viewport: 'width=device-width,initial-scale=1,viewport-fit=cover',
       titleTemplate: '%s - playcoloring.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },
