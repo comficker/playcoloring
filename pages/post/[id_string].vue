@@ -24,6 +24,16 @@
         <h1 class="md:text-4xl font-bold">{{ meta.title }}</h1>
         <p>{{ meta.desc }}</p>
       </div>
+      <div class="flex gap-2 items-center">
+        <div class="w-8 h-8 i-con-user"/>
+        <div>
+          <div class="text-sm text-gray-500">Author</div>
+          <nuxt-link
+            :to="`/author/${value.user?.username || 'anonymous'}`"
+            class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
+          </nuxt-link>
+        </div>
+      </div>
       <div class="flex flex-row gap-4 justify-between">
         <div class="flex-1 flex gap-2 font-medium">
           <div class="btn hover:shadow border-gray-200" @click="print">
@@ -61,16 +71,6 @@
               <div class="w-4 h-4" :class="`i-con-${item}`"/>
             </ShareNetwork>
           </client-only>
-        </div>
-      </div>
-      <div class="flex gap-2 items-center">
-        <div class="w-8 h-8 i-con-user"/>
-        <div>
-          <div class="text-sm text-gray-500">Author</div>
-          <nuxt-link
-            :to="`/author/${value.user?.username || 'anonymous'}`"
-            class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
-          </nuxt-link>
         </div>
       </div>
     </div>
