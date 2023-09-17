@@ -22,7 +22,7 @@ const privacy = [
 ]
 const meta = computed(() => {
   const defaultDesc = ''
-  const url = `https://www.playcoloring.com/post/${editorStore.workspace.id_string}`
+  const url = `https://www.playcoloring.com/${editorStore.isEditor ? 'page' : 'post'}/${editorStore.workspace.id_string}`
   let src = `${config.public.apiBase}/coloring/files/${editorStore.workspace.id_string}.png`
   if (editorStore.workspace) {
     return {

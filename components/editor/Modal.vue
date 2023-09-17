@@ -17,7 +17,7 @@ const editorStore = useEditor()
   >
     <div v-if="editorStore.modalShowing" class="z-20 fixed bottom-0 -right-[1px] -left-[1px] z-60">
       <div class="absolute inset-0" @click="editorStore.toggleModal('')"/>
-      <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-tl-lg rounded-tr-lg border md:border-b-0">
+      <div class="relative max-w-xl mx-auto bg-white shadow-xl rounded-tl-lg rounded-tr-lg border md:border-b-0 pb-4">
         <editor-modal-save v-if="editorStore.modalShowing == 'save'"/>
         <editor-modal-resize v-else-if="editorStore.modalShowing == 'resize'"/>
         <editor-modal-import v-else-if="editorStore.modalShowing == 'import'"/>
