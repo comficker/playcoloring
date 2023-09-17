@@ -34,7 +34,7 @@
           </nuxt-link>
         </div>
       </div>
-      <div class="flex flex-row gap-4 justify-between">
+      <div class="flex flex-col md:flex-row gap-4 justify-between">
         <div class="flex-1 flex gap-2 font-medium">
           <div class="btn hover:shadow border-gray-200" @click="print">
             <div class="w-4 h-4 i-con-print"/>
@@ -54,7 +54,7 @@
             <span class="hidden md:block" v-else>Play</span>
           </nuxt-link>
         </div>
-        <div class="flex gap-2">
+        <div class="grid gap-2 md:grid-cols-4 grid-cols-2 font-semibold">
           <client-only>
             <ShareNetwork
               v-for="item in networks"
@@ -66,9 +66,10 @@
               :quote="meta.desc"
               :hashtags="value.taxonomies.map(x => x.title).join(',')"
               :media="meta.imgSrc"
-              class="btn border"
+              class="btn border-gray-200 md:border-transparent"
             >
-              <div class="w-4 h-4" :class="`i-con-${item}`"/>
+              <div class="w-5 h-5" :class="`i-con-${item}`"/>
+              <span class="md:hidden">{{item}}</span>
             </ShareNetwork>
           </client-only>
         </div>
