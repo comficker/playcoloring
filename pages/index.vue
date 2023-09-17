@@ -45,7 +45,7 @@ const faqs = ref([
 <template>
   <div class="space-y-6 md:py-6" :class="{'py-4': $isPWA()}">
     <div class="max-w-xl mx-auto space-y-4">
-      <div class="space-y-2 hidden md:block" v-if="!$isPWA()">
+      <div class="space-y-2 hidden md:block">
         <h1 class="text-5xl font-bold">Play Coloring</h1>
         <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an
           enjoyable and accessible way.
