@@ -51,16 +51,6 @@ const faqs = ref([
           enjoyable and accessible way.
           <a href="/about" target="_blank" class="underline">About us!</a></p>
       </div>
-      <nuxt-link
-        to="/pages" title="Coloring Pages"
-        class="bg-gray-50 border p-3 flex justify-between items-center cursor-pointer group rounded-[2px]"
-      >
-        <div>
-          <h2 class="text-2xl font-bold group-hover:underline">Coloring Pages</h2>
-          <p>You might want to try!</p>
-        </div>
-        <div class="i-con-right w-6 h-6"/>
-      </nuxt-link>
       <div v-if="hs.r1.count" class="max-w-xl mx-auto my-4 space-y-2">
         <div class="flex gap-2 items-center">
           <div class="flex gap-1">
@@ -129,6 +119,16 @@ const faqs = ref([
           <coloring-card v-for="item in hs.r4.results" :value="item" :key="item.id" show-author/>
         </div>
       </div>
+      <nuxt-link
+        to="/pages" title="Coloring Pages"
+        class="bg-gray-50 border p-3 flex justify-between items-center cursor-pointer group rounded-[2px]"
+      >
+        <div>
+          <h2 class="text-2xl font-bold group-hover:underline">Coloring Pages</h2>
+          <p>You might want to try!</p>
+        </div>
+        <div class="i-con-right w-6 h-6"/>
+      </nuxt-link>
     </div>
     <div v-if="!isPWA" class="max-w-xl mx-auto space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
