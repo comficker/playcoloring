@@ -5,7 +5,7 @@ import ColoringCard from "~/components/ColoringCard.vue";
 import {useHomeStore} from "~/stores/home";
 
 const config = useRuntimeConfig()
-const {$pwa} = useNuxtApp()
+const {$isPWA} = useNuxtApp()
 const hs = useHomeStore()
 
 const title = "Play Coloring - Online Coloring by Number - Pixel Editor"
@@ -40,14 +40,12 @@ const faqs = ref([
     aws: ["Use various coloring tools such as pencils, crayons, or markers to fill the outlined areas with different shades and colors, producing a completed image."]
   }
 ])
-
-const isPWA = computed(() => Boolean($pwa && $pwa.isInstalled))
 </script>
 
 <template>
-  <div class="space-y-6 md:py-6" :class="{'py-4': isPWA}">
+  <div class="space-y-6 md:py-6" :class="{'py-4': $isPWA()}">
     <div class="max-w-xl mx-auto space-y-4">
-      <div class="space-y-2 hidden md:block" v-if="!isPWA">
+      <div class="space-y-2 hidden md:block" v-if="!$isPWA()">
         <h1 class="text-5xl font-bold">Play Coloring</h1>
         <p>Play Coloring was created to provide a Coloring by Number that promotes mindfulness and stress relief in an
           enjoyable and accessible way.
@@ -132,7 +130,7 @@ const isPWA = computed(() => Boolean($pwa && $pwa.isInstalled))
         </div>
       </div>
     </div>
-    <div v-if="!isPWA" class="max-w-xl mx-auto space-y-4">
+    <div v-if="!$isPWA()" class="max-w-xl mx-auto space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
       <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
         <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
