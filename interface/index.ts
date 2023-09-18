@@ -2,7 +2,7 @@ import socialShareClient from "~/plugins/socialShare.client";
 
 export interface Links {
   next: string
-  previous: any
+  previous: string
 }
 
 export interface Sizes {

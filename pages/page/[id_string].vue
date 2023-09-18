@@ -121,7 +121,7 @@
             <div>
               <div class="text-sm text-gray-500">Creator</div>
               <nuxt-link
-                :to="`/author/${value.user?.username || 'anonymous'}`"
+                :to="`/creator/${value.user?.username || 'anonymous'}`"
                 class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
               </nuxt-link>
             </div>

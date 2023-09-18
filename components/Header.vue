@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import {useUserStore} from "~/stores/user";
-import MainNavigator from "~/components/MainNavigator.vue";
 import {useEditor} from "~/stores/editor";
 const route = useRoute()
 const userStore = useUserStore()
 const editorStore = useEditor()
+
+const isPWA = computed(() => process.client && window.isPWA)
 </script>
 <template>
   <header class="sticky top-0 z-20 bg-white -mx-4 px-4">
     <div class="mx-auto max-w-xl w-full font-semibold relative">
-      <div class="flex justify-between items-center text-center text-xs md:text-lg">
+      <div class="flex justify-between items-center text-center md:text-lg" :class="{'text-xs': isPWA}">
         <div class="flex flex-1 md:flex-none md:gap-6 items-center">
           <h1 class="flex-1 md:flex-none">
             <nuxt-link

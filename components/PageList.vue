@@ -55,7 +55,9 @@ const route = useRoute()
 const config = useRuntimeConfig()
 
 const page = ref(route.query.page ? Number.parseInt(route.query.page.toString()) : 1)
-const is_template = computed(() => route.path.includes('/pages'))
+const is_template = computed(() => {
+  return route.path.includes('/pages') || route.path.toString().startsWith("/creator/")
+})
 const params = computed(() => {
   let taxonomies__id_string, width, height, color, user
   const id_string = route.params.id_string ? route.params.id_string.toString() : ''
@@ -67,8 +69,8 @@ const params = computed(() => {
       height = arr[1]
     } else if (id_string.startsWith("color-")) {
       color = test[1].toLowerCase()
-    } else if (id_string.startsWith("creator-")) {
-      user = test[1]
+    } else if (route.name && ["creator-id_string", "player-id_string"].includes(route.name.toString())) {
+      user = id_string
     } else {
       taxonomies__id_string = route.params.id_string
     }
@@ -101,20 +103,33 @@ const crumbs = computed<IBreadcrumb[]>(() => {
   let icon
   let name = ''
   let path = '/'
-  if (is_template.value) {
-    name = "Coloring Pages"
-    icon = 'i-con-color'
-    path = '/pages'
-  } else if (route.path.includes('arts')) {
+  if (route.path.includes('arts')) {
     name = "Pixel Art"
     icon = 'i-con-color'
     path = '/arts'
+  } else if (route.path.includes('player')) {
+    name = "Pixel Arts"
+    icon = 'i-con-color'
+    path = '/arts'
+  } else if (route.path.includes('creator')) {
+    name = "Coloring Pages"
+    icon = 'i-con-color'
+    path = '/pages'
+  } else if (is_template.value) {
+    name = "Coloring Pages"
+    icon = 'i-con-color'
+    path = '/pages'
   }
   const arr: IBreadcrumb[] = [{
     name,
     to: path,
     icon: icon
   }]
+  if (route.path.includes('player')) {
+    path = '/player'
+  } else if (route.path.includes('creator')) {
+    path = '/creator'
+  }
   if (route.params.id_string) {
     const temp = route.params.id_string.toString().split("-")
     arr.push({
@@ -134,7 +149,7 @@ const meta = computed(() => {
     defaultDesc = `Free download {name} made by many Pixel Artists`
   }
   if (variant.instance) {
-    const title = variant.instance.title + (is_template.value ? " Coloring Pages by Number" : " Pixel Art")
+    const title = variant.instance.name + (is_template.value ? " Coloring Pages by Number" : " Pixel Art")
     return {
       title: title,
       desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),

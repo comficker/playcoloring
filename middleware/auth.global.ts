@@ -36,7 +36,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   } else if (hasEditor && from.fullPath !== to.fullPath) {
     fallbackEditor = es.load(key)
   }
-  const fetchHome = to.name === 'index' && !hs.r1
+  const fetchHome = to.name === 'index' && !hs.r2.count
   const params = {
     page: 1,
     page_size: 3,

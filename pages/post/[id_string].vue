@@ -29,7 +29,7 @@
         <div>
           <div class="text-sm text-gray-500">Author</div>
           <nuxt-link
-            :to="`/author/${value.user?.username || 'anonymous'}`"
+            :to="`/player/${value.user?.username || 'anonymous'}`"
             class="font-bold hover:underline">{{ value.user?.username || 'Anonymous' }}
           </nuxt-link>
         </div>
@@ -139,7 +139,7 @@ const isOwner = computed(() => {
 
 userStore.setBC([{
   name: value.user?.username || "Anonymouse",
-  to: `/author/${value.user?.username || "anonymouse"}`,
+  to: `/player/${value.user?.username || "anonymouse"}`,
   icon: "i-con-user"
 }, {
   name: meta.value.title,
