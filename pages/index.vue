@@ -51,6 +51,9 @@ const faqs = ref([
           enjoyable and accessible way.
           <a href="/about" target="_blank" class="underline">About us!</a></p>
       </div>
+      <div class="max-w-xl mx-auto ">
+        <user-bar/>
+      </div>
       <div v-if="hs.r1.count" class="max-w-xl mx-auto my-4 space-y-2">
         <div class="flex gap-2 items-center">
           <div class="flex gap-1">
