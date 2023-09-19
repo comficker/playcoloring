@@ -70,7 +70,7 @@ const draw = () => {
   ctx.textAlign = 'center'
   ctx.fillStyle = '#957777'
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "gray";
+  ctx.strokeStyle = "#DDD";
   ctx.beginPath()
   if (!editorStore.isEditor) {
     Object.keys(editorStore.workspace.map_numbers).forEach((index: string) => {
