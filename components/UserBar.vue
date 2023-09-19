@@ -14,23 +14,23 @@ const user = computed(() => {
 </script>
 
 <template>
-<div class="flex justify-between md:text-lg font-semibold gap-4">
+<div class="flex justify-between text-lg font-semibold gap-4">
   <div class="flex flex-1">
     <div class="flex gap-2 items-center truncate">
-      <div class="i-con-user w-5 h-5"/>
-      <div class="flex-1">{{user.full_name}}</div>
+      <div class="i-con-user w-6 h-6"/>
+      <div class="hidden md:block">{{user.full_name}}</div>
     </div>
   </div>
   <div class="flex gap-3">
     <div class="flex gap-2 items-center">
-      <div class="i-con-seal w-5 h-5"/>
+      <div class="i-con-seal w-6 h-6"/>
     </div>
     <div class="flex gap-2 items-center md:border rounded md:px-3">
-      <div class="i-con-coin w-5 h-5"/>
+      <div class="i-con-coin w-6 h-6"/>
       <span>32</span>
     </div>
     <div class="flex gap-2 items-center md:border rounded md:px-3">
-      <div class="i-con-fill w-5 h-5"/>
+      <div class="i-con-fill w-6 h-6"/>
       <span>32</span>
     </div>
   </div>
