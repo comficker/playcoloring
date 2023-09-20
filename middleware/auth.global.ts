@@ -53,7 +53,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       key: 'r2'
     }),
     useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
-      params: {...params, width: 24, height: 32},
+      params: {...params, width: 24, height: 24},
       key: 'r3'
     }),
     useAuthFetch<ResponseSharedPage>(`/coloring/shared-pages/`, {
