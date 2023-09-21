@@ -115,7 +115,7 @@ const networks = ["facebook", "twitter", "telegram", "pinterest"]
 const meta = computed(() => {
   const defaultDesc = ''
   const url = `https://www.playcoloring.com/post/${value.id_string}`
-  let src = `${config.public.apiBase}/coloring/files/original/${value.id_string}.png`
+  let src = `${config.public.apiBase}/coloring/files/art-original/${value.id_string}.png`
   if (value) {
     return {
       url: url,
@@ -162,7 +162,7 @@ useSeoMeta({
   title: meta.value.title + ` - ${value.width}x${value.height} - ${value.is_template ? 'Coloring by Number' : 'Pixel Arts'}`,
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
-  ogImage: `${config.public.apiBase}/coloring/files/social/${value.id_string}.png`,
+  ogImage: `${config.public.apiBase}/coloring/files/art-social/${value.id_string}.png`,
   twitterCard: 'summary_large_image',
 })
 
