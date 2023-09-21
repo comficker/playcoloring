@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   res.results.forEach(item => {
     out = out + '<url>' +
       `<loc>https://playcoloring.com/pages/${item.id_string}</loc>` +
-      `<lastmod>${now}</lastmod>` +
+      // `<lastmod>${now}</lastmod>` +
       '<changefreq>daily</changefreq>' +
       '<priority>0.8</priority>' +
       '</url>'
