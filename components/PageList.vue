@@ -153,7 +153,6 @@ const meta = computed(() => {
     return {
       title: title,
       desc: variant.instance.desc || defaultDesc.replace("{name}", title.toLowerCase()),
-      imgSrc: variant.count ? `${config.public.apiBase}/coloring/files/${variant.results[0].id_string}.png` : '/screenshot/default.png'
     }
   } else {
     let title = is_template.value ? 'Coloring Pages': 'Pixel Art';
@@ -169,7 +168,6 @@ const meta = computed(() => {
     return {
       title: title,
       desc: defaultDesc.replace("{name}", title),
-      imgSrc: '/screenshot/default.png'
     }
   }
 })
@@ -200,7 +198,7 @@ useSeoMeta({
   title: set_title.value,
   ogDescription: meta.value.desc,
   ogTitle: meta.value.title,
-  ogImage: meta.value.imgSrc + '?type=social',
+  ogImage: variant.count ? `${config.public.apiBase}/coloring/files/social/${variant.results[0].id_string}.png` : '/screenshot/default.png',
   twitterCard: 'summary_large_image',
 })
 

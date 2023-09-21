@@ -48,7 +48,7 @@ const {value, isDraw} = defineProps<{ value: SharedPage, isDraw?: boolean }>()
 const config = useRuntimeConfig()
 
 const src = computed(() => {
-  return `${config.public.apiBase}/coloring/files/${value.id_string}.png?type=thumbnail`
+  return `${config.public.apiBase}/coloring/files/thumbnail/${value.id_string}.png`
 })
 const to = computed(() => {
   return `/${value.is_template ? 'page': 'post'}/${value.id_string}`
