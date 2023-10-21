@@ -3,13 +3,13 @@
     <breadcrumb/>
     <div v-if="value" class="max-w-xl mx-auto space-y-4">
       <div class="w-full pt-full relative bg-white">
-        <div class="absolute inset-4">
+        <div class="absolute inset-0">
           <img
             id="mainImg"
             v-if="value.status == 'public' || !value.status"
             :src="meta.imgSrc"
             :alt="meta.title"
-            class="object-contain w-full md:max-w-sm mx-auto h-full"
+            class="object-contain w-full mx-auto h-full"
           >
           <canvas
             v-else

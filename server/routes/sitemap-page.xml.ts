@@ -11,12 +11,11 @@ export default defineEventHandler(async (event) => {
       is_template: true
     }
   })
-  const now = new Date()
   out = out + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
   res.results.forEach(item => {
     out = out + '<url>' +
       `<loc>https://playcoloring.com/page/${item.id_string}</loc>` +
-      // `<lastmod>${now}</lastmod>` +
+      `<lastmod>${item.updated}</lastmod>` +
       '<changefreq>daily</changefreq>' +
       '<priority>0.8</priority>' +
       '</url>'
