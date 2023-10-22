@@ -1,5 +1,5 @@
 <template>
-  <div class="border-emerald-100 border divide-y divide-emerald-100 rounded-md overflow-hidden">
+  <div class="border-emerald-100 border divide-y divide-emerald-100 rounded-[2px] overflow-hidden">
     <div class="pt-full relative bg-white">
       <div class="absolute inset-4 group">
         <img
@@ -18,8 +18,8 @@
           class="absolute inset-0 flex items-center justify-center group-hover:opacity-100 opacity-0 duration-300 gap-2">
           <nuxt-link
             :to="`/game?id=${value.id_string}`" :title="`Coloring ${value.name}`"
-            class="cursor-pointer p-4 py-2 rounded bg-yellow-300">
-            <div class="text-sm uppercase font-bold">Play</div>
+            class="cursor-pointer p-3 py-2 rounded-[2px] bg-yellow-300">
+            <div class="text-xs uppercase font-bold">Play</div>
           </nuxt-link>
         </div>
       </div>

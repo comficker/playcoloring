@@ -22,7 +22,7 @@ useSeoMeta({
 
 const faqs = ref([
   {
-    opened: true,
+    opened: false,
     title: "Why we love coloring?",
     aws: [
       "It is often used as a relaxation tool and a form of arts therapy, allowing individuals to unwind and express themselves creatively. Coloring has been found to have calming effects, reducing anxiety, and increasing focus and mindfulness.",
@@ -30,12 +30,12 @@ const faqs = ref([
     ]
   },
   {
-    opened: true,
+    opened: false,
     title: "What is coloring?",
     aws: ["Coloring is an activity that involves filling in outlined designs or patterns with colors to create a finished image. This simple yet enjoyable activity is not only for kids, but it has become increasingly popular with adults as well."],
   },
   {
-    opened: true,
+    opened: false,
     title: "How to play coloring?",
     aws: ["Use various coloring tools such as pencils, crayons, or markers to fill the outlined areas with different shades and colors, producing a completed image."]
   }
@@ -137,7 +137,7 @@ const faqs = ref([
     <div v-if="!isPWA" class="max-w-xl mx-auto space-y-4">
       <h2 class="text-5xl font-bold">FAQ</h2>
       <div v-for="(faq, i) in faqs" :key="i" class="space-y-1">
-        <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-xl" @click="faq.opened = !faq.opened">
+        <h3 class="cursor-pointer flex gap-1 items-center font-semibold text-2xl" @click="faq.opened = !faq.opened">
           <span>{{ faq.title }}</span>
         </h3>
         <div v-show="faq.opened" class="space-y-2">
