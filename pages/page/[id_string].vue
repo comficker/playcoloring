@@ -26,18 +26,18 @@
       </div>
       <div class="flex flex-col md:flex-row gap-4 justify-between">
         <div class="flex-1 flex gap-2 font-medium">
-          <div class="btn p-3 hover:shadow border-gray-200" @click="print">
+          <div class="btn p-3 py-2 hover:shadow border-gray-200" @click="print">
             <div class="w-4 h-4 i-con-print"/>
             <span class="hidden md:block">Print</span>
           </div>
-          <a class="btn p-3 hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
+          <a class="btn p-3 py-2 hover:shadow border-gray-200" :href="meta.imgSrc" download target="_blank">
             <div class="w-4 h-4 i-con-download"/>
             <span class="hidden md:block">Download</span>
           </a>
           <nuxt-link
             v-if="value.is_template || isOwner"
             :to="`/game?id=${value.id_string}`"
-            class="btn p-3 flex-1 justify-center uppercase font-semibold text-xs bg-blue-500 text-white"
+            class="btn p-3 py-2 flex-1 justify-center uppercase font-semibold text-xs bg-blue-500 text-white"
           >
             <div class="w-4 h-4 i-con-gamepad"/>
             <span v-if="isOwner && !value.is_template">Continue</span>
@@ -56,7 +56,7 @@
               :quote="meta.desc"
               :hashtags="value.taxonomies.map(x => x.title).join(',')"
               :media="meta.imgSrc"
-              class="btn p-3 border-gray-200 md:border-transparent"
+              class="btn p-2 border-gray-200 md:border-transparent"
             >
               <div class="w-5 h-5" :class="`i-con-${item}`"/>
               <span class="md:hidden">{{item}}</span>
@@ -87,7 +87,7 @@
         </h2>
         <div v-if="value.taxonomies.length" class="font-semibold text-sm flex gap-2 flex-wrap items-center">
           <nuxt-link
-            class="p-0.5 px-2 rounded bg-green-400 text-white hover:underline"
+            class="p-0.5 px-2 rounded-[2px] bg-green-400 text-white hover:underline"
             v-for="item in value.taxonomies" :key="item.id"
             :to="`/${space}/${item.id_string}`"
           >
